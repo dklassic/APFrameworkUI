@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  - Building
+  - Destoyable
+  - LevelCollision
+  - Trap
+  - Reticle
+  - PlayerProjectile
+  - EnvironmentProjectile
+  - AmmoCore
+  - Garbage
+  - EnemyVision
+  - EnemyProjectile
+  - Core
+  - EnemyBullet
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - OverlayUI
+  - Water
+  - UI
+  - PlayerUncollide
+  - PlayerUninteractable
+  - Post Processing
+  - Player
+  - Enemy
+  - Building
+  - PlayerBullet
+  - EnemyBullet
+  - EnvironmentBullet
+  - Background
+  - FlyingEnemy
+  - Player UI
+  - Post Processing for Additional
+  - VFX
+  - EnemyCollisionPass
+  - Stacked VFX
+  - BuddyCollisionPass
+  - EnemyVision
+  - Core
+  - CoreCollisionPass
+  - Post Processing for Overlay
+  - 
+  - Decor
+  - Explosives
+  - 
+  - Invisible Wall
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Player UI
+    uniqueID: 971985005
+    locked: 0
