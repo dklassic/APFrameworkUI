@@ -1,8 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
-using UnityEngine;
-using UnityEngine.UI;
 
 public class ExampleMenu : GeneralUISystemWithNavigation
 {
@@ -10,6 +7,7 @@ public class ExampleMenu : GeneralUISystemWithNavigation
     {
         while (!UIManager.Instance.DefaultUIStarted)
             yield return null;
+        yield return CoroutineUtility.WaitRealtime(1f);
         OpenMenu();
     }
 
@@ -20,6 +18,16 @@ public class ExampleMenu : GeneralUISystemWithNavigation
         AddButton("Multiple window example", systemWindow, () => OpenSubMenu(1));
         AddButton("中文顯示", systemWindow, () => OpenSubMenu(2));
         AddButton("Setting", systemWindow, () => OpenSubMenu(3));
+        AddGap(systemWindow);
+        AddButton("Quit", systemWindow, Quit);
         systemWindow.AutoResize();
+    }
+    void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

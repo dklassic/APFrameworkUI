@@ -8,18 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Demo Scene.unity
     guid: ca02b89cc53605a4a82fd53596bcff85
-  - enabled: 1
-    path: Assets/Scenes/DebugToolStack.unity
-    guid: 0513103de264f834bbf8a7adfebd1677
-  - enabled: 1
-    path: Assets/Scenes/SteamToolStack.unity
-    guid: f20554d90136d684a9a55e45fccf09e9
-  - enabled: 1
-    path: Assets/Scenes/Tutorial.unity
-    guid: 4d98afc73b6323648bd2b01db0117310
-  - enabled: 1
-    path: Assets/Scenes/Demo.unity
-    guid: ad353f1aa8f8ab942b8d013063be1ade
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a03c27b4289506b448a535e0ae66549e,
       type: 2}
