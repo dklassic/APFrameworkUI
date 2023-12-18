@@ -124,6 +124,7 @@ public class UIManager : MonoBehaviour
             WindowGroup.UpperCenter => uiLayout[6],
             WindowGroup.UpperRight => uiLayout[7],
             WindowGroup.MiddleCenterHorizontal => uiLayout[8],
+            _ => throw new System.NotImplementedException(),
         };
         GameObject newLayout = Instantiate(layout.gameObject, layout.parent.parent);
         if (name != string.Empty)

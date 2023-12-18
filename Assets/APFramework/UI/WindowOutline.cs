@@ -168,6 +168,7 @@ public class WindowOutline : MonoBehaviour
                 3 => "└─▀",
                 _ => "   "
             },
+            _ => throw new System.NotImplementedException(),
         },
         WindowThickenType.Whole => labeled switch
         {
@@ -195,6 +196,7 @@ public class WindowOutline : MonoBehaviour
                 3 => "╚═▀",
                 _ => "   "
             },
+            _ => throw new System.NotImplementedException(),
         },
         WindowThickenType.CornerOnly => labeled switch
         {
@@ -222,7 +224,9 @@ public class WindowOutline : MonoBehaviour
                 3 => "╚─▀",
                 _ => "   "
             },
-        }
+            _ => throw new System.NotImplementedException(),
+        },
+        _ => throw new System.NotImplementedException(),
     };
     string LowerLeftOutlineSets(int i, WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => thickenType switch
     {
@@ -252,6 +256,7 @@ public class WindowOutline : MonoBehaviour
                 3 => "└─▀",
                 _ => "   "
             },
+            _ => throw new System.NotImplementedException(),
         },
         WindowThickenType.Whole => labeled switch
         {
@@ -278,7 +283,8 @@ public class WindowOutline : MonoBehaviour
                 2 => "║ █",
                 3 => "╚═▀",
                 _ => "   "
-            }
+            },
+            _ => throw new System.NotImplementedException(),
         },
         WindowThickenType.CornerOnly => labeled switch
         {
@@ -305,8 +311,10 @@ public class WindowOutline : MonoBehaviour
                 2 => "│ █",
                 3 => "╚─▀",
                 _ => "   "
-            }
-        }
+            },
+            _ => throw new System.NotImplementedException(),
+        },
+        _ => throw new System.NotImplementedException(),
     };
     string LeftLineSets(WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => labeled switch
     {
@@ -316,7 +324,8 @@ public class WindowOutline : MonoBehaviour
             _ => "║  "
         },
         LabelStyle.Left => "█  ",
-        LabelStyle.Right => throw new NotImplementedException()
+        LabelStyle.Right => throw new NotImplementedException(),
+        _ => throw new System.NotImplementedException(),
     };
     string CornerSets(int i, WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => labeled switch
     {
@@ -373,6 +382,7 @@ public class WindowOutline : MonoBehaviour
                 _ => "   "
             }
         },
+        _ => throw new System.NotImplementedException(),
     };
     string LineFill(string set, int count)
     {
