@@ -4,7 +4,7 @@
 
 APFramework is a framework created by [DK Liao](https://twitter.com/RandomDevDK) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
 
-The UI System for APFramework is designed with to goals in mind:
+The UI System for APFramework is designed with two goals in mind:
 
 - To be a text only UI system
 - To be able to quickly initialize UI using code only
