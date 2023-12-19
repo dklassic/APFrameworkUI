@@ -30,7 +30,7 @@ public class SuperQuickMenu : GeneralUISystemWithNavigation
     void ButtonPressedAction() => _ = 0;
 }
 ```
-By inheriting the `GeneralUISystemWithNavigation` class, you can quickly initialize UI by overriding `InitializeUI()`. The quickest way to setup a UI is to simple create an UI initialized with a single `WindowElement`. That wouldn't be much useful at all so usually you'd want to initialize a `WindowUI` then add in all the elements:
+By inheriting the `GeneralUISystemWithNavigation` class, you can quickly initialize UI by overriding `InitializeUI()`. The quickest way to setup a UI is to simply create an UI initialized with a single `WindowElement`. That wouldn't be much useful at all so usually you'd want to initialize a `WindowUI` then add in all the elements:
 ```C#
 public class BiggerWindow : GeneralUISystemWithNavigation
 {
