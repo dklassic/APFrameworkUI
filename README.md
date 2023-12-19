@@ -25,7 +25,7 @@ Study example UIs within the Script folder should give you a good idea.
 
 `GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
 
-`UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemNavigation` and create UI with this alone if you want. Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
+`UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want. Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
 
 # Requirement
 
