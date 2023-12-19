@@ -4,7 +4,7 @@
 
 APFramework is a framework created by [DK Liao](https://twitter.com/RandomDevDK) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
 
-The UI System for APFramework is designed with to goals in mind:
+The UI System for APFramework is designed with two goals in mind:
 
 - To be a text only UI system
 - To be able to quickly initialize UI using code only
@@ -23,9 +23,9 @@ Study example UIs within the Script folder should give you a good idea.
 
 `GeneralUISystem` class can be inherited to use on UIs without any interactivity.
 
-`GeneralUISystemNavigation` class can be inherited to use on UIs that takes input.
+`GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
 
-`UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemNavigation` and create UI with this alone if you want. Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
+`UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want. Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
 
 # Requirement
 
