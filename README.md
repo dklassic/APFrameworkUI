@@ -19,13 +19,48 @@ The creation of this UI system is heavily inspired by [PhiOS](https://github.com
 
 # How to Use
 
-Study example UIs within the Script folder should give you a good idea.
+A quick UI code would look like this:
+```C#
+public class SuperQuickMenu : GeneralUISystemWithNavigation
+{
+    protected override void InitializeUI()
+    {
+        AddButton("This is a quick single Button", ButtonPressedAction);
+    }
+    void ButtonPressedAction() => _ = 0;
+}
+```
+By inheriting the `GeneralUISystemWithNavigation` class, you can quickly initialize UI by overriding `InitializeUI()`. The quickest way to setup a UI is to simple create an UI initialized with a single `WindowElement`. That wouldn't be much useful at all so usually you'd want to initialize a `WindowUI` then add in all the elements:
+```C#
+public class BiggerWindow : GeneralUISystemWithNavigation
+{
+    protected override void InitializeUI()
+    {
+        WindowUI systemWindow = NewWindow("A New Window", DefaultSetup);
+        AddText("This is a non-selectable text", systemWindow);
+        AddToggle("This is a Toggle", systemWindow);
+        AddButton("This is a Button", systemWindow);
+        SliderUI slider = AddSlider("This is a simple Slider with range", systemWindow);
+        slider.SetLimit(-10, 10);
+        SliderUIChoice sliderChoice = AddSliderWithChoice("This is a Slider that takes string options", systemWindow);
+        sliderChoice.AddChoice("Low");
+        sliderChoice.AddChoice("Medium");
+        sliderChoice.AddChoice("High");
+        systemWindow.AutoResize();
+    }
+}
+```
+Study example UIs within the Script folder should give you a good idea:
+- `[ElementsShowcase](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ElementsShowcase.cs)` shows all `WindowElement` available
+- `[MultipleWindow](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/MultipleWindow.cs)` is a demonstration on how to initialize `WindowUI` sharing the same layout
+- `[ChineseDisplay](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ChineseDisplay.cs)` is a showcase on the displaying of Chinese
+- `[ResolutionSetting](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ResolutionSetting.cs)` shows how to handle resolution change and how to change the overlay mode
 
-`GeneralUISystem` class can be inherited to use on UIs without any interactivity.
-
-`GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
-
-`UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want. Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
+Some other quick notes:
+- `GeneralUISystem` class can be inherited to use on UIs without any interactivity.
+- `GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
+- `UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
+- Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
 
 # Requirement
 
