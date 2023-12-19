@@ -53,6 +53,7 @@ public class BiggerWindow : GeneralUISystemWithNavigation
 Study example UIs within the Script folder should give you a good idea:
 - [`ElementsShowcase`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ElementsShowcase.cs) shows all `WindowElement` available
 - [`MultipleWindow`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/MultipleWindow.cs) is a demonstration on how to initialize `WindowUI` sharing the same layout
+- [`ExampleMenu`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ExampleMenu.cs) is an example of SubMenu interaction if you want to use that
 - [`ChineseDisplay`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ChineseDisplay.cs) is a showcase on the displaying of Chinese
 - [`ResolutionSetting`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ResolutionSetting.cs) shows how to handle resolution change and how to change the overlay mode
 
