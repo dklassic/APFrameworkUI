@@ -733,6 +733,8 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     {
         if (!active)
             return false;
+        if (CurrentSelectable == null)
+            return false;
         if (!CurrentSelectable.Available)
             return false;
         return BaseConfirmAction();
@@ -740,6 +742,8 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     protected virtual bool MouseConfirmSelection()
     {
         if (!active || !mouseActive)
+            return false;
+        if (CurrentSelectable == null)
             return false;
         if (!CurrentSelectable.Available)
             return false;
