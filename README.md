@@ -98,6 +98,11 @@ Some other quick notes:
 - Tons of window mask animations to be used upon opening and closing UI
 - To be able to show Title and Subscript of a window
 
+# Futurework
+
+[ ] Scrollable window
+[ ] Better exposed event timing?
+[ ] Better exposed general setting?
 
 # Fonts Included
 
