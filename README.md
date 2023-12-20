@@ -62,6 +62,9 @@ Some other quick notes:
 - `GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
 - `UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
 - Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
+- [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/StyleUtility.cs) handles all the color choice
+- [`TextUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/TextUtility.cs) contains several text related utility function
+- [`CoroutineUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/CoroutineUtility.cs) is a utility function to prevent GC by new WaitForRealtimeSeconds and for compatibility, can change the implementation to Unitask if you want
 
 # Requirement
 
