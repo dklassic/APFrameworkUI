@@ -58,13 +58,16 @@ Study example UIs within the Script folder should give you a good idea:
 - [`ResolutionSetting`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ResolutionSetting.cs) shows how to handle resolution change and how to change the overlay mode
 
 Some other quick notes:
-- `GeneralUISystem` class can be inherited to use on UIs without any interactivity.
-- `GeneralUISystemWithNavigation` class can be inherited to use on UIs that takes input.
-- `UIManager` handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
+- [`GeneralUISystem`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/GeneralUISystem.cs) class can be inherited to use on UIs without any interactivity.
+- [`GeneralUISystemWithNavigation`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/GeneralUISystemWithNavigation.cs) class can be inherited to use on UIs that takes input.
+- [`UIManager`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIManager.cs) handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
 - Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
-- [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/StyleUtility.cs) handles all the color choice
-- [`TextUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/TextUtility.cs) contains several text related utility function
-- [`CoroutineUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/CoroutineUtility.cs) is a utility function to prevent GC by new WaitForRealtimeSeconds and for compatibility, can change the implementation to Unitask if you want
+- [`UIInput`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIInput.cs) handles the input.
+- [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/StyleUtility.cs) handles all the color choice.
+- [`TextUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/TextUtility.cs) contains several text related utility function.
+- [`CoroutineUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/CoroutineUtility.cs) is a utility for GC-less coroutine, can change the implementation to Unitask instead if you want to.
+
+# Detailed Design Dive (WIP)
 
 # Requirement
 
