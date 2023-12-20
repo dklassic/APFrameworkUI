@@ -100,6 +100,7 @@ Some other quick notes:
 
 # Futurework
 
+[ ] Improve documentation and explain more in detail
 [ ] Scrollable window
 [ ] Better exposed event timing?
 [ ] Better exposed general setting?
