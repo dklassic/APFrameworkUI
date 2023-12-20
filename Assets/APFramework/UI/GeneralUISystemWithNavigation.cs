@@ -250,7 +250,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     public virtual void LinkInput()
     {
         inFocus = true;
-        // Context.Log(this.GetType().Name + " Linking Input");
+        // Debug.Log(this.GetType().Name + " Linking Input");
         UIManager.UIInput.OnConfirm += WrappedConfirm;
         UIManager.UIInput.OnCancel += WrappedCancel;
         // UIManager.UIInput.OnQuickConfirm += ConfirmSelection;
@@ -266,7 +266,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     public virtual void UnlinkInput()
     {
         inFocus = false;
-        // Context.Log(this.GetType().Name + " Unlinking Input");
+        // Debug.Log(this.GetType().Name + " Unlinking Input");
         UIManager.UIInput.OnConfirm -= WrappedConfirm;
         UIManager.UIInput.OnCancel -= WrappedCancel;
         // UIManager.UIInput.OnQuickConfirm -= ConfirmSelection;

@@ -25,14 +25,6 @@ public enum ColorCode
     LightMediumOrchid,
     GoldenYellow,
 }
-public enum Rarity
-{
-    NA,
-    Mk1,
-    Mk2,
-    Mk3,
-    Mk4
-}
 public class StyleUtility
 {
     public static ColorCode Selected = ColorCode.Blue;

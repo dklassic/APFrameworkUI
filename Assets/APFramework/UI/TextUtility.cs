@@ -76,7 +76,7 @@ public static class TextUtility
 
             // -----------------------------------
             string strippedStr = internalStringBuilder.ToString();
-            //Context.Log(strippedStr);
+            //Debug.Log(strippedStr);
 
             return strippedStr;
         }
