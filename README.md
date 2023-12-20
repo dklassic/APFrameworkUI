@@ -98,7 +98,7 @@ Some other quick notes:
 
 # Fonts Included
 
-For demonstration purpose, two fonts are been included in this project:
+For demonstration purpose, two fonts are included in this project:
 
 - IBM - IBM Plex
 - Google - Noto Sans CJK
