@@ -37,11 +37,6 @@ public class UIInput : MonoBehaviour
     {
         controls.Enable();
     }
-    void QuickTestTrigger(InputAction.CallbackContext context)
-    {
-        Debug.Log("QuickTestTriggered");
-        OnQuickTest?.Invoke();
-    }
     void WrappedMouseCancelPerformed(InputAction.CallbackContext context)
     {
         OnMouseCancel?.Invoke();
