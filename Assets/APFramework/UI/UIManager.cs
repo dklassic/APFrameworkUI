@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] List<Transform> uiLayout = new List<Transform>();
     public bool InMenu { get => inMenu; set => inMenu = value; }
     bool inMenu = false;
-    bool overlayMode = false;
+    [SerializeField] bool overlayMode = false;
     public bool OverlayMode => overlayMode;
     bool defaultUIStarted = false;
     public bool DefaultUIStarted => defaultUIStarted;
@@ -46,11 +46,7 @@ public class UIManager : MonoBehaviour
                 continue;
             system.StartUp();
         }
-
-        foreach (Canvas canvas in uiCanvas)
-        {
-            canvas.renderMode = overlayMode ? RenderMode.ScreenSpaceOverlay : RenderMode.ScreenSpaceCamera;
-        }
+        SetOverlayMode(overlayMode);
         defaultUIStarted = true;
     }
     public void SetOverlayMode(bool enable)
@@ -59,6 +55,8 @@ public class UIManager : MonoBehaviour
         foreach (Canvas canvas in uiCanvas)
         {
             canvas.renderMode = enable ? RenderMode.ScreenSpaceOverlay : RenderMode.ScreenSpaceCamera;
+            if (!overlayMode && canvas.worldCamera == null)
+                canvas.worldCamera = Camera.main;
         }
         ClearAllWindowLocation();
     }
