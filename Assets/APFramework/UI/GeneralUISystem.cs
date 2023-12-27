@@ -31,6 +31,15 @@ public class GeneralUISystem : MonoBehaviour
     [SerializeField] protected bool valueDirty = false;
     public bool InDebug = false;
     protected bool initialized = false;
+    protected int elementCounter = 0;
+    protected int ElementCounter
+    {
+        get
+        {
+            elementCounter++;
+            return elementCounter;
+        }
+    }
     public virtual void StartUp()
     {
         if (initialized)
@@ -39,7 +48,7 @@ public class GeneralUISystem : MonoBehaviour
         initialized = true;
         DelayedContentSetting();
     }
-    
+
     public virtual void ToggleDisplay()
     {
         active = !active;
@@ -113,7 +122,7 @@ public class GeneralUISystem : MonoBehaviour
     /// </summary>
     protected TextUI AddGap(WindowUI window)
     {
-        TextUI text = AddText("Blank" + texts.Count, window);
+        TextUI text = AddText("Blank" + ElementCounter, window);
         text.SetContent("　");
         return text;
     }
