@@ -467,8 +467,25 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                         -1 => -1,
                         _ => 0
                     };
-                    currentSelection[0] += offset;
-                    currentSelection[0] = currentSelection[0] >= 0 ? currentSelection[0] % instanceWindows.Count : instanceWindows.Count - 1;
+                    int targetSelection = currentSelection[0];
+                    while (targetSelection == currentSelection[0] || SelectableList(targetSelection).Count == 0)
+                    {
+                        targetSelection += offset;
+                        if (allowCycle && targetSelection < 0)
+                        {
+                            targetSelection = instanceWindows.Count - 1;
+                        }
+                        else if (allowCycle && targetSelection >= instanceWindows.Count)
+                        {
+                            targetSelection = 0;
+                        }
+                        else if (!allowCycle && (targetSelection < 0 || targetSelection >= instanceWindows.Count) || targetSelection == currentSelection[0])
+                        {
+                            targetSelection = currentSelection[0];
+                            break;
+                        }
+                    }
+                    currentSelection[0] = targetSelection;
                     currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, SelectableList(currentSelection[0]).Count - 1);
                 }
                 else
@@ -481,7 +498,10 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                     };
                     currentSelection[1] += offset;
                     int count = SelectableList(currentSelection[0]).Count;
-                    currentSelection[1] = currentSelection[1] >= 0 ? currentSelection[1] % count : count - 1;
+                    if (allowCycle)
+                        currentSelection[1] = currentSelection[1] >= 0 ? currentSelection[1] % count : count - 1;
+                    else
+                        currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, count - 1);
                 }
             }
             if (xBefore != currentSelection[0] || yBefore != currentSelection[1])
