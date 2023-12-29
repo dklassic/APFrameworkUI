@@ -603,7 +603,6 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
             {
                 Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
                 float distance = (selectableLocation - referenceLocation).sqrMagnitude;
-                Debug.Log(window.Selectables[i].RawContent + " " + distance);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -630,7 +629,6 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
             {
                 Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
                 float distance = (selectableLocation - referenceLocation).sqrMagnitude;
-                Debug.Log(window.Selectables[i].RawContent + " " + distance);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -657,7 +655,6 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
             {
                 Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
                 float distance = Mathf.Abs(selectableLocation.y - yLocation);
-                Debug.Log(window.Selectables[i].RawContent + " " + distance);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
