@@ -603,6 +603,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
             {
                 Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
                 float distance = (selectableLocation - referenceLocation).sqrMagnitude;
+                Debug.Log(window.Selectables[i].RawContent + " " + distance);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -629,10 +630,38 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
             {
                 Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
                 float distance = (selectableLocation - referenceLocation).sqrMagnitude;
+                Debug.Log(window.Selectables[i].RawContent + " " + distance);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    currentSelection[0] = instanceWindows.IndexOf(window);
+                    currentSelection[0] = windowIndex;
+                    currentSelection[1] = i;
+                }
+            }
+        }
+        currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, window.Selectables.Count - 1);
+        CurrentSelectable?.SetFocus(true);
+    }
+    protected void RefocusAtNearestElement(float yLocation, int windowIndex)
+    {
+        if (!active)
+            return;
+        if (!windowElementLocationCached)
+            UpdateWindowLocation();
+        float minDistance = Mathf.Infinity;
+        CurrentSelectable?.SetFocus(false);
+        WindowUI window = instanceWindows[windowIndex];
+        if (window.Selectables.Count > 0)
+        {
+            for (int i = 0; i < window.Selectables.Count; i++)
+            {
+                Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
+                float distance = Mathf.Abs(selectableLocation.y - yLocation);
+                Debug.Log(window.Selectables[i].RawContent + " " + distance);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    currentSelection[0] = windowIndex;
                     currentSelection[1] = i;
                 }
             }
