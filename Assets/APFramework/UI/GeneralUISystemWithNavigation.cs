@@ -589,6 +589,8 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     }
     protected void RefocusAtNearestElement(Vector2 referenceLocation)
     {
+        if (!active)
+            return;
         if (!windowElementLocationCached)
             UpdateWindowLocation();
         float minDistance = Mathf.Infinity;
@@ -614,6 +616,10 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     }
     protected void RefocusAtNearestElement(Vector2 referenceLocation, int windowIndex)
     {
+        if (!active)
+            return;
+        if (!windowElementLocationCached)
+            UpdateWindowLocation();
         float minDistance = Mathf.Infinity;
         CurrentSelectable?.SetFocus(false);
         WindowUI window = instanceWindows[windowIndex];
