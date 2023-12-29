@@ -165,9 +165,14 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                     {
                         selectionUpdated = true;
                         CurrentSelectable?.SetFocus(false);
+                        Vector2 previousSelectableLocation = Vector2.negativeInfinity;
+                        if (ExistsSelectable(currentSelection[0], currentSelection[1]))
+                            previousSelectableLocation = Selectable(currentSelection[0], currentSelection[1]).CachedPosition.Item1;
                         currentSelection[0] = i;
                         int count = instanceWindows[i].Selectables.Count;
-                        currentSelection[1] = currentSelection[1] >= count ? count - 1 : currentSelection[1];
+                        if (previousSelectableLocation != Vector2.negativeInfinity)
+                            RefocusAtNearestElement(previousSelectableLocation, currentSelection[0]);
+                        currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, count - 1);
                         CurrentSelectable?.SetFocus(true);
                     }
                     mouseActive = true;
