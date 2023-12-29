@@ -587,6 +587,51 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         holdNavigationNext = Mathf.Infinity;
         move = Vector2.zero;
     }
+    void RefocusAtNearestElement(Vector2 referenceLocation)
+    {
+        float minDistance = Mathf.Infinity;
+        CurrentSelectable?.SetFocus(false);
+        foreach (WindowUI window in instanceWindows)
+        {
+            if (window.Selectables.Count == 0)
+                continue;
+            for (int i = 0; i < window.Selectables.Count; i++)
+            {
+                Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
+                float distance = (selectableLocation - referenceLocation).sqrMagnitude;
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    currentSelection[0] = instanceWindows.IndexOf(window);
+                    currentSelection[1] = i;
+                }
+            }
+            currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, window.Selectables.Count - 1);
+        }
+        CurrentSelectable?.SetFocus(true);
+    }
+    void RefocusAtNearestElement(Vector2 referenceLocation, int windowIndex)
+    {
+        float minDistance = Mathf.Infinity;
+        CurrentSelectable?.SetFocus(false);
+        WindowUI window = instanceWindows[windowIndex];
+        if (window.Selectables.Count > 0)
+        {
+            for (int i = 0; i < window.Selectables.Count; i++)
+            {
+                Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
+                float distance = (selectableLocation - referenceLocation).sqrMagnitude;
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    currentSelection[0] = instanceWindows.IndexOf(window);
+                    currentSelection[1] = i;
+                }
+            }
+        }
+        currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, window.Selectables.Count - 1);
+        CurrentSelectable?.SetFocus(true);
+    }
     protected ButtonUIDoubleConfirm AddDoubleConfirmButton(string name, float font = 30f, System.Action action = null)
     {
         WindowSetup setup = DefaultSetup;
