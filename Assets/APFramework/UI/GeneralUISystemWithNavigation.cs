@@ -485,8 +485,23 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                             break;
                         }
                     }
-                    currentSelection[0] = targetSelection;
-                    currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, SelectableList(currentSelection[0]).Count - 1);
+                    if (targetSelection != currentSelection[0])
+                    {
+                        Vector2 currentSelectableLocation = instanceWindows[currentSelection[0]].Selectables[currentSelection[1]].CachedPosition.Item1;
+                        currentSelection[0] = targetSelection;
+                        float minDistanceY = Mathf.Infinity;
+                        for (int i = 0; i < instanceWindows[currentSelection[0]].Selectables.Count; i++)
+                        {
+                            Vector2 selectableLocation = instanceWindows[currentSelection[0]].Selectables[i].CachedPosition.Item1;
+                            float distanceY = Mathf.Abs(selectableLocation.y - currentSelectableLocation.y);
+                            if (distanceY < minDistanceY)
+                            {
+                                minDistanceY = distanceY;
+                                currentSelection[1] = i;
+                            }
+                        }
+                        currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, SelectableList(currentSelection[0]).Count - 1);
+                    }
                 }
                 else
                 {
