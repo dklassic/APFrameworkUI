@@ -587,7 +587,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         holdNavigationNext = Mathf.Infinity;
         move = Vector2.zero;
     }
-    void RefocusAtNearestElement(Vector2 referenceLocation)
+    protected void RefocusAtNearestElement(Vector2 referenceLocation)
     {
         float minDistance = Mathf.Infinity;
         CurrentSelectable?.SetFocus(false);
@@ -610,7 +610,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         }
         CurrentSelectable?.SetFocus(true);
     }
-    void RefocusAtNearestElement(Vector2 referenceLocation, int windowIndex)
+    protected void RefocusAtNearestElement(Vector2 referenceLocation, int windowIndex)
     {
         float minDistance = Mathf.Infinity;
         CurrentSelectable?.SetFocus(false);
