@@ -93,7 +93,10 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         if (Time.unscaledTime < updateTime)
             return;
         active = true;
-        UpdateWindowLocation();
+        if (!windowElementLocationCached)
+        {
+            UpdateWindowLocation();
+        }
         if (holdStart == Mathf.Infinity || holdNavigationNext <= Time.unscaledTime)
         {
             UpdateSelection();
@@ -228,14 +231,11 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     }
     protected void UpdateWindowLocation()
     {
-        if (!windowElementLocationCached)
+        // SetOpacity(1, true);
+        windowElementLocationCached = true;
+        foreach (WindowUI window in instanceWindows)
         {
-            // SetOpacity(1, true);
-            windowElementLocationCached = true;
-            foreach (WindowUI window in instanceWindows)
-            {
-                window.UpdateElementPosition();
-            }
+            window.UpdateElementPosition();
         }
     }
     public override void ToggleDisplay()
@@ -589,6 +589,8 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     }
     protected void RefocusAtNearestElement(Vector2 referenceLocation)
     {
+        if (!windowElementLocationCached)
+            UpdateWindowLocation();
         float minDistance = Mathf.Infinity;
         CurrentSelectable?.SetFocus(false);
         foreach (WindowUI window in instanceWindows)
