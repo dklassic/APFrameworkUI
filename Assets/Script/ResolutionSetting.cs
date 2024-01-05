@@ -8,7 +8,7 @@ public class ResolutionSetting : GeneralUISystemWithNavigation
     List<(int, int)> activeResolutionList;
     protected override void InitializeUI()
     {
-        systemWindow ??= NewWindow("ui_system_resolution", DefaultSetup);
+        systemWindow ??= NewWindow("Display Setting", DefaultSetup);
         AddText("When ever resolution changes, need to clear cache of window location.", systemWindow);
         activeResolutionList = ResolutionUtility.AvailableResolutions();
         for (int i = 0; i < activeResolutionList.Count; i++)

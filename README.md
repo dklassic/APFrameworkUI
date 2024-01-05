@@ -63,9 +63,10 @@ Some other quick notes:
 - [`UIManager`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIManager.cs) handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
 - Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
 - [`UIInput`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIInput.cs) handles the input.
-- [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/StyleUtility.cs) handles all the color choice.
-- [`TextUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/TextUtility.cs) contains several text related utility function.
-- [`CoroutineUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/CoroutineUtility.cs) is a utility for GC-less coroutine, can change the implementation to Unitask instead if you want to.
+- [`LayoutUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/LayoutUtility.cs) pre-defines all available presets that can be chosen directly from `GeneralUISystem` and `GeneralUISystemWithNavigation` inspector.
+- [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/StyleUtility.cs) handles all the color choice.
+- [`TextUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/TextUtility.cs) contains several text related utility function.
+- [`CoroutineUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/CoroutineUtility.cs) is a utility for GC-less coroutine, can change the implementation to Unitask instead if you want to.
 
 # Detailed Design Dive (WIP)
 

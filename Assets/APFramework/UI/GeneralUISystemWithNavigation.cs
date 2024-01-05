@@ -84,7 +84,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     protected bool hoverOnLeft = false;
     protected bool hoverOnRight = false;
     protected bool selectionUpdated = false;
-    void Update()
+    public override void UpdateSystem()
     {
         if (!inFocus)
             return;
