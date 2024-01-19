@@ -17,6 +17,10 @@ The UI system is heavily coupled with Text Mesh Pro at the moment but should be 
 
 The creation of this UI system is heavily inspired by [PhiOS](https://github.com/pblca/PhiOS) (mirror repo) made by [phi6](https://twitter.com/phi6).
 
+> [!IMPORTANT]  
+> The project is currently considered in the state of pre-release, which means breaking change will happen all the time as I figure out how to generalize the usage of it better.
+> If you're interested in using it in production, make sure to fork it out and simply modify it to suite your project better.
+
 # How to Use
 
 A quick UI code would look like this:
