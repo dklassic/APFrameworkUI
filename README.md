@@ -65,7 +65,6 @@ Some other quick notes:
 - [`GeneralUISystem`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/GeneralUISystem.cs) class can be inherited to use on UIs without any interactivity.
 - [`GeneralUISystemWithNavigation`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/GeneralUISystemWithNavigation.cs) class can be inherited to use on UIs that takes input.
 - [`UIManager`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIManager.cs) handles the initialization of all UI, you can bypass `GeneralUISystemWithNavigation` and create UI with this alone if you want.
-- Currently the layout of UI displayed requires predetermined layout under UIManager prefab.
 - [`UIInput`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/UIInput.cs) handles the input.
 - [`LayoutUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/LayoutUtility.cs) pre-defines all available presets that can be chosen directly from `GeneralUISystem` and `GeneralUISystemWithNavigation` inspector.
 - [`StyleUtility`](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/APFramework/UI/Utility/StyleUtility.cs) handles all the color choice.
