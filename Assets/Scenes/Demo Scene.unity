@@ -154,11 +154,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instanceWindows: []
-  initializationSetting:
+  init:
     Style: 10
     TransitionIn: 8
     TransitionOut: 8
-    LayoutPreset: 4
+    Group: 5
     Background: 0
   active: 0
   valueDirty: 0
@@ -224,11 +224,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instanceWindows: []
-  initializationSetting:
-    Style: 10
+  init:
+    Style: 14
     TransitionIn: 8
     TransitionOut: 8
-    LayoutPreset: 4
+    Group: 5
     Background: 0
   active: 0
   valueDirty: 0
@@ -331,11 +331,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8015279292687324311, guid: 543fb85ae549cdf4fa1697e4ddd40540,
-        type: 3}
-      propertyPath: uiCamera
-      value: 
-      objectReference: {fileID: 767879069}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 543fb85ae549cdf4fa1697e4ddd40540, type: 3}
 --- !u!1 &767879067
@@ -443,11 +438,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instanceWindows: []
-  initializationSetting:
-    Style: 10
+  init:
+    Style: 17
     TransitionIn: 8
     TransitionOut: 8
-    LayoutPreset: 4
+    Group: 5
     Background: 0
   active: 0
   valueDirty: 0
@@ -528,11 +523,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instanceWindows: []
-  initializationSetting:
-    Style: 10
+  init:
+    Style: 4
     TransitionIn: 8
     TransitionOut: 8
-    LayoutPreset: 4
+    Group: 5
     Background: 0
   active: 0
   valueDirty: 0
@@ -602,11 +597,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instanceWindows: []
-  initializationSetting:
-    Style: 10
+  init:
+    Style: 13
     TransitionIn: 8
     TransitionOut: 8
-    LayoutPreset: 13
+    Group: 9
     Background: 0
   active: 0
   valueDirty: 0

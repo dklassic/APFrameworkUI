@@ -4,7 +4,7 @@ public class MultipleWindow : GeneralUISystemWithNavigation
 {
     protected override void InitializeUI()
     {
-        Transform layout = UIManager.Instance.InstantiateLayout(initializationSetting.LayoutPreset, nameof(MultipleWindow));
+        Transform layout = UIManager.Instance.InstantiateLayout(init.Group, nameof(MultipleWindow));
 
         WindowUI window1 = NewWindow("Window 1", layout, DefaultSetup);
         AddButton("Button from Window 1", window1);

@@ -3,19 +3,19 @@ using UnityEngine;
 
 
 [System.Serializable]
-public struct WindowInitialization
+public struct WindowInit
 {
     public WindowStyle Style;
     public WindowTransition TransitionIn;
     public WindowTransition TransitionOut;
-    public LayoutPreset LayoutPreset;
+    public WindowGroup Group;
     public BackgroundStyle Background;
-    public static WindowInitialization Default => new WindowInitialization()
+    public static WindowInit Default => new WindowInit()
     {
         Style = WindowStyle.SingleCornerOnly,
         TransitionIn = WindowTransition.Glitch,
         TransitionOut = WindowTransition.Glitch,
-        LayoutPreset = LayoutPreset.MiddleCenterVertical,
+        Group = WindowGroup.MiddleCenter,
         Background = BackgroundStyle.None
     };
 }
@@ -24,8 +24,8 @@ public class GeneralUISystem : MonoBehaviour
     [SerializeField] protected List<WindowUI> instanceWindows = new List<WindowUI>();
     protected Dictionary<string, TextUI> texts = new Dictionary<string, TextUI>();
     protected Dictionary<string, string> delayedContent = new Dictionary<string, string>();
-    [SerializeField] protected WindowInitialization initializationSetting = WindowInitialization.Default;
-    protected WindowSetup DefaultSetup => new WindowSetup(0, 0, initializationSetting.Style, initializationSetting.TransitionIn, initializationSetting.TransitionOut, background: initializationSetting.Background);
+    [SerializeField] protected WindowInit init = WindowInit.Default;
+    protected WindowSetup DefaultSetup => new WindowSetup(0, 0, init.Style, init.TransitionIn, init.TransitionOut, background: init.Background);
     [SerializeField] protected bool active = false;
     public bool IsActive => active;
     [SerializeField] protected bool valueDirty = false;
@@ -48,7 +48,7 @@ public class GeneralUISystem : MonoBehaviour
         initialized = true;
         DelayedContentSetting();
     }
-    public virtual void UpdateSystem() => _ = 0;
+
     public virtual void ToggleDisplay()
     {
         active = !active;
@@ -87,7 +87,7 @@ public class GeneralUISystem : MonoBehaviour
     /// </summary>
     protected WindowUI NewWindow(string name, WindowSetup setup)
     {
-        WindowUI window = UIManager.Instance.NewWindow(name, initializationSetting.LayoutPreset, setup, this);
+        WindowUI window = UIManager.Instance.NewWindow(name, init.Group, setup, this);
         instanceWindows.Add(window);
         return window;
     }

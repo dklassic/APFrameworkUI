@@ -3,6 +3,19 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+public enum WindowGroup
+{
+    Uncategorized = 0,
+    UpperLeft = 1,
+    UpperCenter = 2,
+    UpperRight = 3,
+    MiddleLeft = 4,
+    MiddleCenter = 5,
+    LowerLeft = 6,
+    LowerCenter = 7,
+    LowerRight = 8,
+    MiddleCenterHorizontal = 9,
+}
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
@@ -11,14 +24,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] UIInput uiInput;
     public static UIInput UIInput => Instance.uiInput;
     public WindowSetting WindowSetting;
-    [SerializeField] List<Canvas> canvasList = new List<Canvas>();
-    [SerializeField] GameObject canvasTemplate;
-    [SerializeField] GameObject layoutTemplate;
+    [SerializeField] List<Canvas> uiCanvas = new List<Canvas>();
+    [SerializeField] List<Transform> uiLayout = new List<Transform>();
     public bool InMenu { get => inMenu; set => inMenu = value; }
     bool inMenu = false;
     [SerializeField] bool overlayMode = false;
     public bool OverlayMode => overlayMode;
-    [SerializeField] Camera uiCamera;
     bool defaultUIStarted = false;
     public bool DefaultUIStarted => defaultUIStarted;
     List<GeneralUISystem> uiSystems;
@@ -38,37 +49,14 @@ public class UIManager : MonoBehaviour
         SetOverlayMode(overlayMode);
         defaultUIStarted = true;
     }
-    void Update()
-    {
-        if (!defaultUIStarted)
-            return;
-        foreach (GeneralUISystem system in uiSystems)
-        {
-            if (!system.enabled)
-                continue;
-            system.UpdateSystem();
-        }
-    }
     public void SetOverlayMode(bool enable)
     {
         overlayMode = enable;
-        if (!overlayMode)
-        {
-            uiCamera ??= Camera.main;
-            if (uiCamera == null)
-            {
-                Debug.LogError("UI camera not assigned and no main camera found!");
-                overlayMode = false;
-                return;
-            }
-        }
-        foreach (Canvas canvas in canvasList)
+        foreach (Canvas canvas in uiCanvas)
         {
             canvas.renderMode = enable ? RenderMode.ScreenSpaceOverlay : RenderMode.ScreenSpaceCamera;
             if (!overlayMode && canvas.worldCamera == null)
-            {
-                canvas.worldCamera = uiCamera;
-            }
+                canvas.worldCamera = Camera.main;
         }
         ClearAllWindowLocation();
     }
@@ -76,7 +64,7 @@ public class UIManager : MonoBehaviour
     {
         if (!overlayMode)
         {
-            return RectTransformUtility.WorldToScreenPoint(uiCamera, windowTransform.TransformPoint(elementPosition));
+            return RectTransformUtility.WorldToScreenPoint(Camera.main, windowTransform.TransformPoint(elementPosition));
         }
         else
         {
@@ -107,9 +95,9 @@ public class UIManager : MonoBehaviour
         windows.Remove(window);
         Destroy(window.gameObject);
     }
-    public WindowUI NewWindow(string name, LayoutPreset preset, WindowSetup setup, GeneralUISystem masterUI)
+    public WindowUI NewWindow(string name, WindowGroup group, WindowSetup setup, GeneralUISystem masterUI)
     {
-        WindowUI window = InstanceWindow(preset, name);
+        WindowUI window = InstanceWindow(group, name);
         window.Initialize(name, setup, masterUI);
         windows.Add(window);
         return window;
@@ -121,70 +109,42 @@ public class UIManager : MonoBehaviour
         windows.Add(window);
         return window;
     }
-    public void InstantiateCanvas(int sortingOrder = -1)
+    public Transform InstantiateLayout(WindowGroup group, string name = "")
     {
-        Canvas canvas = Instantiate(canvasTemplate, transform).GetComponent<Canvas>();
-        canvas.gameObject.SetActive(true);
-        canvas.gameObject.name = "Canvas " + canvasList.Count;
-        if (sortingOrder != -1)
-            canvas.sortingOrder = sortingOrder;
-        else
-            canvas.sortingOrder = 10 + canvasList.Count; // No real reason for 10, just feel like UI should be on top of everything else
-        canvasList.Add(canvas);
-    }
-    public Transform InstantiateLayout(LayoutPreset preset, string name = "", int canvasIndex = 0)
-    {
-        LayoutSetting setting = LayoutUtility.GetSettingByPreset(preset);
-        return InstantiateLayout(setting, name, canvasIndex);
-    }
-    public Transform InstantiateLayout(LayoutSetting setting, string name = "", int canvasIndex = 0)
-    {
-        while (canvasIndex >= canvasList.Count)
+        Transform layout = group switch
         {
-            InstantiateCanvas();
-        }
-        Canvas canvas = canvasList[canvasIndex];
-        GameObject newLayout = Instantiate(layoutTemplate, canvas.transform);
-        newLayout.SetActive(true);
+            WindowGroup.LowerLeft => uiLayout[0],
+            WindowGroup.MiddleLeft => uiLayout[1],
+            WindowGroup.MiddleCenter => uiLayout[2],
+            WindowGroup.LowerCenter => uiLayout[3],
+            WindowGroup.UpperLeft => uiLayout[4],
+            WindowGroup.LowerRight => uiLayout[5],
+            WindowGroup.UpperCenter => uiLayout[6],
+            WindowGroup.UpperRight => uiLayout[7],
+            WindowGroup.MiddleCenterHorizontal => uiLayout[8],
+            _ => throw new System.NotImplementedException(),
+        };
+        GameObject newLayout = Instantiate(layout.gameObject, layout.parent.parent);
         if (name != string.Empty)
             newLayout.name = name;
-        switch (setting.Direction)
-        {
-            case LayoutDirection.Horizontal:
-                HorizontalLayoutGroup hGroup = newLayout.AddComponent<HorizontalLayoutGroup>();
-                hGroup.childAlignment = (TextAnchor)setting.Alignment;
-                hGroup.padding = new RectOffset((int)setting.Padding.X, (int)setting.Padding.Y, (int)setting.Padding.Z, (int)setting.Padding.W);
-                hGroup.spacing = setting.Spacing;
-                hGroup.childForceExpandHeight = false;
-                hGroup.childForceExpandWidth = false;
-                hGroup.childControlWidth = true;
-                hGroup.childControlHeight = true;
-                break;
-            case LayoutDirection.Vertical:
-                VerticalLayoutGroup vGroup = newLayout.AddComponent<VerticalLayoutGroup>();
-                vGroup.childAlignment = (TextAnchor)setting.Alignment;
-                vGroup.padding = new RectOffset((int)setting.Padding.X, (int)setting.Padding.Y, (int)setting.Padding.Z, (int)setting.Padding.W);
-                vGroup.spacing = setting.Spacing;
-                vGroup.childForceExpandHeight = false;
-                vGroup.childForceExpandWidth = false;
-                vGroup.childControlWidth = true;
-                vGroup.childControlHeight = true;
-                break;
-        }
         return newLayout.transform;
     }
-    WindowUI InstanceWindow(LayoutPreset preset, string name)
+    WindowUI InstanceWindow(WindowGroup group, string name)
     {
-        Transform layout = InstantiateLayout(preset);
+        Transform layout = InstantiateLayout(group);
         WindowUI window = Instantiate(windowInstance, layout.transform);
         layout.gameObject.name = name;
         window.gameObject.name = name;
+        // This is to save up performance
+        // window.gameObject.SetActive(true);
         return window;
     }
     WindowUI InstanceWindow(Transform layout, string name)
     {
         WindowUI window = Instantiate(windowInstance, layout.transform);
         window.gameObject.name = name;
+        // This is to save up performance
+        // window.gameObject.SetActive(true);
         return window;
     }
     public void RegisterUISystem(GeneralUISystem uiSystem)
