@@ -1,5 +1,9 @@
 # APFramework UI System
 
+> [!IMPORTANT]  
+> The project is currently considered in the state of pre-release, which means breaking change will happen all the time as I figure out how to generalize the usage of it better.
+> If you're interested in using it in production, make sure to fork it out and simply modify it to suite your project better.
+
 > A Text Mesh Pro based text only UI system for Unity
 
 APFramework is a framework created by [DK Liao](https://twitter.com/RandomDevDK) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
@@ -16,10 +20,6 @@ The UI system is heavily coupled with Text Mesh Pro at the moment but should be 
 ![showcase](https://blog.chosenconcept.dev/images/posts/autopanic-devlog/0007/3.gif)
 
 The creation of this UI system is heavily inspired by [PhiOS](https://github.com/pblca/PhiOS) (mirror repo) made by [phi6](https://twitter.com/phi6).
-
-> [!IMPORTANT]  
-> The project is currently considered in the state of pre-release, which means breaking change will happen all the time as I figure out how to generalize the usage of it better.
-> If you're interested in using it in production, make sure to fork it out and simply modify it to suite your project better.
 
 # How to Use
 
