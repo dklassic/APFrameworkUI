@@ -649,7 +649,6 @@ public class WindowUI : MonoBehaviour
         selectables.Add(button);
         return button;
     }
-
     internal void SetActive(bool v, bool syncGameObject = true)
     {
         if (hasOutline && !outlineReady || !maskReady)
@@ -676,11 +675,13 @@ public class WindowUI : MonoBehaviour
         {
             outlineBuilder.SetActive(false);
             float fadeOutDelay = windowMask.FadeOut();
+            ElementClearState();
             delayedWindowActionCoroutine = StartCoroutine(CoroutineUtility.WaitThenExecuteRealtime(fadeOutDelay, DeactivateGameObject));
             background.SetActive(false);
             drawText.SetText(string.Empty);
         }
     }
+
     internal void SetActiveNoVFX(bool v, bool syncGameObject = true)
     {
         if (hasOutline && !outlineReady || !maskReady)
@@ -704,6 +705,7 @@ public class WindowUI : MonoBehaviour
         }
         else
         {
+            ElementClearState();
             outlineBuilder.SetActive(false);
             background.SetActive(false);
             drawText.SetText(string.Empty);
@@ -759,6 +761,14 @@ public class WindowUI : MonoBehaviour
         available = a;
         outlineBuilder.SetFocusAndAvailable(f, a);
         UpdateContent();
+    }
+    void ElementClearState()
+    {
+        foreach (WindowElement element in elements)
+        {
+            if (element is ButtonUIDoubleConfirm)
+                (element as ButtonUIDoubleConfirm).SetConfirm(false);
+        }
     }
 
     internal void CancelOthers(ButtonUIDoubleConfirm confirmedUI)
