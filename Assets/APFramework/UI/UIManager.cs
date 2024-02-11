@@ -112,6 +112,7 @@ public class UIManager : MonoBehaviour
         WindowUI window = InstanceWindow(preset, name);
         window.Initialize(name, setup, masterUI);
         windows.Add(window);
+        window.gameObject.SetActive(false);
         return window;
     }
     public WindowUI NewWindow(string name, Transform group, WindowSetup setup, GeneralUISystem masterUI)
@@ -119,6 +120,7 @@ public class UIManager : MonoBehaviour
         WindowUI window = InstanceWindow(group, name);
         window.Initialize(name, setup, masterUI);
         windows.Add(window);
+        window.gameObject.SetActive(false);
         return window;
     }
     public void InstantiateCanvas(int sortingOrder = -1)
