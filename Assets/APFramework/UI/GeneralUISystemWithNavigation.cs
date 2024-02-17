@@ -230,10 +230,6 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         if (Mouse.current != null && Mouse.current.scroll.ReadValue().sqrMagnitude > 0)
             mouseScroll = new Vector2(0, Mathf.Sign(Mouse.current.scroll.ReadValue().y));
     }
-    protected void ResizeAllWindows(int extraWidth = 0)
-    {
-        foreach (WindowUI window in instanceWindows) { window.AutoResize(extraWidth); }
-    }
     protected void UpdateWindowLocation()
     {
         // SetOpacity(1, true);

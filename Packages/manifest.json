@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "com.unity.cinemachine": "2.8.9",
-    "com.unity.ide.rider": "3.0.25",
+    "com.unity.ide.rider": "3.0.27",
     "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.inputsystem": "1.7.0",
     "com.unity.performance.profile-analyzer": "1.2.2",
-    "com.unity.postprocessing": "3.2.2",
-    "com.unity.shadergraph": "12.1.13",
+    "com.unity.postprocessing": "3.4.0",
+    "com.unity.shadergraph": "12.1.14",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.6",

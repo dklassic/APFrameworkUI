@@ -257,4 +257,20 @@ public class GeneralUISystem : MonoBehaviour
             UIManager.Instance.CloseWindow(window);
         }
     }
+    protected void AutoResizeAllWindows(int extraWidth = 0)
+    {
+        foreach (WindowUI window in instanceWindows) { window.AutoResize(extraWidth); }
+    }
+    protected void SyncAutoResizeAllWindows(int extraWidth = 0)
+    {
+        int maxWidth = 0;
+        foreach (WindowUI window in instanceWindows)
+        {
+            int autoResizeWidth = window.GetAutoResizeWidth(extraWidth);
+            if (autoResizeWidth > maxWidth)
+                maxWidth = autoResizeWidth;
+        }
+        foreach (WindowUI window in instanceWindows) { window.Resize(maxWidth); }
+    }
+
 }
