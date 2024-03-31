@@ -17,6 +17,7 @@ public class ButtonUIDoubleConfirm : ButtonUI
             selectAction?.Invoke();
             parentWindow.CancelOthers(this);
             parentWindow.InvokeUpdate();
+            parentWindow.UpdateElementPosition(this);
             return;
         }
         awaitConfirm = false;

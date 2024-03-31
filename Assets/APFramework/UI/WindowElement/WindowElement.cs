@@ -38,15 +38,18 @@ public class WindowElement
             characterIndex[1] = value;
         }
     }
-    (Vector2, Vector2) cachedPosition = (Vector2.zero, Vector2.zero);
-    public (Vector2, Vector2) CachedPosition => cachedPosition;
+    [SerializeField] Vector2 cachedPositionStart = Vector2.zero;
+    [SerializeField] Vector2 cachedPositionEnd = Vector2.zero;
+    public (Vector2, Vector2) CachedPosition => (cachedPositionStart, cachedPositionEnd);
     public void ClearCachedPosition()
     {
-        cachedPosition = (Vector2.zero, Vector2.zero);
+        cachedPositionStart = Vector2.zero;
+        cachedPositionEnd = Vector2.zero;
     }
-    public void SetCachedPosition((Vector2, Vector2) position)
+    public void SetCachedPosition((Vector2 startPosition, Vector2 endPosition) position)
     {
-        cachedPosition = position;
+        cachedPositionStart = position.startPosition;
+        cachedPositionEnd = position.endPosition;
     }
     protected WindowUI parentWindow;
     public WindowUI ParentWindow => parentWindow;
