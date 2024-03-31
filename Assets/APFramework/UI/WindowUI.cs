@@ -157,8 +157,9 @@ public class WindowUI : MonoBehaviour
             return maxElementLength;
         }
     }
-    (Vector2, Vector2) cachedPosition = (Vector2.zero, Vector2.zero);
-    public (Vector2, Vector2) CachedPosition => cachedPosition;
+    [SerializeField] Vector2 cachedPositionStart = Vector2.zero;
+    [SerializeField] Vector2 cachedPositionEnd = Vector2.zero;
+    public (Vector2, Vector2) CachedPosition => (cachedPositionStart, cachedPositionEnd);
     List<ButtonUI> selectables = new List<ButtonUI>();
     public List<ButtonUI> Selectables { get => selectables; }
     bool active = false;
@@ -199,54 +200,98 @@ public class WindowUI : MonoBehaviour
         outlineBuilder.SetOpacity(alpha);
     }
 
-    public void UpdateElementPosition()
+    public bool UpdateElementPosition(WindowElement element)
+    {
+        if (element.FirstCharacterIndex >= drawText.textInfo.characterInfo.Length)
+        {
+            return false;
+        }
+        (Vector2, Vector2) result = (Vector2.zero, Vector2.zero);
+        for (int i = element.FirstCharacterIndex; i <= element.LastCharacterIndex; i++)
+        {
+            Vector2 rangeBottomLeft = drawText.textInfo.characterInfo[i].bottomLeft;
+            Vector2 rangeTopRight = drawText.textInfo.characterInfo[i].topRight;
+            if (result.Item1.x > rangeBottomLeft.x || result.Item1.x == 0)
+                result.Item1.x = rangeBottomLeft.x;
+            if (result.Item1.y > rangeBottomLeft.y || result.Item1.y == 0)
+                result.Item1.y = rangeBottomLeft.y;
+            if (result.Item2.x < rangeTopRight.x || result.Item2.x == 0)
+                result.Item2.x = rangeTopRight.x;
+            if (result.Item2.y < rangeTopRight.y || result.Item2.y == 0)
+                result.Item2.y = rangeTopRight.y;
+        }
+        result.Item1 = UIManager.Instance.UIBoundRetriever(transform, result.Item1);
+        result.Item2 = UIManager.Instance.UIBoundRetriever(transform, result.Item2);
+        element.SetCachedPosition(result);
+        if (element is SliderUI uI)
+        {
+            (Vector2, Vector2) arrowPosition = (Vector2.zero, Vector2.zero);
+            Vector2 leftArrowPosition = Vector2.zero;
+            leftArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.FirstSliderArrowIndex].bottomLeft);
+            leftArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.FirstSliderArrowIndex].topRight);
+            leftArrowPosition /= 2f;
+            arrowPosition.Item1 = leftArrowPosition;
+            Vector2 rightArrowPosition = Vector2.zero;
+            rightArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.LastSliderArrowIndex].bottomLeft);
+            rightArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.LastSliderArrowIndex].topRight);
+            rightArrowPosition /= 2f;
+            arrowPosition.Item2 = rightArrowPosition;
+            uI.SetCachedArrowPosition(arrowPosition);
+        }
+        return true;
+    }
+    public void UpdateWindowPosition()
+    {
+        if (CachedPosition != (Vector2.zero, Vector2.zero))
+            return;
+        (Vector2, Vector2) result = (Vector2.zero, Vector2.zero);
+        if (hasOutline)
+        {
+            for (int i = 0; i <= outlineBuilder.Outline.textInfo.characterCount - 1; i++)
+            {
+                Vector2 rangeBottomLeft = outlineBuilder.Outline.textInfo.characterInfo[i].bottomLeft;
+                Vector2 rangeTopRight = outlineBuilder.Outline.textInfo.characterInfo[i].topRight;
+                if (result.Item1.x > rangeBottomLeft.x || result.Item1.x == 0)
+                    result.Item1.x = rangeBottomLeft.x;
+                if (result.Item1.y > rangeBottomLeft.y || result.Item1.y == 0)
+                    result.Item1.y = rangeBottomLeft.y;
+                if (result.Item2.x < rangeTopRight.x || result.Item2.x == 0)
+                    result.Item2.x = rangeTopRight.x;
+                if (result.Item2.y < rangeTopRight.y || result.Item2.y == 0)
+                    result.Item2.y = rangeTopRight.y;
+            }
+        }
+        for (int i = 0; i <= drawText.textInfo.characterCount - 1; i++)
+        {
+            Vector2 rangeBottomLeft = drawText.textInfo.characterInfo[i].bottomLeft;
+            Vector2 rangeTopRight = drawText.textInfo.characterInfo[i].topRight;
+            if (result.Item1.x > rangeBottomLeft.x || result.Item1.x == 0)
+                result.Item1.x = rangeBottomLeft.x;
+            if (result.Item1.y > rangeBottomLeft.y || result.Item1.y == 0)
+                result.Item1.y = rangeBottomLeft.y;
+            if (result.Item2.x < rangeTopRight.x || result.Item2.x == 0)
+                result.Item2.x = rangeTopRight.x;
+            if (result.Item2.y < rangeTopRight.y || result.Item2.y == 0)
+                result.Item2.y = rangeTopRight.y;
+        }
+        result.Item1 = UIManager.Instance.UIBoundRetriever(transform, result.Item1);
+        result.Item2 = UIManager.Instance.UIBoundRetriever(transform, result.Item2);
+
+        cachedPositionStart = result.Item1;
+        cachedPositionEnd = result.Item2;
+    }
+    public void UpdateElementsAndWindowPosition()
     {
         if (!active)
             return;
         bool quickOut = false;
         foreach (WindowElement element in elements)
         {
-            if (element.FirstCharacterIndex >= drawText.textInfo.characterInfo.Length)
-            {
-                quickOut = true;
-                break;
-            }
-            (Vector2, Vector2) result = (Vector2.zero, Vector2.zero);
-            result.Item1 = UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[element.FirstCharacterIndex].bottomLeft);
-            result.Item2 = UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[element.LastCharacterIndex].topRight);
-            element.SetCachedPosition(result);
-            if (element is SliderUI uI)
-            {
-                (Vector2, Vector2) arrowPosition = (Vector2.zero, Vector2.zero);
-                Vector2 leftArrowPosition = Vector2.zero;
-                leftArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.FirstSliderArrowIndex].bottomLeft);
-                leftArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.FirstSliderArrowIndex].topRight);
-                leftArrowPosition /= 2f;
-                arrowPosition.Item1 = leftArrowPosition;
-                Vector2 rightArrowPosition = Vector2.zero;
-                rightArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.LastSliderArrowIndex].bottomLeft);
-                rightArrowPosition += UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[uI.LastSliderArrowIndex].topRight);
-                rightArrowPosition /= 2f;
-                arrowPosition.Item2 = rightArrowPosition;
-                uI.SetCachedArrowPosition(arrowPosition);
-            }
+            quickOut = quickOut | !UpdateElementPosition(element);
         }
         if (quickOut)
             return;
-        if (cachedPosition != (Vector2.zero, Vector2.zero))
-            return;
-        (Vector2, Vector2) windowResult = (Vector2.zero, Vector2.zero);
-        if (hasOutline)
-        {
-            windowResult.Item1 = UIManager.Instance.UIBoundRetriever(transform, outlineBuilder.Outline.textInfo.characterInfo[0].topLeft);
-            windowResult.Item2 = UIManager.Instance.UIBoundRetriever(transform, outlineBuilder.Outline.textInfo.characterInfo[outlineBuilder.Outline.textInfo.characterCount - 1].bottomRight);
-        }
-        else
-        {
-            windowResult.Item1 = UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[0].topLeft);
-            windowResult.Item2 = UIManager.Instance.UIBoundRetriever(transform, drawText.textInfo.characterInfo[drawText.textInfo.characterCount - 1].bottomRight);
-        }
-        cachedPosition = windowResult;
+        UpdateWindowPosition();
     }
     public void ClearCachedPosition()
     {
@@ -256,7 +301,8 @@ public class WindowUI : MonoBehaviour
             if (element is SliderUI uI)
                 uI.ClearCachedArrowPosition();
         }
-        cachedPosition = (Vector2.zero, Vector2.zero);
+        cachedPositionStart = Vector2.zero;
+        cachedPositionEnd = Vector2.zero;
     }
     void UpdateContent()
     {

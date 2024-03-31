@@ -156,22 +156,18 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                     if (result.Item1 == Vector2.zero && result.Item2 == Vector2.zero)
                         continue;
                     Vector2 TopLeftDelta = Mouse.current.position.ReadValue() - result.Item1;
-                    if (TopLeftDelta.x <= 0 || TopLeftDelta.y >= 0)
+                    if (TopLeftDelta.x <= 0 || TopLeftDelta.y <= 0)
                         continue;
                     Vector2 BottomRightDelta = Mouse.current.position.ReadValue() - result.Item2;
-                    if (BottomRightDelta.x >= 0 || BottomRightDelta.y <= 0)
+                    if (BottomRightDelta.x >= 0 || BottomRightDelta.y >= 0)
                         continue;
                     if (i != currentSelection[0])
                     {
                         selectionUpdated = true;
                         CurrentSelectable?.SetFocus(false);
-                        Vector2 previousSelectableLocation = Vector2.negativeInfinity;
-                        if (ExistsSelectable(currentSelection[0], currentSelection[1]))
-                            previousSelectableLocation = Selectable(currentSelection[0], currentSelection[1]).CachedPosition.Item1;
                         currentSelection[0] = i;
                         int count = instanceWindows[i].Selectables.Count;
-                        if (previousSelectableLocation != Vector2.negativeInfinity)
-                            RefocusAtNearestElement(previousSelectableLocation, currentSelection[0]);
+                        RefocusAtNearestElement(Mouse.current.position.ReadValue(), currentSelection[0]);
                         currentSelection[1] = Mathf.Clamp(currentSelection[1], 0, count - 1);
                         CurrentSelectable?.SetFocus(true);
                     }
@@ -240,7 +236,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         windowElementLocationCached = true;
         foreach (WindowUI window in instanceWindows)
         {
-            window.UpdateElementPosition();
+            window.UpdateElementsAndWindowPosition();
         }
     }
     public override void ToggleDisplay()
