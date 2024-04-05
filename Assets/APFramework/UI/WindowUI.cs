@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -616,6 +617,15 @@ public class WindowUI : MonoBehaviour
     {
         elements.Remove(element);
         elements.Insert(targetIndex, element);
+        if (element is ButtonUI uI)
+        {
+            UpdateSelectables();
+        }
+    }
+    public void UpdateSelectables()
+    {
+        selectables.Clear();
+        elements.Where(x => x is ButtonUI).ToList().ForEach(x => selectables.Add(x as ButtonUI));
     }
     public void RemoveElement(WindowElement element)
     {
