@@ -443,10 +443,15 @@ public class WindowUI : MonoBehaviour
     {
         this.setup = setup;
     }
-    void SetLayout(float w, float h)
+    void SetLayout(int widthCount, int heightCount)
     {
-        layout.minWidth = fontSize * .62f * w * (hasOutline ? 1.1f : 1f);
-        layout.minHeight = fontSize * .67f * h * 1.6f;
+        // Here's a series of magic numbers that are used to calculate the minimum width and height of the window for this specific font setup.
+
+        // layout.minWidth = fontSize * .62f * widthCount * (hasOutline ? 1.1f : 1f);
+        layout.minWidth = fontSize * 0.635776868896869f * widthCount;
+
+        // layout.minHeight = fontSize * .67f * heightCount * 1.6f;
+        layout.minHeight = fontSize * 1.040425778f * heightCount;
     }
 
     public void SetFont(float fontSize)

@@ -7,9 +7,9 @@ public class SliderUIChoice : SliderUI
         get
         {
             if (choiceList.Count == 0)
-                return TextUtility.ActualLength(FormattedContent) + 2;
+                return TextUtility.ActualLength(FormattedMainContent) + 2;
             else
-                return TextUtility.ActualLength(FormattedContent) + MaxContentLength + 2;
+                return TextUtility.ActualLength(FormattedMainContent) + MaxContentLength + 2;
         }
     }
     List<string> choiceList = new List<string>();
@@ -76,4 +76,5 @@ public class SliderUIChoice : SliderUI
             return StyleUtility.StringColored("‹" + OptionFillString(optionString) + "›", StyleUtility.Selected);
     }
     public override string FormattedContent => content + TextUtility.ColumnWithSpace + CurrentChoice;
+    public override string FormattedMainContent => content + TextUtility.ColumnWithSpace;
 }
