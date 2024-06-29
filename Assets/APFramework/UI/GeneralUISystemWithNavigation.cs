@@ -8,7 +8,8 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
     {
         X,
         Y,
-        TwoWay
+        TwoWay,
+        ClosestDirectionMatch
     }
     public enum SlideDirection
     {
@@ -388,10 +389,10 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
 
         if (!inputMode)
         {
-            CurrentSelectable?.SetFocus(false);
+                   CurrentSelectable?.SetFocus(false);
             int xBefore = currentSelection[0];
             int yBefore = currentSelection[1];
-            if (navDirection != NavDirection.TwoWay)
+            if (navDirection == NavDirection.X || navDirection == NavDirection.Y)
             {
                 int offset = navDirection switch
                 {
@@ -458,7 +459,32 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                     }
                 }
             }
-            else
+            else if (navDirection == NavDirection.ClosestDirectionMatch)
+            {
+                bool axisState = Mathf.Abs(move.x) > Mathf.Abs(move.y);
+                Vector2 inputDirection = axisState ? Vector2.right * Mathf.Sign(move.x) : Vector2.up * Mathf.Sign(move.y);
+                float minDistance = Mathf.Infinity;
+                Vector2 currentSelectableLocation = instanceWindows[xBefore].Selectables[yBefore].CachedPosition.Item1;
+                foreach (WindowUI window in instanceWindows)
+                {
+                    if (window.Selectables.Count == 0)
+                        continue;
+                    for (int i = 0; i < window.Selectables.Count; i++)
+                    {
+                        Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
+                        Vector2 direction = selectableLocation - currentSelectableLocation;
+                        float distance = direction.sqrMagnitude;
+                        Vector2 directionNormalized = direction.normalized;
+                        if (distance < minDistance && Vector2.Dot(directionNormalized, inputDirection) > .5f)
+                        {
+                            minDistance = distance;
+                            currentSelection[0] = instanceWindows.IndexOf(window);
+                            currentSelection[1] = i;
+                        }
+                    }
+                }
+            }
+            else if (navDirection == NavDirection.TwoWay)
             {
                 if (Mathf.Abs(move.x) > Mathf.Abs(move.y))
                 {
@@ -556,6 +582,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                 selectionUpdated = true;
                 ClearWindowLocation();
             }
+
         }
         if (mouseScrollOverride)
         {
