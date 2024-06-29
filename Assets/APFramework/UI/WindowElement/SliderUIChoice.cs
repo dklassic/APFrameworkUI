@@ -76,5 +76,5 @@ public class SliderUIChoice : SliderUI
             return StyleUtility.StringColored("‹" + OptionFillString(optionString) + "›", StyleUtility.Selected);
     }
     public override string FormattedContent => content + TextUtility.ColumnWithSpace + CurrentChoice;
-    public override string FormattedMainContent => content + TextUtility.ColumnWithSpace;
+    public string FormattedMainContent => content + TextUtility.ColumnWithSpace;
 }
