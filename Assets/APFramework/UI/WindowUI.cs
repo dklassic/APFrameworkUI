@@ -468,36 +468,12 @@ public class WindowUI : MonoBehaviour
     public void AutoResize(int extraWidth = 0)
     {
         this.extraWidth = extraWidth;
-        int count = elements.Count;
-        int minimumHeight = 0;
-        int minimumWidth = 0;
-        if (hasTitlebar)
-            minimumWidth = TitlePreserveLength + 2;
-        if (hasEmbeddedTitle)
-            minimumWidth = TitlePreserveLength;
-        if (windowSubscript != string.Empty)
-            minimumWidth = Mathf.Max(minimumWidth, TextUtility.ActualLength(WindowSubscriptLoc) + 1);
-        for (int i = 0; i < count; i++)
-        {
-            if (!elements[i].Flexible || count == 1)
-            {
-                int elementLength = elements[i].GetLength;
-                if (elementLength > minimumWidth)
-                    minimumWidth = elementLength;
-            }
-            int splits = elements[i].ToDisplay.Split("\n").Length;
-            minimumHeight += splits;
-        }
-        endFillCount = 2;
-        if (hasTitlebar)
-            minimumHeight += 1;
-        else if (hasEmbeddedTitle)
-            endFillCount = 1;
-        int targetWidth = minimumWidth + 4 + extraWidth;
-        int targetHeight = minimumHeight + 2;
+        int targetHeight = GetAutoResizeHeight();
+        int targetWidth = GetAutoResizeWidth(extraWidth);
+        endFillCount = GetEndFillCount();
         if (hasOutline)
         {
-            int subscriptLength = TextUtility.ActualLength(WindowSubscriptLoc) == 0 ? 0 : TextUtility.ActualLength(WindowSubscriptLoc) + (2 - TextUtility.SubscriptCompensation(WindowSubscriptLoc));
+            int subscriptLength = TextUtility.UnbiasedLength(WindowSubscriptLoc) == 0 ? 0 : TextUtility.UnbiasedLength(WindowSubscriptLoc) + (2 - TextUtility.SubscriptCompensation(WindowSubscriptLoc));
             SetupOutline(targetWidth + 1, targetHeight, setup.Style, TitlePreserveLength + 2, subscriptLength);
         }
         setup.Width = targetWidth;
@@ -506,50 +482,50 @@ public class WindowUI : MonoBehaviour
         SetLayout(targetWidth, targetHeight);
         noCut = true;
     }
-
-    public void AutoResizeDebug()
+    public int GetAutoResizeWidth(int extraWidth)
     {
-        Debug.Log($"Start debugging {name}");
         int count = elements.Count;
-        int minimumHeight = 0;
         int minimumWidth = 0;
         if (hasTitlebar)
-        {
             minimumWidth = TitlePreserveLength + 2;
-            Debug.Log($"Titlebar preserve +2 width: {minimumWidth}");
-        }
         if (hasEmbeddedTitle)
-        {
             minimumWidth = TitlePreserveLength;
-            Debug.Log($"Embedded title width preserve: {minimumWidth}");
-        }
         if (windowSubscript != string.Empty)
-        {
-            minimumWidth = Mathf.Max(minimumWidth, TextUtility.ActualLength(WindowSubscriptLoc) + 1);
-            Debug.Log($"Subscript width preserve: {minimumWidth}");
-        }
+            minimumWidth = Mathf.Max(minimumWidth, TextUtility.UnbiasedLength(WindowSubscriptLoc) + 1);
         for (int i = 0; i < count; i++)
         {
-            Debug.Log($"Assessing {elements[i].RawContent}");
             if (!elements[i].Flexible || count == 1)
             {
                 int elementLength = elements[i].GetLength;
                 if (elementLength > minimumWidth)
                 {
                     minimumWidth = elementLength;
-                    Debug.Log($"Longest element preserve: {minimumWidth}");
                 }
             }
+        }
+        int targetWidth = minimumWidth + 4 + extraWidth;
+        return targetWidth;
+    }
+    public int GetAutoResizeHeight()
+    {
+        int count = elements.Count;
+        int minimumHeight = 0;
+        for (int i = 0; i < count; i++)
+        {
             int splits = elements[i].ToDisplay.Split("\n").Length;
             minimumHeight += splits;
-            Debug.Log($"Extra height {splits} preserve due to splitted element: {minimumHeight}");
         }
         if (hasTitlebar)
-        {
             minimumHeight += 1;
-            Debug.Log($"Extra height 1 preserve due to titlebar: {minimumHeight}");
-        }
-        Debug.Log($"End debugging {name}");
+        int targetHeight = minimumHeight + 2;
+        return targetHeight;
+    }
+    public int GetEndFillCount()
+    {
+        if (hasEmbeddedTitle)
+            return 1;
+        else
+            return 2;
     }
     /// <summary>
     /// To resize UI with specified width. Height will be automatically adjusted.
