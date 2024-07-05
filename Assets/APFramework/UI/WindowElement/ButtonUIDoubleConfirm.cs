@@ -2,6 +2,7 @@ public class ButtonUIDoubleConfirm : ButtonUI
 {
     public override string FormattedContent => awaitConfirm ? "> " + base.FormattedContent : base.FormattedContent;
     protected bool awaitConfirm = false;
+    public bool AwaitConfirm => awaitConfirm;
     public override int GetLength => base.GetLength + 2;
     System.Action selectAction = null;
     public void SetSelectAction(System.Action selectAction) => this.selectAction = selectAction;
