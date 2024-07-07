@@ -132,9 +132,11 @@ public class WindowOutline : MonoBehaviour
             }
         }
         if (subscriptOverride > 0)
-            outlineText = windowStringBuilder.ToString().Substring(0, windowStringBuilder.Length - subscriptOverride - 4) + TextUtility.PlaceHolder(subscriptOverride + 4);
-        else
-            outlineText = windowStringBuilder.ToString();
+        {
+            windowStringBuilder.Remove(windowStringBuilder.Length - subscriptOverride - 4, subscriptOverride + 4);
+            windowStringBuilder.Append(TextUtility.PlaceHolder(subscriptOverride + 4));
+        }
+        outlineText = windowStringBuilder.ToString();
         if (active)
             Outline.SetText(OutlineText);
 
