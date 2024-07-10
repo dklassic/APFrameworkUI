@@ -386,10 +386,18 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
         }
         if (move.magnitude < .5f)
             return;
-
+        UpdateSelectionProcess();
+        if (mouseScrollOverride)
+        {
+            move = Vector2.zero;
+            mouseScroll = Vector2.zero;
+        }
+    }
+    protected virtual void UpdateSelectionProcess()
+    {
         if (!inputMode)
         {
-                   CurrentSelectable?.SetFocus(false);
+            CurrentSelectable?.SetFocus(false);
             int xBefore = currentSelection[0];
             int yBefore = currentSelection[1];
             if (navDirection == NavDirection.X || navDirection == NavDirection.Y)
@@ -464,14 +472,16 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                 bool axisState = Mathf.Abs(move.x) > Mathf.Abs(move.y);
                 Vector2 inputDirection = axisState ? Vector2.right * Mathf.Sign(move.x) : Vector2.up * Mathf.Sign(move.y);
                 float minDistance = Mathf.Infinity;
-                Vector2 currentSelectableLocation = instanceWindows[xBefore].Selectables[yBefore].CachedPosition.Item1;
+                (Vector2 item1, Vector2 item2) = instanceWindows[xBefore].Selectables[yBefore].CachedPosition;
+                Vector2 currentSelectableLocation = (item1 + item2) / 2f;
                 foreach (WindowUI window in instanceWindows)
                 {
                     if (window.Selectables.Count == 0)
                         continue;
                     for (int i = 0; i < window.Selectables.Count; i++)
                     {
-                        Vector2 selectableLocation = window.Selectables[i].CachedPosition.Item1;
+                        (Vector2 position1, Vector2 position2) = window.Selectables[i].CachedPosition;
+                        Vector2 selectableLocation = (position1 + position2) / 2f;
                         Vector2 direction = selectableLocation - currentSelectableLocation;
                         float distance = direction.sqrMagnitude;
                         Vector2 directionNormalized = direction.normalized;
@@ -582,14 +592,9 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                 selectionUpdated = true;
                 ClearWindowLocation();
             }
-
-        }
-        if (mouseScrollOverride)
-        {
-            move = Vector2.zero;
-            mouseScroll = Vector2.zero;
         }
     }
+
     void ResetDirection()
     {
         if (!singlePressOnly && move.sqrMagnitude > 0)
