@@ -473,7 +473,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                 Vector2 inputDirection = axisState ? Vector2.right * Mathf.Sign(move.x) : Vector2.up * Mathf.Sign(move.y);
                 float minDistance = Mathf.Infinity;
                 (Vector2 item1, Vector2 item2) = instanceWindows[xBefore].Selectables[yBefore].CachedPosition;
-                Vector2 currentSelectableLocation = (item1 + item2) / 2f;
+                Vector2 currentSelectableLocation = item1;
                 foreach (WindowUI window in instanceWindows)
                 {
                     if (window.Selectables.Count == 0)
@@ -481,7 +481,7 @@ public class GeneralUISystemWithNavigation : GeneralUISystem
                     for (int i = 0; i < window.Selectables.Count; i++)
                     {
                         (Vector2 position1, Vector2 position2) = window.Selectables[i].CachedPosition;
-                        Vector2 selectableLocation = (position1 + position2) / 2f;
+                        Vector2 selectableLocation = position1;
                         Vector2 direction = selectableLocation - currentSelectableLocation;
                         float distance = direction.sqrMagnitude;
                         Vector2 directionNormalized = direction.normalized;
