@@ -22,7 +22,7 @@ namespace ChosenConcept.APFramework.Interface
         public int spacing => _spacing;
         public static LayoutSetup defaultLayout => new()
         {
-            _windowLayer = WindowLayer.Gameplay,
+            _windowLayer = WindowLayer.LayerOne,
             _windowAlignment = WindowAlignment.MiddleCenter,
             _windowDirection = WindowDirection.Horizontal,
             _offsetSource = OffsetSource.Fullscreen,

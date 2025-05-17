@@ -347,7 +347,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearAllWindowLocation()
         {
-            float inputDelayDuration = 1.5f;
+            float inputDelayDuration = Screen.fullScreenMode is FullScreenMode.ExclusiveFullScreen ? 1.5f : 0.5f;
             foreach (CompositeMenuMono menu in _compositeMenuMonos)
             {
                 menu.ClearWindowLocation(inputDelayDuration);
@@ -385,7 +385,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int nearestInteractableIndex = -1;
             foreach (SimpleMenu menu in _simpleMenus)
             {
-                if (menu == source || menu.instanceWindow.interactables.Count == 0)
+                if (menu == source || !menu.isDisplayActive || !menu.isNavigationActive ||
+                    menu.instanceWindow.interactables.Count == 0)
                     continue;
                 for (int i = 0; i < menu.instanceWindow.interactables.Count; i++)
                 {

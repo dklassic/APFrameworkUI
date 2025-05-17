@@ -3,8 +3,8 @@ namespace ChosenConcept.APFramework.Interface
 {
     public enum WindowLayer
     {
-        Gameplay = 0,
-        System = 1,
-        Develop = 2,
+        LayerOne = 0,
+        LayerTwo = 1,
+        LayerThree = 2,
     }
 }
