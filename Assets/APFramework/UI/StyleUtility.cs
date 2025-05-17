@@ -1,4 +1,6 @@
+using Cysharp.Text;
 using UnityEngine;
+
 public enum ColorCode
 {
     Red,
@@ -25,12 +27,32 @@ public enum ColorCode
     LightMediumOrchid,
     GoldenYellow,
 }
+
+public enum Rarity
+{
+    NA,
+    Mk1,
+    Mk2,
+    Mk3,
+    Mk4
+}
+
 public class StyleUtility
 {
     public static ColorCode Selected = ColorCode.Blue;
     public static ColorCode DisableSelected = ColorCode.BlueSapphire;
     public static ColorCode Disabled = ColorCode.Grey;
     public static ColorCode Negative = ColorCode.Red;
+
+    public static ColorCode RareColor(int rarity) => rarity switch
+    {
+        1 => ColorCode.White,
+        2 => ColorCode.DodgerBlue,
+        3 => ColorCode.PaleMagenta,
+        4 => ColorCode.Tangerine,
+        _ => ColorCode.Blue
+    };
+
     public static Color ColorSetting(ColorCode color) => color switch
     {
         ColorCode.Red => new Color32(247, 49, 86, 255),
@@ -60,25 +82,88 @@ public class StyleUtility
 
     public static string ColorString(ColorCode color)
     {
-        string colorString = "#";
         Color32 convertedColor = ColorSetting(color);
-        colorString += convertedColor.r.ToString("X2");
-        colorString += convertedColor.g.ToString("X2");
-        colorString += convertedColor.b.ToString("X2");
-        return colorString;
+        return ZString.Format("#{0}{1}{2}", convertedColor.r.ToString("X2"),
+            convertedColor.g.ToString("X2"),
+            convertedColor.b.ToString("X2"));
     }
+
     public static string StringColored(string text, ColorCode color)
     {
-        return $"<color={ColorString(color)}>" + text + "</color>";
+        return ZString.Format("<color={0}>{1}</color>", ColorString(color), text);
     }
+
+    public static string StringColoredRange(string text, ColorCode color, int min, int max)
+    {
+        int actualMin = Mathf.Min(min, max);
+        int actualMax = Mathf.Max(min, max);
+        using (Utf16ValueStringBuilder builder = ZString.CreateStringBuilder())
+        {
+            if (actualMin > 0)
+                builder.Append(text.Substring(0, actualMin));
+            builder.Append(StringColored(text.Substring(actualMin, actualMax - actualMin), color));
+            if (text.Length - actualMax > 0)
+                builder.Append(text.Substring(actualMax, text.Length - actualMax));
+            return builder.ToString();
+        }
+    }
+
+    public static string Sized(string tag, int size)
+    {
+        return ZString.Format("<size={0}>{1}</size>", size, tag);
+    }
+
     public static string StringTransparent(string text, int alpha)
     {
-        string alphaString = alpha.ToString("X2");
-        return $"<alpha=#{alphaString}>" + text;
-        // return $"<alpha=#{alphaString}>" + text + "</alpha>";
+        return ZString.Format("<alpha=#{0}>", alpha.ToString("X2"));
     }
+
     public static string StringBold(string text)
     {
-        return "<b>" + text + "</b>";
+        return ZString.Format("<b>{0}</b>", text);
+    }
+
+    internal static Color EnvironmentProjectileColor => ColorSetting(ColorCode.Purple);
+
+    public static Color HighContrastColor(ObjectType type) => type switch
+    {
+        ObjectType.Enemy => ColorSetting(ColorCode.Red),
+        ObjectType.Player => ColorSetting(ColorCode.Blue),
+        ObjectType.Environment => ColorSetting(ColorCode.Purple),
+        ObjectType.Projectile => ColorSetting(ColorCode.RoyalOrange),
+        _ => ColorSetting(ColorCode.White)
+    };
+
+    public static ColorCode SpeakerStringToNameColor(string speaker) => speaker switch
+    {
+        "ui_username_ErrorDuplicateID" => ColorCode.Red,
+        _ => ColorCode.White,
+    };
+
+    public static Color SpeakerStringToBackgroundColor(string speaker) => speaker switch
+    {
+        "ui_username_ErrorDuplicateID" => new Color32(117, 255, 251, 5),
+        "ui_username_Naumi" => new Color32(117, 255, 251, 5),
+        "ui_username_Al" => Color.clear,
+        _ => Color.clear,
+    };
+
+    public static Color DarkenColor(Color color, float percentage)
+    {
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        return Color.HSVToRGB(h, s, v * Mathf.Clamp01(percentage));
+    }
+
+    public static Color ClearColor(Color color) => new Color(color.r, color.g, color.b, 0);
+    public static Color FullColor(Color color) => new Color(color.r, color.g, color.b, 1);
+    public static Color AlphaColor(Color color, float alpha) => new Color(color.r, color.g, color.b, alpha);
+
+    public enum ObjectType
+    {
+        Player,
+        Enemy,
+        Projectile,
+        Environment,
+        UI
     }
 }

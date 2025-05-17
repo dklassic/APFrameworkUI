@@ -1,32 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class WindowBackground : MonoBehaviour
+namespace ChosenConcept.APFramework.Interface.Framework
 {
-    public RawImage Background;
-    Color bgColor = Color.clear;
-    internal void SetType(BackgroundStyle background)
+    public class WindowBackground : MonoBehaviour
     {
-        bgColor = background switch
-        {
-            BackgroundStyle.FillBlack => Color.black,
-            BackgroundStyle.TransparentBlack => new Color(0, 0, 0, 0.8f),
-            _ => Color.clear
-        };
-    }
-    public void SetColor(Color color, bool active)
-    {
-        bgColor = color;
-        if (!active)
-            return;
-        Background.color = bgColor;
-    }
+        [SerializeField] RawImage _background;
+        [SerializeField] Color _bgColor = Color.clear;
+        public RawImage background => _background;
 
-    internal void SetActive(bool v)
-    {
-        if (bgColor == Color.clear)
-            return;
-        Background.color = v ? bgColor : Color.clear;
+        internal void SetColor(Color color)
+        {
+            _bgColor = color;
+        }
+        public void SetColor(Color color, bool active)
+        {
+            _bgColor = color;
+            if (!active)
+                return;
+            _background.color = _bgColor;
+        }
+        internal void SetActive(bool v)
+        {
+            if (_bgColor == Color.clear)
+                return;
+            _background.color = v ? _bgColor : Color.clear;
+        }
     }
 }

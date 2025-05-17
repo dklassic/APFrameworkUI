@@ -1,428 +1,490 @@
 using System;
-using System.Collections;
-using System.Text;
+using Cysharp.Text;
 using UnityEngine;
 using TMPro;
+using Unity.Collections;
 
-
-public enum WindowThickenType
+namespace ChosenConcept.APFramework.Interface.Framework
 {
-    None,
-    CornerOnly,
-    Whole
-}
-public class WindowOutline : MonoBehaviour
-{
-    public TextMeshProUGUI Outline;
-    string outlineText;
-    public string OutlineText
+    public class WindowOutline : MonoBehaviour
     {
-        get
+        [SerializeField] TextMeshProUGUI _outline;
+        public TextMeshProUGUI outline => _outline;
+        string _outlineText;
+
+        public string outlineText
         {
-            if (String.IsNullOrEmpty(outlineText))
-                return string.Empty;
+            get
+            {
+                if (String.IsNullOrEmpty(_outlineText))
+                    return string.Empty;
+                else
+                {
+                    return _inFocus switch
+                    {
+                        false => _displayStyle switch
+                        {
+                            WindowOutlineDisplayStyle.Always => _available switch
+                            {
+                                false => StyleUtility.StringColored(_outlineText.ToUpper(), StyleUtility.Disabled),
+                                true => _outlineText.ToUpper(),
+                            },
+                            WindowOutlineDisplayStyle.WhenSelected => string.Empty,
+                            _ => throw new NotImplementedException()
+                        },
+                        true => (!_singleWindowOverride || _inInput) switch
+                        {
+                            true => _outlineText.ToUpper(),
+                            false => StyleUtility.StringColored(_outlineText.ToUpper(),
+                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected)
+                        }
+                    };
+                }
+            }
+        }
+
+        [SerializeField] [ReadOnly] bool _singleWindowOverride = false;
+        [SerializeField] [ReadOnly] bool _inFocus = false;
+        [SerializeField] [ReadOnly] bool _available = true;
+        [SerializeField] [ReadOnly] bool _inInput = false;
+        [SerializeField] [ReadOnly] bool _active = false;
+        [SerializeField] [ReadOnly] bool _hasOutline = false;
+        Coroutine _coroutine = null;
+        [SerializeField] [ReadOnly] Vector2Int _size;
+        [SerializeField] [ReadOnly] WindowOutlineDisplayStyle _displayStyle;
+        public string targetText => ZString.Format("Allocating {0}x{1}", _size.x, _size.y);
+
+        public void SetOpacity(float alpha)
+        {
+            _outline.color = new Color(1, 1, 1, Mathf.Clamp01(alpha));
+        }
+
+        public void SetOutline(int widthCount, int heightCount, WindowSetup setup, int titleOverride,
+            int subscriptOverride)
+        {
+            _hasOutline = setup.outlineStyle != WindowOutlineStyle.None;
+            _displayStyle = setup.outlineDisplayStyle;
+            if (!_hasOutline)
+            {
+                return;
+            }
+
+            _size.x = widthCount;
+            _size.y = heightCount;
+            WindowThickenStyle thicken = setup.thickenStyle;
+            int windowHeight = heightCount;
+            // Setup First Line
+            string filler = setup.outlineStyle switch
+            {
+                WindowOutlineStyle.FullFrame => LineFill(OutlineSets(0, thicken, setup.labelStyle), widthCount),
+                WindowOutlineStyle.CornerOnly => LineFill(CornerSets(0, thicken, setup.labelStyle), widthCount),
+                WindowOutlineStyle.LeftLine => LineFill(LeftLineSets(thicken, setup.labelStyle), widthCount),
+                WindowOutlineStyle.RightLine => LineFill(RightLineSets(thicken, setup.labelStyle), widthCount),
+                _ => TextUtility.Repeat(' ', widthCount) + TextUtility.LineBreaker
+            };
+            if (setup.titleStyle == WindowTitleStyle.EmbeddedTitle &&
+                setup.outlineStyle != WindowOutlineStyle.LeftLine && setup.labelStyle == WindowLabelStyle.None)
+            {
+                // filler = filler.Substring(0, 1) + TextUtility.Repeat(' ', titleOverride - 1) + filler.Substring(titleOverride);
+                filler = TextUtility.Repeat(' ', titleOverride) + filler.Substring(titleOverride);
+            }
+
+            if (setup.titleStyle != WindowTitleStyle.TitleBar)
+                windowHeight -= 2;
+
+            using (var windowStringBuilder = ZString.CreateStringBuilder())
+            {
+                windowStringBuilder.Append(filler);
+                // Fill in the rest
+                for (int i = 0; i < windowHeight; i++)
+                {
+                    if (setup.outlineStyle == WindowOutlineStyle.CornerOnly)
+                    {
+                        if (i != windowHeight - 1)
+                            windowStringBuilder.Append(LineFill(CornerSets(2, thicken, setup.labelStyle), widthCount));
+                        else
+                            windowStringBuilder.Append(LineFill(CornerSets(3, thicken, setup.labelStyle), widthCount));
+                    }
+                    else if (setup.outlineStyle == WindowOutlineStyle.LeftLine)
+                    {
+                        if (i != windowHeight - 1)
+                            windowStringBuilder.Append(LineFill(LeftLineSets(thicken, setup.labelStyle), widthCount));
+                        else
+                            windowStringBuilder.Append(LineFill(OutlineSets(4, thicken, setup.labelStyle), widthCount));
+                    }
+                    else if (setup.outlineStyle == WindowOutlineStyle.RightLine)
+                    {
+                        if (i != windowHeight - 1)
+                            windowStringBuilder.Append(LineFill(RightLineSets(thicken, setup.labelStyle), widthCount));
+                        else
+                            windowStringBuilder.Append(LineFill(OutlineSets(4, thicken, setup.labelStyle), widthCount));
+                    }
+                    else if (setup.outlineStyle == WindowOutlineStyle.FullFrame)
+                    {
+                        if (setup.titleStyle == WindowTitleStyle.TitleBar)
+                        {
+                            if (i == 1)
+                                windowStringBuilder.Append(LineFill(OutlineSets(1, thicken, setup.labelStyle),
+                                    widthCount));
+                            else
+                                windowStringBuilder.Append(LineFill(OutlineSets(2, thicken, setup.labelStyle),
+                                    widthCount));
+                        }
+                        else
+                            windowStringBuilder.Append(LineFill(OutlineSets(2, thicken, setup.labelStyle), widthCount));
+
+                        if (i == windowHeight - 1)
+                            windowStringBuilder.Append(LineFill(OutlineSets(3, thicken, setup.labelStyle), widthCount));
+                    }
+                    else if (setup.outlineStyle == WindowOutlineStyle.LowerLeftCornerOnly)
+                    {
+                        if (setup.titleStyle == WindowTitleStyle.TitleBar)
+                        {
+                            if (i == 1)
+                                windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(1, thicken, setup.labelStyle),
+                                    widthCount));
+                            else
+                                windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(2, thicken, setup.labelStyle),
+                                    widthCount));
+                        }
+                        else
+                            windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(2, thicken, setup.labelStyle),
+                                widthCount));
+
+                        if (i == windowHeight - 1)
+                            windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(3, thicken, setup.labelStyle),
+                                widthCount));
+                    }
+                }
+
+                if (subscriptOverride > 0)
+                {
+                    windowStringBuilder.Remove(windowStringBuilder.Length - subscriptOverride - 4,
+                        subscriptOverride + 4);
+                    windowStringBuilder.Append(TextUtility.PlaceHolder(subscriptOverride + 4));
+                }
+
+                _outlineText = windowStringBuilder.ToString();
+            }
+
+            if (_active)
+                SetOutlineText(outlineText);
+        }
+
+        string OutlineSets(int i, WindowThickenStyle thickenType = WindowThickenStyle.None,
+            WindowLabelStyle labeled = WindowLabelStyle.None) => thickenType switch
+        {
+            WindowThickenStyle.None => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "┌─┐",
+                    1 => "├─┤",
+                    2 => "│ │",
+                    3 => "└─┘",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄─┐",
+                    1 => "█─┤",
+                    2 => "█ │",
+                    3 => "▀─┘",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "┌─▄",
+                    1 => "├─█",
+                    2 => "│ █",
+                    3 => "└─▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            WindowThickenStyle.Whole => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "╔═╗",
+                    1 => "╠═╣",
+                    2 => "║ ║",
+                    3 => "╚═╝",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄═╗",
+                    1 => "█═╣",
+                    2 => "█ ║",
+                    3 => "▀═╝",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "╔═▄",
+                    1 => "╠═█",
+                    2 => "║ █",
+                    3 => "╚═▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            WindowThickenStyle.CornerOnly => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "╔─╗",
+                    1 => "╠─╣",
+                    2 => "│ │",
+                    3 => "╚─╝",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄─╗",
+                    1 => "█─╣",
+                    2 => "█ │",
+                    3 => "▀─╝",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "╔─▄",
+                    1 => "╠─█",
+                    2 => "│ █",
+                    3 => "╚─▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            _ => throw new NotImplementedException()
+        };
+
+        string LowerLeftOutlineSets(int i, WindowThickenStyle thickenType = WindowThickenStyle.None,
+            WindowLabelStyle labeled = WindowLabelStyle.None) => thickenType switch
+        {
+            WindowThickenStyle.None => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "┌  ",
+                    1 => "├  ",
+                    2 => "│  ",
+                    3 => "└─ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄  ",
+                    1 => "█  ",
+                    2 => "█  ",
+                    3 => "▀─ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "┌ ▄",
+                    1 => "├ █",
+                    2 => "│ █",
+                    3 => "└─▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            WindowThickenStyle.Whole => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "╔  ",
+                    1 => "╠  ",
+                    2 => "║  ",
+                    3 => "╚═ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄  ",
+                    1 => "█  ",
+                    2 => "█  ",
+                    3 => "▀═ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "╔ ▄",
+                    1 => "╠ █",
+                    2 => "║ █",
+                    3 => "╚═▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            WindowThickenStyle.CornerOnly => labeled switch
+            {
+                WindowLabelStyle.None => i switch
+                {
+                    0 => "╔  ",
+                    1 => "╠  ",
+                    2 => "│  ",
+                    3 => "╚─ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Left => i switch
+                {
+                    0 => "▄  ",
+                    1 => "█  ",
+                    2 => "█  ",
+                    3 => "▀─ ",
+                    _ => "   "
+                },
+                WindowLabelStyle.Right => i switch
+                {
+                    0 => "╔ ▄",
+                    1 => "╠ █",
+                    2 => "│ █",
+                    3 => "╚─▀",
+                    _ => "   "
+                },
+                _ => throw new NotImplementedException()
+            },
+            _ => throw new NotImplementedException()
+        };
+
+        string LeftLineSets(WindowThickenStyle thickenType = WindowThickenStyle.None,
+            WindowLabelStyle labeled = WindowLabelStyle.None) => labeled switch
+        {
+            WindowLabelStyle.None => thickenType switch
+            {
+                WindowThickenStyle.None => "│  ",
+                _ => "║  "
+            },
+            WindowLabelStyle.Left => "█  ",
+            WindowLabelStyle.Right => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
+        string RightLineSets(WindowThickenStyle thickenType = WindowThickenStyle.None,
+            WindowLabelStyle labeled = WindowLabelStyle.None) => labeled switch
+        {
+            WindowLabelStyle.None => thickenType switch
+            {
+                WindowThickenStyle.None => "  │",
+                _ => "  ║"
+            },
+            WindowLabelStyle.Left => "  █",
+            WindowLabelStyle.Right => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
+        string CornerSets(int i, WindowThickenStyle thickenType = WindowThickenStyle.None,
+            WindowLabelStyle labeled = WindowLabelStyle.None) => labeled switch
+        {
+            WindowLabelStyle.None => thickenType switch
+            {
+                WindowThickenStyle.None => i switch
+                {
+                    0 => "┌ ┐",
+                    3 => "└ ┘",
+                    _ => "   "
+                },
+                _ => i switch
+                {
+                    0 => "╔ ╗",
+                    3 => "╚ ╝",
+                    _ => "   "
+                }
+            },
+            WindowLabelStyle.Left => thickenType switch
+            {
+                WindowThickenStyle.None => i switch
+                {
+                    0 => "▄ ┐",
+                    1 => "█  ",
+                    2 => "█  ",
+                    3 => "▀ ┘",
+                    _ => "   "
+                },
+                _ => i switch
+                {
+                    0 => "▄ ╗",
+                    1 => "█  ",
+                    2 => "█  ",
+                    3 => "▀ ╝",
+                    _ => "   "
+                }
+            },
+            WindowLabelStyle.Right => thickenType switch
+            {
+                WindowThickenStyle.None => i switch
+                {
+                    0 => "┌ ▄",
+                    1 => "  █",
+                    2 => "  █",
+                    3 => "└ ▀",
+                    _ => "   "
+                },
+                _ => i switch
+                {
+                    0 => "╔ ▄",
+                    1 => "  █",
+                    2 => "  █",
+                    3 => "╚ ▀",
+                    _ => "   "
+                }
+            },
+            _ => throw new NotImplementedException()
+        };
+
+        string LineFill(string set, int count)
+        {
+            using (var windowStringBuilder = ZString.CreateStringBuilder())
+            {
+                windowStringBuilder.Append(set[0]);
+                windowStringBuilder.Append(TextUtility.Repeat(set[1], count - 2));
+                windowStringBuilder.Append(set[2]);
+                windowStringBuilder.Append(TextUtility.LineBreaker);
+                return windowStringBuilder.ToString();
+            }
+        }
+
+        public float SetActive(bool active)
+        {
+            _active = active;
+            if (!_hasOutline)
+                return 0f;
+            if (active)
+            {
+                if (_coroutine != null)
+                    StopCoroutine(_coroutine);
+                SetOutlineText(outlineText);
+                // coroutine = StartCoroutine(StartupSequence());
+                return 0f;
+            }
             else
             {
-                return inFocus switch
-                {
-                    false => available switch
-                    {
-                        false => StyleUtility.StringColored(outlineText.ToUpper(), StyleUtility.Disabled),
-                        true => outlineText.ToUpper(),
-                    },
-                    true => StyleUtility.StringColored(outlineText.ToUpper(), available ? StyleUtility.Selected : StyleUtility.DisableSelected)
-                };
+                if (_coroutine != null)
+                    StopCoroutine(_coroutine);
+                SetOutlineText(string.Empty);
+                return 0f;
             }
         }
-    }
-    bool inFocus = false;
-    bool available = true;
-    bool active = false;
-    public bool InDebug = false;
-    WindowSetting Setting => UIManager.Instance.WindowSetting;
-    WindowStyle style;
-    Coroutine coroutine = null;
-    Vector2Int size;
-    StringBuilder windowStringBuilder = new StringBuilder();
-    public string TargetText => size.x + "x" + size.y;
-    public void SetOpacity(float alpha)
-    {
-        Outline.color = new Color(1, 1, 1, Mathf.Clamp01(alpha));
-    }
-    public void SetOutline(int widthCount, int heightCount, WindowStyle windowStyle, int titleOverride, int subscriptOverride)
-    {
-        style = windowStyle;
-        size.x = widthCount;
-        size.y = heightCount;
-        WindowThickenType thicken = WindowThickenType.None;
-        LabelStyle label = LabelStyle.None;
-        int windowHeight = heightCount;
-        // Setup First Line
-        if (Setting.HasThickenCorner(windowStyle))
-            thicken = WindowThickenType.CornerOnly;
-        if (Setting.HasThickenEdge(windowStyle))
-            thicken = WindowThickenType.Whole;
-        if (Setting.HasLeftLabel(windowStyle))
-            label = LabelStyle.Left;
-        else if (Setting.HasRightLabel(windowStyle))
-            label = LabelStyle.Right;
-        string filler;
-        if (Setting.IsFullFrame(windowStyle))
-            filler = LineFill(OutlineSets(0, thicken, label), widthCount);
-        else if (Setting.IsCornerSet(windowStyle))
-            filler = LineFill(CornerSets(0, thicken, label), widthCount);
-        else if (Setting.IsLeftLine(windowStyle))
-            filler = LineFill(LeftLineSets(thicken, label), widthCount);
-        else
-            filler = TextUtility.Repeat(' ', widthCount) + TextUtility.LineBreaker;
-        if (Setting.HasEmbeddedTitle(windowStyle) && !Setting.IsLeftLine(windowStyle) && label == LabelStyle.None)
-        {
-            // filler = filler.Substring(0, 1) + TextUtility.Repeat(' ', titleOverride - 1) + filler.Substring(titleOverride);
-            filler = TextUtility.Repeat(' ', titleOverride) + filler.Substring(titleOverride);
-        }
-        if (!Setting.HasTitlebar(windowStyle))
-            windowHeight -= 2;
 
-        windowStringBuilder.Clear();
-        windowStringBuilder.Append(filler);
-        // Fill in the rest
-        for (int i = 0; i < windowHeight; i++)
+        void SetOutlineText(string text)
         {
-            if (UIManager.Instance.WindowSetting.IsCornerSet(windowStyle))
-            {
-                if (i != windowHeight - 1)
-                    windowStringBuilder.Append(LineFill(CornerSets(2, thicken, label), widthCount));
-                else
-                    windowStringBuilder.Append(LineFill(CornerSets(3, thicken, label), widthCount));
-            }
-            else if (Setting.IsLeftLine(windowStyle))
-            {
-                if (i != windowHeight - 1)
-                    windowStringBuilder.Append(LineFill(LeftLineSets(thicken, label), widthCount));
-                else
-                    windowStringBuilder.Append(LineFill(OutlineSets(4, thicken, label), widthCount));
-            }
-            else if (Setting.IsFullFrame(windowStyle))
-            {
-                if (Setting.HasTitlebar(windowStyle))
-                {
-                    if (i == 1)
-                        windowStringBuilder.Append(LineFill(OutlineSets(1, thicken, label), widthCount));
-                    else
-                        windowStringBuilder.Append(LineFill(OutlineSets(2, thicken, label), widthCount));
-                }
-                else
-                    windowStringBuilder.Append(LineFill(OutlineSets(2, thicken, label), widthCount));
-                if (i == windowHeight - 1)
-                    windowStringBuilder.Append(LineFill(OutlineSets(3, thicken, label), widthCount));
-            }
-            else if (UIManager.Instance.WindowSetting.IsLowerLeft(windowStyle))
-            {
-                if (Setting.HasTitlebar(windowStyle))
-                {
-                    if (i == 1)
-                        windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(1, thicken, label), widthCount));
-                    else
-                        windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(2, thicken, label), widthCount));
-                }
-                else
-                    windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(2, thicken, label), widthCount));
-                if (i == windowHeight - 1)
-                    windowStringBuilder.Append(LineFill(LowerLeftOutlineSets(3, thicken, label), widthCount));
-            }
+            _outline.SetText(text);
         }
-        if (subscriptOverride > 0)
-        {
-            windowStringBuilder.Remove(windowStringBuilder.Length - subscriptOverride - 4, subscriptOverride + 4);
-            windowStringBuilder.Append(TextUtility.PlaceHolder(subscriptOverride + 4));
-        }
-        outlineText = windowStringBuilder.ToString();
-        if (active)
-            Outline.SetText(OutlineText);
 
-    }
-
-    string OutlineSets(int i, WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => thickenType switch
-    {
-        WindowThickenType.None => labeled switch
+        internal void SetFocusAndAvailable(bool singleWindowOverride, bool inFocus, bool available, bool inInput)
         {
-            LabelStyle.None => i switch
-            {
-                0 => "┌─┐",
-                1 => "├─┤",
-                2 => "│ │",
-                3 => "└─┘",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄─┐",
-                1 => "█─┤",
-                2 => "█ │",
-                3 => "▀─┘",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "┌─▄",
-                1 => "├─█",
-                2 => "│ █",
-                3 => "└─▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        WindowThickenType.Whole => labeled switch
-        {
-            LabelStyle.None => i switch
-            {
-                0 => "╔═╗",
-                1 => "╠═╣",
-                2 => "║ ║",
-                3 => "╚═╝",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄═╗",
-                1 => "█═╣",
-                2 => "█ ║",
-                3 => "▀═╝",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "╔═▄",
-                1 => "╠═█",
-                2 => "║ █",
-                3 => "╚═▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        WindowThickenType.CornerOnly => labeled switch
-        {
-            LabelStyle.None => i switch
-            {
-                0 => "╔─╗",
-                1 => "╠─╣",
-                2 => "│ │",
-                3 => "╚─╝",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄─╗",
-                1 => "█─╣",
-                2 => "█ │",
-                3 => "▀─╝",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "╔─▄",
-                1 => "╠─█",
-                2 => "│ █",
-                3 => "╚─▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        _ => throw new System.NotImplementedException(),
-    };
-    string LowerLeftOutlineSets(int i, WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => thickenType switch
-    {
-        WindowThickenType.None => labeled switch
-        {
-            LabelStyle.None => i switch
-            {
-                0 => "┌  ",
-                1 => "├  ",
-                2 => "│  ",
-                3 => "└─ ",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄  ",
-                1 => "█  ",
-                2 => "█  ",
-                3 => "▀─ ",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "┌ ▄",
-                1 => "├ █",
-                2 => "│ █",
-                3 => "└─▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        WindowThickenType.Whole => labeled switch
-        {
-            LabelStyle.None => i switch
-            {
-                0 => "╔  ",
-                1 => "╠  ",
-                2 => "║  ",
-                3 => "╚═ ",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄  ",
-                1 => "█  ",
-                2 => "█  ",
-                3 => "▀═ ",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "╔ ▄",
-                1 => "╠ █",
-                2 => "║ █",
-                3 => "╚═▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        WindowThickenType.CornerOnly => labeled switch
-        {
-            LabelStyle.None => i switch
-            {
-                0 => "╔  ",
-                1 => "╠  ",
-                2 => "│  ",
-                3 => "╚─ ",
-                _ => "   "
-            },
-            LabelStyle.Left => i switch
-            {
-                0 => "▄  ",
-                1 => "█  ",
-                2 => "█  ",
-                3 => "▀─ ",
-                _ => "   "
-            },
-            LabelStyle.Right => i switch
-            {
-                0 => "╔ ▄",
-                1 => "╠ █",
-                2 => "│ █",
-                3 => "╚─▀",
-                _ => "   "
-            },
-            _ => throw new System.NotImplementedException(),
-        },
-        _ => throw new System.NotImplementedException(),
-    };
-    string LeftLineSets(WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => labeled switch
-    {
-        LabelStyle.None => thickenType switch
-        {
-            WindowThickenType.None => "│  ",
-            _ => "║  "
-        },
-        LabelStyle.Left => "█  ",
-        LabelStyle.Right => throw new NotImplementedException(),
-        _ => throw new System.NotImplementedException(),
-    };
-    string CornerSets(int i, WindowThickenType thickenType = WindowThickenType.None, LabelStyle labeled = LabelStyle.None) => labeled switch
-    {
-        LabelStyle.None => thickenType switch
-        {
-            WindowThickenType.None => i switch
-            {
-                0 => "┌ ┐",
-                3 => "└ ┘",
-                _ => "   "
-            },
-            _ => i switch
-            {
-                0 => "╔ ╗",
-                3 => "╚ ╝",
-                _ => "   "
-            }
-        },
-        LabelStyle.Left => thickenType switch
-        {
-            WindowThickenType.None => i switch
-            {
-                0 => "▄ ┐",
-                1 => "█  ",
-                2 => "█  ",
-                3 => "▀ ┘",
-                _ => "   "
-            },
-            _ => i switch
-            {
-                0 => "▄ ╗",
-                1 => "█  ",
-                2 => "█  ",
-                3 => "▀ ╝",
-                _ => "   "
-            }
-        },
-        LabelStyle.Right => thickenType switch
-        {
-            WindowThickenType.None => i switch
-            {
-                0 => "┌ ▄",
-                1 => "  █",
-                2 => "  █",
-                3 => "└ ▀",
-                _ => "   "
-            },
-            _ => i switch
-            {
-                0 => "╔ ▄",
-                1 => "  █",
-                2 => "  █",
-                3 => "╚ ▀",
-                _ => "   "
-            }
-        },
-        _ => throw new System.NotImplementedException(),
-    };
-    string LineFill(string set, int count)
-    {
-        TextUtility.StringBuilder.Clear();
-        TextUtility.StringBuilder.Append(set[0]);
-        TextUtility.StringBuilder.Append(TextUtility.Repeat(set[1], count - 2));
-        TextUtility.StringBuilder.Append(set[2]);
-        TextUtility.StringBuilder.Append(TextUtility.LineBreaker);
-        return TextUtility.StringBuilder.ToString();
-    }
-    public float SetActive(bool active)
-    {
-        this.active = active;
-        if (!UIManager.Instance.WindowSetting.HasOutline(style))
-            return 0f;
-        if (active)
-        {
-            if (coroutine != null)
-                StopCoroutine(coroutine);
-            Outline.SetText(OutlineText);
-            // coroutine = StartCoroutine(StartupSequence());
-            return 0f;
+            _singleWindowOverride = singleWindowOverride;
+            _inFocus = inFocus;
+            _available = available;
+            _inInput = inInput;
+            if (!_hasOutline)
+                return;
+            if (_active)
+                SetOutlineText(outlineText);
         }
-        else
-        {
-            if (coroutine != null)
-                StopCoroutine(coroutine);
-            Outline.SetText(string.Empty);
-            return 0f;
-        }
-    }
-    internal void SetFocusAndAvailable(bool f, bool a)
-    {
-        inFocus = f;
-        available = a;
-        if (!UIManager.Instance.WindowSetting.HasOutline(style))
-            return;
-        if (active)
-            Outline.SetText(OutlineText);
     }
 }

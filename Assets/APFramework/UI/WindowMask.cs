@@ -1,307 +1,339 @@
 using UnityEngine;
 using TMPro;
+using Cysharp.Text;
+using Unity.Collections;
 
-public enum WindowTransition
+namespace ChosenConcept.APFramework.Interface.Framework
 {
-    Full,
-    Noise,
-    FromLeft,
-    FromLeftLagged,
-    FromRight,
-    FromRightLagged,
-    Random,
-    None,
-    Glitch,
-    DamageGlitch
-}
-public class WindowMask : MonoBehaviour
-{
-    enum FadeType
+    public class WindowMask : MonoBehaviour
     {
-        FadeIn,
-        FadeOut,
-        GlitchVFX,
-        DamageGlitchVFX,
-    }
-    [SerializeField] WindowTransition windowTransitionIn = WindowTransition.Full;
-    [SerializeField] WindowTransition windowTransitionOut = WindowTransition.FromLeftLagged;
-    [SerializeField] FadeType currentFadeType = FadeType.FadeIn;
-    public TextMeshProUGUI Mask;
-    string maskText = TextUtility.FadeIn;
-    float maskAnimationStep = 0.005f;
-    int[,] maskIndex;
-    string maskString = TextUtility.FadeIn;
-    int fillLine = 0;
-    [SerializeField] int widthCount = 0;
-    [SerializeField] int heightCount = 0;
-    [SerializeField] float nextUpdate = Mathf.Infinity;
-    [SerializeField] int endStep = 0;
-    [SerializeField] int currentStep = -1;
-    [SerializeField] bool initialized = false;
-    void Awake()
-    {
-        Mask.color = Color.white * 1.5f;
-    }
-    void Update()
-    {
-        if (!initialized || Time.unscaledTime < nextUpdate || currentStep == -1)
-            return;
-        nextUpdate = Time.unscaledTime + maskAnimationStep;
-        UpdateMaskIndex();
-        SetMaskIndex();
-        currentStep++;
-        if (currentStep <= endStep)
-            return;
-        endStep = 0;
-        currentStep = -1;
-        Mask.SetText(string.Empty);
-        nextUpdate = Mathf.Infinity;
-    }
-    void UpdateMaskIndex()
-    {
-        for (int i = 0; i < maskIndex.GetLength(0); i++)
+        enum FadeType
         {
-            for (int j = 0; j < maskIndex.GetLength(1); j++)
-            {
-                switch (CurrentTransition)
-                {
-                    case WindowTransition.Noise:
-                        maskIndex[i, j] = UnityEngine.Random.Range(0, TextUtility.FadeIn.Length - 1);
-                        break;
-                    case WindowTransition.Glitch:
-                        if (UnityEngine.Random.value > 0.5f)
-                            maskIndex[i, j] += Mathf.FloorToInt(Time.unscaledDeltaTime / maskAnimationStep);
-                        break;
-                    case WindowTransition.DamageGlitch:
-                        if (UnityEngine.Random.value > 0.5f)
-                            maskIndex[i, j] += Mathf.FloorToInt(Time.unscaledDeltaTime / maskAnimationStep);
-                        break;
-                    case WindowTransition.Random:
-                        if (UnityEngine.Random.value > 0.25f)
-                            maskIndex[i, j] += Mathf.FloorToInt(UnityEngine.Random.Range(1, TextUtility.FadeIn.Length - 1) * Time.unscaledDeltaTime / maskAnimationStep);
-                        break;
-                    default:
-                        maskIndex[i, j] += Mathf.FloorToInt(Time.unscaledDeltaTime / maskAnimationStep);
-                        break;
-                }
-            }
+            FadeIn,
+            FadeOut,
+            GlitchVFX,
+            DamageGlitchVFX,
         }
-    }
-    WindowTransition CurrentTransition => currentFadeType switch
-    {
-        FadeType.FadeIn => windowTransitionIn,
-        FadeType.FadeOut => windowTransitionOut,
-        FadeType.GlitchVFX => WindowTransition.Glitch,
-        FadeType.DamageGlitchVFX => WindowTransition.DamageGlitch,
-        _ => windowTransitionIn
-    };
-    void SetMaskIndex()
-    {
-        TextUtility.StringBuilder.Clear();
-        for (int j = 0; j < maskIndex.GetLength(1); j++)
-        {
 
-            for (int i = 0; i < maskIndex.GetLength(0); i++)
+        [SerializeField] [ReadOnly] WindowTransition _windowTransitionIn = WindowTransition.Full;
+        [SerializeField] [ReadOnly] WindowTransition _windowTransitionOut = WindowTransition.FromLeftLagged;
+        [SerializeField] [ReadOnly] FadeType _currentFadeType = FadeType.FadeIn;
+        [SerializeField] TextMeshProUGUI _mask;
+        public TextMeshProUGUI mask => _mask;
+        string _maskText = TextUtility.FADE_IN;
+        float _maskAnimationStep = 0.005f;
+        int[,] _maskIndex;
+        string _maskString = TextUtility.FADE_IN;
+        int _fillLine = 0;
+        [SerializeField] [ReadOnly] int _widthCount = 0;
+        [SerializeField] [ReadOnly] int _heightCount = 0;
+        [SerializeField] [ReadOnly] float _nextUpdate = Mathf.Infinity;
+        [SerializeField] [ReadOnly] int _endStep = 0;
+        [SerializeField] [ReadOnly] int _currentStep = -1;
+        [SerializeField] [ReadOnly] bool _initialized = false;
+
+        public void Initialize()
+        {
+            mask.color = Color.white * 1.5f;
+        }
+
+        public void ContextUpdate()
+        {
+            if (!_initialized || Time.unscaledTime < _nextUpdate || _currentStep == -1)
+                return;
+            _nextUpdate = Time.unscaledTime + _maskAnimationStep;
+            UpdateMaskIndex();
+            SetMaskIndex();
+            _currentStep++;
+            if (_currentStep <= _endStep)
+                return;
+            _endStep = 0;
+            _currentStep = -1;
+            mask.SetText(string.Empty);
+            _nextUpdate = Mathf.Infinity;
+        }
+
+        void UpdateMaskIndex()
+        {
+            for (int i = 0; i < _maskIndex.GetLength(0); i++)
             {
-                if (j < fillLine || j >= maskIndex.GetLength(1) - fillLine)
-                    TextUtility.StringBuilder.Append(' ');
-                else
+                for (int j = 0; j < _maskIndex.GetLength(1); j++)
                 {
-                    int targetIndex = maskIndex[i, j];
-                    targetIndex = Mathf.Clamp(targetIndex, 0, maskString.Length - 1);
-                    TextUtility.StringBuilder.Append(maskString[targetIndex]);
+                    switch (CurrentTransition)
+                    {
+                        case WindowTransition.Noise:
+                            _maskIndex[i, j] = Random.Range(0, TextUtility.FADE_IN.Length - 1);
+                            break;
+                        case WindowTransition.Glitch:
+                            if (Random.value > 0.5f)
+                                _maskIndex[i, j] +=
+                                    Mathf.FloorToInt(Time.unscaledDeltaTime / _maskAnimationStep);
+                            break;
+                        case WindowTransition.DamageGlitch:
+                            if (Random.value > 0.5f)
+                                _maskIndex[i, j] +=
+                                    Mathf.FloorToInt(Time.unscaledDeltaTime / _maskAnimationStep);
+                            break;
+                        case WindowTransition.Random:
+                            if (Random.value > 0.25f)
+                                _maskIndex[i, j] += Mathf.FloorToInt(Random.Range(1, TextUtility.FADE_IN.Length - 1) *
+                                    Time.unscaledDeltaTime / _maskAnimationStep);
+                            break;
+                        default:
+                            _maskIndex[i, j] += Mathf.FloorToInt(Time.unscaledDeltaTime / _maskAnimationStep);
+                            break;
+                    }
                 }
             }
-            TextUtility.StringBuilder.Append(TextUtility.LineBreaker);
         }
-        maskText = TextUtility.StringBuilder.ToString();
-        Mask.SetText(maskText);
-    }
-    public void Setup(int widthCount, int heightCount, WindowSetup setup)
-    {
-        this.windowTransitionIn = setup.TransitionIn;
-        this.windowTransitionOut = setup.TransitionOut;
-        this.widthCount = widthCount;
-        this.heightCount = heightCount;
-        TextUtility.StringBuilder.Clear();
-        for (int i = 0; i < heightCount; i++)
+
+        WindowTransition CurrentTransition => _currentFadeType switch
         {
-            TextUtility.StringBuilder.Append(LineFill(TextUtility.FadeIn[0], widthCount));
-        }
-        maskText = TextUtility.StringBuilder.ToString();
-        maskIndex = new int[widthCount, heightCount];
-        for (int j = 0; j < maskIndex.GetLength(1); j++)
+            FadeType.FadeIn => _windowTransitionIn,
+            FadeType.FadeOut => _windowTransitionOut,
+            FadeType.GlitchVFX => WindowTransition.Glitch,
+            FadeType.DamageGlitchVFX => WindowTransition.DamageGlitch,
+            _ => _windowTransitionIn
+        };
+
+        void SetMaskIndex()
         {
-            for (int i = 0; i < maskIndex.GetLength(0); i++)
+            using (var windowStringBuilder = ZString.CreateStringBuilder())
             {
-                maskIndex[i, j] = -1;
-            }
-        }
-        if (!UIManager.Instance.WindowSetting.HasTitlebar(setup.Style))
-            fillLine = 1;
-        if (!UIManager.Instance.WindowSetting.HasOutline(setup.Style))
-            fillLine = 2;
-        SetActive(false);
-    }
-    
-    public void FadeIn()
-    {
-        if (windowTransitionIn == WindowTransition.None)
-            return;
-        currentFadeType = FadeType.FadeIn;
-        maskString = TextUtility.FadeIn;
-        SetupTransition(CurrentTransition);
-        initialized = true;
-    }
-    public float FadeOut()
-    {
-        if (!initialized || windowTransitionOut == WindowTransition.None)
-            return 0f;
-        currentFadeType = FadeType.FadeOut;
-        return SetupTransition(CurrentTransition);
-    }
-    float SetupTransition(WindowTransition transitionSetup, bool toSyncGameObject = false)
-    {
-        nextUpdate = Mathf.NegativeInfinity;
-        currentStep = 0;
-        int counter = 0;
-        switch (transitionSetup)
-        {
-            case WindowTransition.Noise:
-                for (int j = 0; j < maskIndex.GetLength(1); j++)
+                for (int j = 0; j < _maskIndex.GetLength(1); j++)
                 {
-                    for (int i = 0; i < maskIndex.GetLength(0); i++)
+                    for (int i = 0; i < _maskIndex.GetLength(0); i++)
                     {
-                        maskIndex[i, j] = UnityEngine.Random.Range(0, TextUtility.FadeIn.Length - 1);
-                    }
-                }
-                endStep = Mathf.CeilToInt(0.02f / maskAnimationStep);
-                break;
-            case WindowTransition.FromLeft:
-                for (int i = 0; i < maskIndex.GetLength(0); i++)
-                {
-                    for (int j = 0; j < maskIndex.GetLength(1); j++)
-                    {
-                        maskIndex[i, j] = counter;
-                    }
-                    counter--;
-                }
-                endStep = maskIndex.GetLength(0);
-                break;
-            case WindowTransition.FromLeftLagged:
-                maskString = TextUtility.FadeIn;
-                for (int i = 0; i < maskIndex.GetLength(0); i++)
-                {
-                    for (int j = 0; j < maskIndex.GetLength(1); j++)
-                    {
-                        maskIndex[i, j] = counter - j;
-                    }
-                    counter--;
-                }
-                endStep = maskIndex.GetLength(0) + maskIndex.GetLength(1);
-                break;
-            case WindowTransition.FromRight:
-                for (int i = maskIndex.GetLength(0) - 1; i >= 0; i--)
-                {
-                    for (int j = 0; j < maskIndex.GetLength(1); j++)
-                    {
-                        maskIndex[i, j] = counter;
-                    }
-                    counter--;
-                }
-                endStep = maskIndex.GetLength(0);
-                break;
-            case WindowTransition.FromRightLagged:
-                maskString = TextUtility.FadeIn;
-                for (int i = maskIndex.GetLength(0) - 1; i >= 0; i--)
-                {
-                    for (int j = 0; j < maskIndex.GetLength(1); j++)
-                    {
-                        maskIndex[i, j] = counter - j;
-                    }
-                    counter--;
-                }
-                endStep = maskIndex.GetLength(0) + maskIndex.GetLength(1);
-                break;
-            case WindowTransition.Full:
-                for (int j = 0; j < maskIndex.GetLength(1); j++)
-                {
-                    for (int i = 0; i < maskIndex.GetLength(0); i++)
-                    {
-                        maskIndex[i, j] = 0;
-                    }
-                }
-                endStep = Mathf.CeilToInt(0.3f / maskAnimationStep);
-                break;
-            case WindowTransition.Random:
-                for (int j = 0; j < maskIndex.GetLength(1); j++)
-                {
-                    for (int i = 0; i < maskIndex.GetLength(0); i++)
-                    {
-                        maskIndex[i, j] = 0;
-                    }
-                }
-                endStep = 10;
-                break;
-            case WindowTransition.Glitch:
-                for (int j = 0; j < maskIndex.GetLength(1); j++)
-                {
-                    for (int i = 0; i < maskIndex.GetLength(0); i++)
-                    {
-                        if (UnityEngine.Random.value > 0.8f)
-                            maskIndex[i, j] = UnityEngine.Random.Range(0, TextUtility.FadeIn.Length - 1);
+                        if (j < _fillLine || j >= _maskIndex.GetLength(1) - _fillLine)
+                            windowStringBuilder.Append(' ');
                         else
-                            maskIndex[i, j] = TextUtility.FadeIn.Length - 1;
+                        {
+                            int targetIndex = _maskIndex[i, j];
+                            targetIndex = Mathf.Clamp(targetIndex, 0, _maskString.Length - 1);
+                            windowStringBuilder.Append(_maskString[targetIndex]);
+                        }
                     }
-                }
-                endStep = Mathf.CeilToInt(0.05f / maskAnimationStep);
-                break;
-            case WindowTransition.DamageGlitch:
-                for (int j = 0; j < maskIndex.GetLength(1); j++)
-                {
-                    for (int i = 0; i < maskIndex.GetLength(0); i++)
-                    {
-                        if (UnityEngine.Random.value > 0.95f)
-                            maskIndex[i, j] = UnityEngine.Random.Range(0, TextUtility.FadeIn.Length - 1);
-                    }
-                }
-                endStep = Mathf.CeilToInt(0.05f / maskAnimationStep);
-                break;
-        }
-        return endStep * maskAnimationStep;
-    }
-    string LineFill(char pattern, int count) => TextUtility.Repeat(pattern, count) + TextUtility.LineBreaker;
-    public void SetActive(bool active)
-    {
-        if (active)
-        {
-            Mask.SetText(maskText);
-            nextUpdate = Mathf.NegativeInfinity;
-        }
-        else
-        {
-            Mask.SetText(string.Empty);
-            nextUpdate = Mathf.Infinity;
-        }
-    }
-    public void SetColor(ColorCode code)
-    {
-        Mask.color = StyleUtility.ColorSetting(code);
-    }
-    
-    public void TriggerGlitch()
-    {
-        currentFadeType = FadeType.GlitchVFX;
-        SetupTransition(CurrentTransition);
-    }
-    public void TriggerEffect(WindowTransition type)
-    {
-        SetupTransition(type);
-    }
-    public void TriggerDamageGlitch()
-    {
-        currentFadeType = FadeType.DamageGlitchVFX;
-        SetupTransition(CurrentTransition);
-    }
 
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                }
+
+                mask.SetText(windowStringBuilder);
+            }
+        }
+
+        public void Setup(int widthCount, int heightCount, WindowSetup setup)
+        {
+            _windowTransitionIn = setup.transitionIn;
+            _windowTransitionOut = setup.transitionOut;
+            _widthCount = widthCount;
+            _heightCount = heightCount;
+            using (var windowStringBuilder = ZString.CreateStringBuilder())
+            {
+                for (int i = 0; i < heightCount; i++)
+                {
+                    windowStringBuilder.Append(LineFill(TextUtility.FADE_IN[0], _widthCount));
+                }
+
+                _maskText = windowStringBuilder.ToString();
+            }
+
+            _maskIndex = new int[_widthCount, _heightCount];
+            for (int j = 0; j < _maskIndex.GetLength(1); j++)
+            {
+                for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                {
+                    _maskIndex[i, j] = -1;
+                }
+            }
+
+            if (setup.titleStyle != WindowTitleStyle.TitleBar)
+                _fillLine = 1;
+            if (setup.outlineStyle == WindowOutlineStyle.None)
+                _fillLine = 2;
+            SetActive(false);
+        }
+
+
+        public void FadeIn()
+        {
+            if (_windowTransitionIn == WindowTransition.None)
+                return;
+            _currentFadeType = FadeType.FadeIn;
+            _maskString = TextUtility.FADE_IN;
+            SetupTransition(CurrentTransition);
+            _initialized = true;
+        }
+
+        public float FadeOut()
+        {
+            if (!_initialized || _windowTransitionOut == WindowTransition.None)
+                return 0f;
+            _currentFadeType = FadeType.FadeOut;
+            return SetupTransition(CurrentTransition);
+        }
+
+        float SetupTransition(WindowTransition transitionSetup, bool toSyncGameObject = false)
+        {
+            _nextUpdate = Mathf.NegativeInfinity;
+            _currentStep = 0;
+            int counter = 0;
+            switch (transitionSetup)
+            {
+                case WindowTransition.Noise:
+                    for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                    {
+                        for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                        {
+                            _maskIndex[i, j] = Random.Range(0, TextUtility.FADE_IN.Length - 1);
+                        }
+                    }
+
+                    _endStep = Mathf.CeilToInt(0.02f / _maskAnimationStep);
+                    break;
+                case WindowTransition.FromLeft:
+                    for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                        {
+                            _maskIndex[i, j] = counter;
+                        }
+
+                        counter--;
+                    }
+
+                    _endStep = _maskIndex.GetLength(0);
+                    break;
+                case WindowTransition.FromLeftLagged:
+                    _maskString = TextUtility.FADE_IN;
+                    for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                        {
+                            _maskIndex[i, j] = counter - j;
+                        }
+
+                        counter--;
+                    }
+
+                    _endStep = _maskIndex.GetLength(0) + _maskIndex.GetLength(1);
+                    break;
+                case WindowTransition.FromRight:
+                    for (int i = _maskIndex.GetLength(0) - 1; i >= 0; i--)
+                    {
+                        for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                        {
+                            _maskIndex[i, j] = counter;
+                        }
+
+                        counter--;
+                    }
+
+                    _endStep = _maskIndex.GetLength(0);
+                    break;
+                case WindowTransition.FromRightLagged:
+                    _maskString = TextUtility.FADE_IN;
+                    for (int i = _maskIndex.GetLength(0) - 1; i >= 0; i--)
+                    {
+                        for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                        {
+                            _maskIndex[i, j] = counter - j;
+                        }
+
+                        counter--;
+                    }
+
+                    _endStep = _maskIndex.GetLength(0) + _maskIndex.GetLength(1);
+                    break;
+                case WindowTransition.Full:
+                    for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                    {
+                        for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                        {
+                            _maskIndex[i, j] = 0;
+                        }
+                    }
+
+                    _endStep = Mathf.CeilToInt(0.3f / _maskAnimationStep);
+                    break;
+                case WindowTransition.Random:
+                    for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                    {
+                        for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                        {
+                            _maskIndex[i, j] = 0;
+                        }
+                    }
+
+                    _endStep = 10;
+                    break;
+                case WindowTransition.Glitch:
+                    for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                    {
+                        for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                        {
+                            if (Random.value > 0.8f)
+                                _maskIndex[i, j] = Random.Range(0, TextUtility.FADE_IN.Length - 1);
+                            else
+                                _maskIndex[i, j] = TextUtility.FADE_IN.Length - 1;
+                        }
+                    }
+
+                    _endStep = Mathf.CeilToInt(0.05f / _maskAnimationStep);
+                    break;
+                case WindowTransition.DamageGlitch:
+                    for (int j = 0; j < _maskIndex.GetLength(1); j++)
+                    {
+                        for (int i = 0; i < _maskIndex.GetLength(0); i++)
+                        {
+                            if (Random.value > 0.95f)
+                                _maskIndex[i, j] = Random.Range(0, TextUtility.FADE_IN.Length - 1);
+                        }
+                    }
+
+                    _endStep = Mathf.CeilToInt(0.05f / _maskAnimationStep);
+                    break;
+            }
+
+            return _endStep * _maskAnimationStep;
+        }
+
+        string LineFill(char pattern, int count) => TextUtility.Repeat(pattern, count) + TextUtility.LineBreaker;
+
+        public void SetActive(bool active)
+        {
+            if (active)
+            {
+                mask.SetText(_maskText);
+                _nextUpdate = Mathf.NegativeInfinity;
+            }
+            else
+            {
+                mask.SetText(string.Empty);
+                _nextUpdate = Mathf.Infinity;
+            }
+        }
+
+        public void SetColor(ColorCode code)
+        {
+            mask.color = StyleUtility.ColorSetting(code);
+        }
+
+
+        public void TriggerGlitch()
+        {
+            _currentFadeType = FadeType.GlitchVFX;
+            SetupTransition(CurrentTransition);
+        }
+
+        public void TriggerEffect(WindowTransition type)
+        {
+            SetupTransition(type);
+        }
+
+        public void TriggerDamageGlitch()
+        {
+            _currentFadeType = FadeType.DamageGlitchVFX;
+            SetupTransition(CurrentTransition);
+        }
+    }
 }

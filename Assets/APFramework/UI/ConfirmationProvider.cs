@@ -1,0 +1,57 @@
+using System;
+using ChosenConcept.APFramework.Interface.Framework.Element;
+using UnityEngine;
+
+namespace ChosenConcept.APFramework.Interface.Framework
+{
+    public class ConfirmationProvider : CompositeMenuMono
+    {
+        LayoutAlignment _layout;
+
+        protected override void InitializeUI()
+        {
+            _layout = InitNewLayout();
+        }
+
+        public void GetConfirm(string title, string message, string confirm,
+            string cancel, Action onConfirm,
+            Action onCancel, ConfirmDefaultChoice defaultChoice)
+        {
+            ClearWindows(true);
+            WindowSetup messageSetup = WindowSetup.defaultSetup;
+            messageSetup.SetTitleStyle(WindowTitleStyle.EmbeddedTitle);
+            messageSetup.SetOutlineDisplayStyle(WindowOutlineDisplayStyle.Always);
+            WindowUI messageWindow = NewWindow("Message", _layout, messageSetup);
+            messageWindow.SetLabel(title);
+            AddText("Message", messageWindow).SetLabel(message);
+            messageWindow.Resize(50);
+            ButtonUI confirmButton = AddButton("Confirm", _layout, () =>
+            {
+                CloseMenu(true);
+                onConfirm.Invoke();
+            });
+            confirmButton.SetLabel(confirm);
+            confirmButton.AutoResize();
+            if (cancel != null)
+            {
+                ButtonUI cancelButton = AddButton("Cancel", _layout, () =>
+                {
+                    CloseMenu(true);
+                    onCancel.Invoke();
+                });
+                cancelButton.SetLabel(cancel);
+                cancelButton.AutoResize();
+            }
+
+            OpenMenu(true);
+            _currentSelection = defaultChoice switch
+            {
+                ConfirmDefaultChoice.Confirm => new Vector2Int(1, 0),
+                ConfirmDefaultChoice.Cancel => new Vector2Int(2, 0),
+                ConfirmDefaultChoice.None => new Vector2Int(-1, -1),
+                _ => throw new ArgumentOutOfRangeException(nameof(defaultChoice), defaultChoice, null)
+            };
+            currentSelectable?.SetFocus(true);
+        }
+    }
+}
