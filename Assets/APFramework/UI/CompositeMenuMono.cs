@@ -11,27 +11,27 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         [SerializeField] protected MenuSetup _menuSetup = MenuSetup.defaultSetup;
         [SerializeField] protected MenuStyling _menuDefaultStyling = MenuStyling.defaultStyling;
-        [SerializeField] [ReadOnly] protected List<WindowUI> _instanceWindows = new();
-        [SerializeField] [ReadOnly] protected List<LayoutAlignment> _instanceLayoutAlignment = new();
-        [SerializeField] [ReadOnly] protected bool _initialized;
-        [SerializeField] [ReadOnly] protected bool _displayActive;
-        [SerializeField] [ReadOnly] protected bool _navigationActive;
-        [SerializeField] [ReadOnly] protected bool _valueDirty;
-        [SerializeField] [ReadOnly] protected int _linkFrame = -1;
-        [SerializeField] [ReadOnly] protected float _nextNavigationUpdate = Mathf.Infinity;
-        [SerializeField] [ReadOnly] protected Vector2Int _currentSelection = Vector2Int.zero;
-        [SerializeField] [ReadOnly] protected bool _windowElementLocationCached;
-        [SerializeField] [ReadOnly] protected float _holdStart = Mathf.Infinity;
-        [SerializeField] [ReadOnly] protected float _holdNavigationNext = Mathf.Infinity;
-        [SerializeField] [ReadOnly] protected Vector2 _move = Vector2.zero;
-        [SerializeField] [ReadOnly] protected Vector2 _mouseScroll = Vector2.zero;
-        [SerializeField] [ReadOnly] protected Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField] [ReadOnly] protected bool _mouseActive;
-        [SerializeField] [ReadOnly] protected bool _hoverOnDecrease;
-        [SerializeField] [ReadOnly] protected bool _hoverOnIncrease;
-        [SerializeField] [ReadOnly] protected bool _inElementInputMode;
-        [SerializeField] [ReadOnly] protected bool _selectionUpdated;
-        [SerializeField] [ReadOnly] protected CompositeMenuMono _lastMenu;
+        [SerializeField]  protected List<WindowUI> _instanceWindows = new();
+        [SerializeField]  protected List<LayoutAlignment> _instanceLayoutAlignment = new();
+        [SerializeField]  protected bool _initialized;
+        [SerializeField]  protected bool _displayActive;
+        [SerializeField]  protected bool _navigationActive;
+        [SerializeField]  protected bool _valueDirty;
+        [SerializeField]  protected int _linkFrame = -1;
+        [SerializeField]  protected float _nextNavigationUpdate = Mathf.Infinity;
+        [SerializeField]  protected Vector2Int _currentSelection = Vector2Int.zero;
+        [SerializeField]  protected bool _windowElementLocationCached;
+        [SerializeField]  protected float _holdStart = Mathf.Infinity;
+        [SerializeField]  protected float _holdNavigationNext = Mathf.Infinity;
+        [SerializeField]  protected Vector2 _move = Vector2.zero;
+        [SerializeField]  protected Vector2 _mouseScroll = Vector2.zero;
+        [SerializeField]  protected Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField]  protected bool _mouseActive;
+        [SerializeField]  protected bool _hoverOnDecrease;
+        [SerializeField]  protected bool _hoverOnIncrease;
+        [SerializeField]  protected bool _inElementInputMode;
+        [SerializeField]  protected bool _selectionUpdated;
+        [SerializeField]  protected CompositeMenuMono _lastMenu;
 
         public ButtonUI currentSelectable
         {

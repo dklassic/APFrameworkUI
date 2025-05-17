@@ -11,27 +11,27 @@ namespace ChosenConcept.APFramework.Interface.Framework
     [Serializable]
     public class CompositeMenu : IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
     {
-        [SerializeField] [ReadOnly] string _menuName;
-        [SerializeField] [ReadOnly] MenuSetup _menuSetup;
-        [SerializeField] [ReadOnly] MenuStyling _menuStyling;
-        [SerializeField] [ReadOnly] List<WindowUI> _instanceWindows = new();
-        [SerializeField] [ReadOnly] List<LayoutAlignment> _instanceLayoutAlignment = new();
-        [SerializeField] [ReadOnly] bool _displayActive;
-        [SerializeField] [ReadOnly] bool _navigationActive;
-        [SerializeField] [ReadOnly] int _linkFrame = -1;
-        [SerializeField] [ReadOnly] float _nextNavigationUpdate = Mathf.Infinity;
-        [SerializeField] [ReadOnly] Vector2Int _currentSelection = Vector2Int.zero;
-        [SerializeField] [ReadOnly] bool _windowElementLocationCached;
-        [SerializeField] [ReadOnly] float _holdStart = Mathf.Infinity;
-        [SerializeField] [ReadOnly] float _holdNavigationNext = Mathf.Infinity;
-        [SerializeField] [ReadOnly] Vector2 _move = Vector2.zero;
-        [SerializeField] [ReadOnly] Vector2 _mouseScroll = Vector2.zero;
-        [SerializeField] [ReadOnly] Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField] [ReadOnly] bool _mouseActive;
-        [SerializeField] [ReadOnly] bool _hoverOnDecrease;
-        [SerializeField] [ReadOnly] bool _hoverOnIncrease;
-        [SerializeField] [ReadOnly] bool _inElementInputMode;
-        [SerializeField] [ReadOnly] bool _selectionUpdated;
+        [SerializeField]  string _menuName;
+        [SerializeField]  MenuSetup _menuSetup;
+        [SerializeField]  MenuStyling _menuStyling;
+        [SerializeField]  List<WindowUI> _instanceWindows = new();
+        [SerializeField]  List<LayoutAlignment> _instanceLayoutAlignment = new();
+        [SerializeField]  bool _displayActive;
+        [SerializeField]  bool _navigationActive;
+        [SerializeField]  int _linkFrame = -1;
+        [SerializeField]  float _nextNavigationUpdate = Mathf.Infinity;
+        [SerializeField]  Vector2Int _currentSelection = Vector2Int.zero;
+        [SerializeField]  bool _windowElementLocationCached;
+        [SerializeField]  float _holdStart = Mathf.Infinity;
+        [SerializeField]  float _holdNavigationNext = Mathf.Infinity;
+        [SerializeField]  Vector2 _move = Vector2.zero;
+        [SerializeField]  Vector2 _mouseScroll = Vector2.zero;
+        [SerializeField]  Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField]  bool _mouseActive;
+        [SerializeField]  bool _hoverOnDecrease;
+        [SerializeField]  bool _hoverOnIncrease;
+        [SerializeField]  bool _inElementInputMode;
+        [SerializeField]  bool _selectionUpdated;
 
         public ButtonUI currentSelectable
         {

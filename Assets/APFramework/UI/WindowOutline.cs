@@ -43,15 +43,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        [SerializeField] [ReadOnly] bool _singleWindowOverride = false;
-        [SerializeField] [ReadOnly] bool _inFocus = false;
-        [SerializeField] [ReadOnly] bool _available = true;
-        [SerializeField] [ReadOnly] bool _inInput = false;
-        [SerializeField] [ReadOnly] bool _active = false;
-        [SerializeField] [ReadOnly] bool _hasOutline = false;
+        [SerializeField]  bool _singleWindowOverride = false;
+        [SerializeField]  bool _inFocus = false;
+        [SerializeField]  bool _available = true;
+        [SerializeField]  bool _inInput = false;
+        [SerializeField]  bool _active = false;
+        [SerializeField]  bool _hasOutline = false;
         Coroutine _coroutine = null;
-        [SerializeField] [ReadOnly] Vector2Int _size;
-        [SerializeField] [ReadOnly] WindowOutlineDisplayStyle _displayStyle;
+        [SerializeField]  Vector2Int _size;
+        [SerializeField]  WindowOutlineDisplayStyle _displayStyle;
         public string targetText => ZString.Format("Allocating {0}x{1}", _size.x, _size.y);
 
         public void SetOpacity(float alpha)

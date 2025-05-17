@@ -1,9 +1,5 @@
 # APFramework UI System
 
-> [!IMPORTANT]  
-> The project is currently considered in the state of pre-release, which means breaking change will happen all the time as I figure out how to generalize the usage of it better.
-> If you're interested in using it in production, make sure to fork it out and simply modify it to suite your project better.
-
 > A Text Mesh Pro based text only UI system for Unity
 
 APFramework is a framework created by [DK Liao](https://twitter.com/RandomDevDK) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
@@ -21,7 +17,24 @@ The UI system is heavily coupled with Text Mesh Pro at the moment but should be 
 
 The creation of this UI system is heavily inspired by [PhiOS](https://github.com/pblca/PhiOS) (mirror repo) made by [phi6](https://twitter.com/phi6).
 
-# How to Use
+# Getting Started
+
+APFramework's UI system is a very code based system, it is best used when you want to have a quick debug menu instantiated everywhere without the need to commit to making UIs for every random usage. That being said, you can also try to make use of APFramework's UI logic and rework the presentation yourself.
+
+There are three styles of APFramework usage:
+
+- CompositeMenuMono
+- CompositeMenu
+- SimpleMenu
+
+I would advise agaisnt mixing and matching them but you do you.
+
+## CompositeMenuMono
+
+
+
+## CompositeMenu
+## SimpleMenu
 
 A quick UI code would look like this:
 ```C#
@@ -78,6 +91,7 @@ Some other quick notes:
 - Unity 2021 LTS (but this system's creation dated back to the days of Unity 2019 so should be widely compatible)
 - Text Mesh Pro
 - Input System
+- ZString
 
 # Features
 
@@ -96,7 +110,6 @@ Some other quick notes:
 - Slider (Integer choice only)
 - SliderWithChoice (String based choice)
 - Toggle
-- ExclusiveToggle (cancels out other ExclusiveToggles when one is selected)
 
 ## Window
 
@@ -104,13 +117,6 @@ Some other quick notes:
 - Tons of predefined text based window style
 - Tons of window mask animations to be used upon opening and closing UI
 - To be able to show Title and Subscript of a window
-
-# Futurework
-
-- [ ] Improve documentation and explain more in detail
-- [ ] Scrollable window
-- [ ] Better exposed event timing?
-- [ ] Better exposed general setting?
 
 # Fonts Included
 

@@ -23,12 +23,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] Material _blurMaterial;
         [SerializeField] Material _transparentMaterial;
         [SerializeField] Camera _interfaceCamera;
-        [SerializeField] [ReadOnly] List<WindowUI> _windows = new();
-        [SerializeField] [ReadOnly] List<CompositeMenuMono> _compositeMenuMonos = new();
-        [SerializeField] [ReadOnly] List<CompositeMenu> _compositeMenus = new();
-        [SerializeField] [ReadOnly] List<SimpleMenu> _simpleMenus = new();
-        [SerializeField] [ReadOnly] Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField] [ReadOnly] RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
+        [SerializeField]  List<WindowUI> _windows = new();
+        [SerializeField]  List<CompositeMenuMono> _compositeMenuMonos = new();
+        [SerializeField]  List<CompositeMenu> _compositeMenus = new();
+        [SerializeField]  List<SimpleMenu> _simpleMenus = new();
+        [SerializeField]  Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField]  RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
         Dictionary<WindowLayer, Canvas> _layers = new();
         Dictionary<WindowLayer, Canvas> _backgroundLayers = new();
         IMenuInputTarget _activeMenuTarget;

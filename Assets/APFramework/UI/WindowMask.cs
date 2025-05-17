@@ -15,9 +15,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             DamageGlitchVFX,
         }
 
-        [SerializeField] [ReadOnly] WindowTransition _windowTransitionIn = WindowTransition.Full;
-        [SerializeField] [ReadOnly] WindowTransition _windowTransitionOut = WindowTransition.FromLeftLagged;
-        [SerializeField] [ReadOnly] FadeType _currentFadeType = FadeType.FadeIn;
+        [SerializeField]  WindowTransition _windowTransitionIn = WindowTransition.Full;
+        [SerializeField]  WindowTransition _windowTransitionOut = WindowTransition.FromLeftLagged;
+        [SerializeField]  FadeType _currentFadeType = FadeType.FadeIn;
         [SerializeField] TextMeshProUGUI _mask;
         public TextMeshProUGUI mask => _mask;
         string _maskText = TextUtility.FADE_IN;
@@ -25,12 +25,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         int[,] _maskIndex;
         string _maskString = TextUtility.FADE_IN;
         int _fillLine = 0;
-        [SerializeField] [ReadOnly] int _widthCount = 0;
-        [SerializeField] [ReadOnly] int _heightCount = 0;
-        [SerializeField] [ReadOnly] float _nextUpdate = Mathf.Infinity;
-        [SerializeField] [ReadOnly] int _endStep = 0;
-        [SerializeField] [ReadOnly] int _currentStep = -1;
-        [SerializeField] [ReadOnly] bool _initialized = false;
+        [SerializeField]  int _widthCount = 0;
+        [SerializeField]  int _heightCount = 0;
+        [SerializeField]  float _nextUpdate = Mathf.Infinity;
+        [SerializeField]  int _endStep = 0;
+        [SerializeField]  int _currentStep = -1;
+        [SerializeField]  bool _initialized = false;
 
         public void Initialize()
         {
