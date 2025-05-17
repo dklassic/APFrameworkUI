@@ -11,6 +11,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         [SerializeField] protected MenuSetup _menuSetup = MenuSetup.defaultSetup;
         [SerializeField] protected MenuStyling _menuDefaultStyling = MenuStyling.defaultStyling;
+        [Header("Debug View")]
         [SerializeField]  protected List<WindowUI> _instanceWindows = new();
         [SerializeField]  protected List<LayoutAlignment> _instanceLayoutAlignment = new();
         [SerializeField]  protected bool _initialized;

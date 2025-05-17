@@ -11,6 +11,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     [Serializable]
     public class CompositeMenu : IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
     {
+        [Header("Debug View")]
         [SerializeField]  string _menuName;
         [SerializeField]  MenuSetup _menuSetup;
         [SerializeField]  MenuStyling _menuStyling;
