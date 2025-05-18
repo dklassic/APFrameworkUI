@@ -55,7 +55,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 if (modifiedLines.Count >= _contentHeight)
                     break;
                 string line = lines[i];
-                if (_cachedContentWidth > 0 && TextUtility.ActualLength(line) > _cachedContentWidth)
+                if (_cachedContentWidth > 0 && TextUtility.WidthSensitiveLength(line) > _cachedContentWidth)
                 {
                     List<string> cuts = TextUtility.StringCutter(line, _cachedContentWidth);
                     for (int j = 0; j < cuts.Count; j++)

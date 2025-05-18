@@ -8,7 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         protected int _min = 0;
         protected int _max = 10;
         Action<int> _action;
-        public override int getMaxLength => TextUtility.ActualLength(formattedContent) + 2;
+        public override int getMaxLength => TextUtility.WidthSensitiveLength(formattedContent) + 2;
         public override string formattedContent => labelPrefix + _count;
 
         public override int count

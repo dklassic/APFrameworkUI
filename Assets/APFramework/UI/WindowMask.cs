@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using Cysharp.Text;
-using Unity.Collections;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {

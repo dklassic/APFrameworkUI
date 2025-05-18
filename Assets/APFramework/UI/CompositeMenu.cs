@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using ChosenConcept.APFramework.Interface.Framework.Element;
-using Unity.Collections;
 using Object = UnityEngine.Object;
 
 namespace ChosenConcept.APFramework.Interface.Framework
@@ -11,29 +10,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
     [Serializable]
     public class CompositeMenu : IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
     {
-        [Header("Debug View")]
-        [SerializeField]  string _menuName;
-        [SerializeField]  MenuSetup _menuSetup;
-        [SerializeField]  MenuStyling _menuStyling;
-        [SerializeField]  List<WindowUI> _instanceWindows = new();
-        [SerializeField]  List<LayoutAlignment> _instanceLayoutAlignment = new();
-        [SerializeField]  bool _displayActive;
-        [SerializeField]  bool _navigationActive;
-        [SerializeField]  int _linkFrame = -1;
-        [SerializeField]  float _nextNavigationUpdate = Mathf.Infinity;
-        [SerializeField]  Vector2Int _currentSelection = Vector2Int.zero;
-        [SerializeField]  bool _windowElementLocationCached;
-        [SerializeField]  float _holdStart = Mathf.Infinity;
-        [SerializeField]  float _holdNavigationNext = Mathf.Infinity;
-        [SerializeField]  Vector2 _move = Vector2.zero;
-        [SerializeField]  Vector2 _mouseScroll = Vector2.zero;
-        [SerializeField]  Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField]  bool _mouseActive;
-        [SerializeField]  bool _hoverOnDecrease;
-        [SerializeField]  bool _hoverOnIncrease;
-        [SerializeField]  bool _inElementInputMode;
-        [SerializeField]  bool _selectionUpdated;
+        [Header("Debug View")] [SerializeField]
+        string _menuName;
 
+        [SerializeField] MenuSetup _menuSetup;
+        [SerializeField] MenuStyling _menuStyling;
+        [SerializeField] List<WindowUI> _windowInstances = new();
+        [SerializeField] List<LayoutAlignment> _layoutAlignmentInstances = new();
+        [SerializeField] bool _displayActive;
+        [SerializeField] bool _navigationActive;
+        [SerializeField] int _linkFrame = -1;
+        [SerializeField] float _nextNavigationUpdate = Mathf.Infinity;
+        [SerializeField] Vector2Int _currentSelection = Vector2Int.zero;
+        [SerializeField] float _holdStart = Mathf.Infinity;
+        [SerializeField] float _holdNavigationNext = Mathf.Infinity;
+        [SerializeField] Vector2 _move = Vector2.zero;
+        [SerializeField] Vector2 _mouseScroll = Vector2.zero;
+        [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField] bool _mouseActive;
+        [SerializeField] bool _hoverOnDecrease;
+        [SerializeField] bool _hoverOnIncrease;
+        [SerializeField] bool _inElementInputMode;
+        [SerializeField] bool _selectionUpdated;
+
+        bool windowPositionCached => _windowInstances.All(x => x.positionCached); 
         public ButtonUI currentSelectable
         {
             get
@@ -63,22 +63,22 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _menuStyling.layoutSetup = layoutSetup;
         }
 
-        public bool ExistsSelectable(int i) => _instanceWindows[0].interactables.Count > i && i >= 0;
+        public bool ExistsSelectable(int i) => _windowInstances[0].interactables.Count > i && i >= 0;
 
         public bool ExistsSelectable(int i, int j) =>
-            _instanceWindows.Count > i && i >= 0 && _instanceWindows[i].interactables.Count > j && j >= 0;
+            _windowInstances.Count > i && i >= 0 && _windowInstances[i].interactables.Count > j && j >= 0;
 
-        public List<ButtonUI> GetSelectableList(int i = 0) => _instanceWindows[i].interactables;
-        public ButtonUI GetSelectable(int i) => _instanceWindows[0].interactables[i];
-        public ButtonUI GetSelectable(int i, int j) => _instanceWindows[i].interactables[j];
+        public List<ButtonUI> GetSelectableList(int i = 0) => _windowInstances[i].interactables;
+        public ButtonUI GetSelectable(int i) => _windowInstances[0].interactables[i];
+        public ButtonUI GetSelectable(int i, int j) => _windowInstances[i].interactables[j];
 
         public ButtonUI GetSelectable(Vector2Int select) =>
-            select.x >= 0 && select.x < _instanceWindows.Count && select.y >= 0 &&
-            select.y < _instanceWindows[select.x].interactables.Count
-                ? _instanceWindows[select.x].interactables[select.y]
+            select.x >= 0 && select.x < _windowInstances.Count && select.y >= 0 &&
+            select.y < _windowInstances[select.x].interactables.Count
+                ? _windowInstances[select.x].interactables[select.y]
                 : null;
 
-        public void UpdateMenu()
+        public virtual void UpdateMenu()
         {
             if (!_displayActive)
                 return;
@@ -89,7 +89,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateNavigation()
         {
-            if (!_instanceWindows.Any(x => x.interactables.Any()))
+            if (!_windowInstances.Any(x => x.interactables.Any()))
                 return;
             UpdateMouseNavigation();
             if (Time.unscaledTime < _nextNavigationUpdate)
@@ -110,7 +110,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ForceUpdateDisplayContent()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.InvokeUpdate();
             }
@@ -118,7 +118,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void SetOpacity(float opacity)
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.SetOpacity(opacity);
             }
@@ -129,7 +129,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             LayoutAlignment layout =
                 WindowManager.instance.InstantiateLayout(_menuStyling.layoutSetup,
                     menuTag);
-            _instanceLayoutAlignment.Add(layout);
+            _layoutAlignmentInstances.Add(layout);
             return layout;
         }
 
@@ -140,7 +140,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             LayoutAlignment layout = InitializeNewLayout();
             WindowUI window = WindowManager.instance.NewWindow(windowName, layout, setup, menuTag);
-            _instanceWindows.Add(window);
+            _windowInstances.Add(window);
             return window;
         }
 
@@ -150,7 +150,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public WindowUI NewWindow(string windowName, LayoutAlignment layout, WindowSetup setup)
         {
             WindowUI window = WindowManager.instance.NewWindow(windowName, layout, setup, menuTag);
-            _instanceWindows.Add(window);
+            _windowInstances.Add(window);
             return window;
         }
 
@@ -162,26 +162,26 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void RemoveWindowsAndLayoutGroups()
         {
             ClearWindows(true);
-            foreach (LayoutAlignment alignment in _instanceLayoutAlignment)
+            foreach (LayoutAlignment alignment in _layoutAlignmentInstances)
             {
                 Object.Destroy(alignment.gameObject);
             }
 
-            _instanceLayoutAlignment.Clear();
+            _layoutAlignmentInstances.Clear();
         }
 
         public void ClearWindows(bool removeWindow)
         {
             ClearWindowLocation();
             _currentSelection = Vector2Int.zero;
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 ClearWindow(window, false);
                 if (removeWindow)
                     WindowManager.instance.CloseWindow(window);
             }
 
-            _instanceWindows.Clear();
+            _windowInstances.Clear();
         }
 
         public void ClearWindow(WindowUI window, bool removeWindow)
@@ -189,14 +189,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
             window.ClearElements();
             if (removeWindow)
             {
-                _instanceWindows.Remove(window);
+                _windowInstances.Remove(window);
                 WindowManager.instance.CloseWindow(window);
             }
         }
 
         public void SetAllWindowLocalizedByTag()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.SetLocalizedByTag();
             }
@@ -204,7 +204,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void AutoResizeAllWindows(int extraWidth = 0)
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.AutoResize(extraWidth);
             }
@@ -214,23 +214,23 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             int maxWidth = 0;
             List<int> autoResizeWidths = new List<int>();
-            for (int i = 0; i < _instanceWindows.Count; i++)
+            for (int i = 0; i < _windowInstances.Count; i++)
             {
-                int autoResizeWidth = _instanceWindows[i].GetAutoResizeWidth(0);
+                int autoResizeWidth = _windowInstances[i].GetAutoResizeWidth(0);
                 autoResizeWidths.Add(autoResizeWidth);
                 if (autoResizeWidth > maxWidth)
                     maxWidth = autoResizeWidth;
             }
 
-            for (int i = 0; i < _instanceWindows.Count; i++)
+            for (int i = 0; i < _windowInstances.Count; i++)
             {
-                _instanceWindows[i].AutoResize(maxWidth - autoResizeWidths[i] + extraWidth);
+                _windowInstances[i].AutoResize(maxWidth - autoResizeWidths[i] + extraWidth);
             }
         }
 
         public void Refresh()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.InvokeUpdate();
                 window.RefreshSize();
@@ -239,7 +239,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ContextLanguageChange()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.ContextLanguageChange();
             }
@@ -247,7 +247,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void TriggerResolutionChange()
         {
-            foreach (LayoutAlignment layout in _instanceLayoutAlignment)
+            foreach (LayoutAlignment layout in _layoutAlignmentInstances)
             {
                 layout.ContextResolutionChange();
             }
@@ -255,8 +255,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void MoveWindowToIndex(WindowUI window, int index)
         {
-            _instanceWindows.Remove(window);
-            _instanceWindows.Insert(index, window);
+            _windowInstances.Remove(window);
+            _windowInstances.Insert(index, window);
             window.layoutAlignment.MoveWindowToIndex(window, index);
         }
 
@@ -264,7 +264,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!WindowManager.instance.inputProvider.inputEnabled ||
                 _lastMousePosition == WindowManager.instance.inputProvider.mousePosition ||
-                !WindowManager.instance.inputProvider.hasMouse || _instanceWindows.Count == 0
+                !WindowManager.instance.inputProvider.hasMouse || _windowInstances.Count == 0
                 || !_navigationActive)
             {
                 return;
@@ -273,15 +273,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _lastMousePosition = WindowManager.instance.inputProvider.mousePosition;
             if (!_inElementInputMode)
             {
-                if (_instanceWindows.Count == 1)
+                if (_windowInstances.Count == 1)
                 {
                     _mouseActive = false;
                     // if selectables are more than 1, do precise detection
-                    if (_instanceWindows[0].interactables.Count > 1)
+                    if (_windowInstances[0].interactables.Count > 1)
                     {
-                        for (int i = 0; i < _instanceWindows[0].interactables.Count; i++)
+                        for (int i = 0; i < _windowInstances[0].interactables.Count; i++)
                         {
-                            (Vector2 bottomLeft, Vector2 topRight) = _instanceWindows[0].SelectableBound(i);
+                            (Vector2 bottomLeft, Vector2 topRight) = _windowInstances[0].SelectableBound(i);
                             if (bottomLeft == Vector2.zero && topRight == Vector2.zero)
                                 continue;
                             Vector2 bottomLeftDelta = _lastMousePosition - bottomLeft;
@@ -306,9 +306,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     // Otherwise do window check alone
                     else
                     {
-                        if (_instanceWindows[0].interactables.Count == 0)
+                        if (!_windowInstances[0].canInteract)
                             return;
-                        (Vector2 topLeft, Vector2 bottomRight) = _instanceWindows[0].cachedPosition;
+                        (Vector2 topLeft, Vector2 bottomRight) = _windowInstances[0].cachedPosition;
                         if (topLeft == Vector2.zero && bottomRight == Vector2.zero)
                             return;
                         Vector2 topLeftDelta = _lastMousePosition - topLeft;
@@ -333,11 +333,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 {
                     _mouseActive = false;
                     bool hasEnterWindow = false;
-                    for (int i = 0; i < _instanceWindows.Count; i++)
+                    for (int i = 0; i < _windowInstances.Count; i++)
                     {
-                        if (_instanceWindows[i].interactables.Count == 0)
+                        if (!_windowInstances[i].canInteract)
                             continue;
-                        (Vector2 topLeft, Vector2 bottomRight) = _instanceWindows[i].cachedPosition;
+                        (Vector2 topLeft, Vector2 bottomRight) = _windowInstances[i].cachedPosition;
                         if (topLeft == Vector2.zero && bottomRight == Vector2.zero)
                             continue;
                         Vector2 topLeftDelta = _lastMousePosition - topLeft;
@@ -352,7 +352,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             _selectionUpdated = true;
                             currentSelectable?.SetFocus(false);
                             _currentSelection[0] = i;
-                            int count = _instanceWindows[i].interactables.Count;
+                            int count = _windowInstances[i].interactables.Count;
                             RefocusAtNearestElement(_lastMousePosition, _currentSelection[0]);
                             _currentSelection[1] = Mathf.Clamp(_currentSelection[1], 0, count - 1);
                             currentSelectable?.SetFocus(true);
@@ -369,10 +369,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     if (_currentSelection[0] < 0)
                         return;
                     // Selectable detection
-                    for (int i = 0; i < _instanceWindows[_currentSelection[0]].interactables.Count; i++)
+                    for (int i = 0; i < _windowInstances[_currentSelection[0]].interactables.Count; i++)
                     {
                         (Vector2 bottomLeft, Vector2 topRight) =
-                            _instanceWindows[_currentSelection[0]].SelectableBound(i);
+                            _windowInstances[_currentSelection[0]].SelectableBound(i);
                         if (bottomLeft == Vector2.zero && topRight == Vector2.zero)
                             continue;
                         Vector2 bottomLeftDelta = _lastMousePosition - bottomLeft;
@@ -442,11 +442,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateWindowLocation()
         {
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
             {
-                // SetOpacity(1, true);
-                _windowElementLocationCached = true;
-                foreach (WindowUI window in _instanceWindows)
+                foreach (WindowUI window in _windowInstances)
                 {
                     window.UpdateElementsAndWindowPosition();
                 }
@@ -468,7 +466,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ResetSelection()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 foreach (ButtonUI element in window.interactables)
                 {
@@ -479,9 +477,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _currentSelection = Vector2Int.zero;
             if (GetSelectable(_currentSelection) == null)
             {
-                for (int i = 0; i < _instanceWindows.Count; i++)
+                for (int i = 0; i < _windowInstances.Count; i++)
                 {
-                    if (_instanceWindows[i].interactables.Count == 0)
+                    if (!_windowInstances[i].canInteract)
                         continue;
                     _currentSelection = new Vector2Int(i, 0);
                     break;
@@ -494,7 +492,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         // Used to set all windows in unselected state
         public void ClearSelection()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 foreach (ButtonUI element in window.interactables)
                 {
@@ -507,12 +505,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void SetSelection(int x = 0, int y = 0)
         {
-            if (_instanceWindows.Count > _currentSelection.x &&
-                _instanceWindows[_currentSelection.x].interactables.Count > _currentSelection.y)
+            if (_windowInstances.Count > _currentSelection.x &&
+                _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
                 GetSelectable(_currentSelection).SetFocus(false);
             _currentSelection = new Vector2Int(x, y);
-            if (_instanceWindows.Count > _currentSelection.x &&
-                _instanceWindows[_currentSelection.x].interactables.Count > _currentSelection.y)
+            if (_windowInstances.Count > _currentSelection.x &&
+                _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
                 GetSelectable(_currentSelection).SetFocus(true);
         }
 
@@ -531,7 +529,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearElementsFocus()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.ClearElementsFocus();
             }
@@ -539,13 +537,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearWindowFocus()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.ClearWindowFocus();
             }
         }
 
-        void UpdateSelection()
+        protected virtual void UpdateSelection()
         {
             if (!_navigationActive)
                 return;
@@ -565,7 +563,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
             else
             {
-                UpdateSelectionProcess();
+                UpdateSelectionProcess(_move.normalized);
             }
 
             if (mouseScrollOverride)
@@ -575,186 +573,151 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        void UpdateSelectionProcess()
+        protected virtual void UpdateSelectionProcess(Vector2 move)
         {
             if (!_inElementInputMode)
             {
-                currentSelectable?.SetFocus(false);
-                int xBefore = _currentSelection[0];
-                int yBefore = _currentSelection[1];
-                if (_menuSetup.navigationDirection is UISystemNavigationDirection.X or UISystemNavigationDirection.Y)
+                // First determine if movement within window happens
+                float minScore = Mathf.Infinity;
+                WindowUI currentWindow = _windowInstances[_currentSelection[0]];
+                int nearestInteractableIndex = _currentSelection[1];
+                for (int i = 0; i < currentWindow.interactables.Count; i++)
                 {
-                    int offset = _menuSetup.navigationDirection switch
+                    if (i == _currentSelection[1])
+                        continue;
+                    Vector2 selectableLocation = currentWindow.interactables[i].cachedPosition.Item1;
+                    Vector2 direction = selectableLocation - currentSelectable.cachedPosition.Item1;
+                    float distance = direction.sqrMagnitude;
+                    Vector2 directionNormalized = direction.normalized;
+                    float dotProduct = Vector2.Dot(move, directionNormalized);
+                    if (distance < minScore && dotProduct > .5f)
                     {
-                        UISystemNavigationDirection.X => Mathf.RoundToInt(_move.x) switch
-                        {
-                            1 => 1,
-                            -1 => -1,
-                            _ => 0
-                        },
-                        UISystemNavigationDirection.Y => Mathf.RoundToInt(_move.y) switch
-                        {
-                            1 => -1,
-                            -1 => 1,
-                            _ => 0
-                        },
-                        _ => 0
-                    };
-                    _currentSelection[1] += offset;
-                    if (_instanceWindows.Count == 1)
-                    {
-                        int count = GetSelectableList().Count;
-                        if (_menuSetup.allowCycle)
-                            _currentSelection[1] = _currentSelection[1] >= 0 ? _currentSelection[1] % count : count - 1;
-                        else
-                            _currentSelection[1] = Mathf.Clamp(_currentSelection[1], 0, count - 1);
-                    }
-                    else
-                    {
-                        int currentSelectableCount = GetSelectableList(_currentSelection[0]).Count;
-                        int windowCount = _instanceWindows.Count;
-                        if (_currentSelection[1] < 0)
-                        {
-                            int resultWindow = _currentSelection[0] - 1;
-                            while (resultWindow >= 0 && GetSelectableList(resultWindow).Count == 0)
-                                resultWindow--;
-                            if (resultWindow < 0)
-                                resultWindow = windowCount - 1;
-                            if (resultWindow > _currentSelection[0] && _menuSetup.allowCycle ||
-                                resultWindow <= _currentSelection[0])
-                            {
-                                _currentSelection[0] = resultWindow;
-                                _currentSelection[1] = GetSelectableList(_currentSelection[0]).Count - 1;
-                            }
-                            else
-                            {
-                                _currentSelection[1] = 0;
-                            }
-                        }
-                        else if (_currentSelection[1] > currentSelectableCount - 1)
-                        {
-                            int resultWindow = _currentSelection[0] + 1;
-                            while (resultWindow < windowCount && GetSelectableList(resultWindow).Count == 0)
-                                resultWindow++;
-                            if (resultWindow > windowCount - 1)
-                                resultWindow = 0;
-                            if (_menuSetup.allowCycle && resultWindow < _currentSelection[0] ||
-                                resultWindow > _currentSelection[0])
-                            {
-                                _currentSelection[0] = resultWindow;
-                                _currentSelection[1] = 0;
-                            }
-                            else
-                            {
-                                _currentSelection[1] = currentSelectableCount - 1;
-                            }
-                        }
-                    }
-                }
-                else if (_menuSetup.navigationDirection == UISystemNavigationDirection.ClosestDirectionMatch)
-                {
-                    bool axisState = Mathf.Abs(_move.x) > Mathf.Abs(_move.y);
-                    Vector2 inputDirection =
-                        axisState ? Vector2.right * Mathf.Sign(_move.x) : Vector2.up * Mathf.Sign(_move.y);
-                    float minDistance = Mathf.Infinity;
-                    (Vector2 item1, _) = _instanceWindows[xBefore].interactables[yBefore].cachedPosition;
-                    Vector2 currentSelectableLocation = item1;
-                    foreach (WindowUI window in _instanceWindows)
-                    {
-                        if (window.interactables.Count == 0)
-                            continue;
-                        for (int i = 0; i < window.interactables.Count; i++)
-                        {
-                            (Vector2 position1, _) = window.interactables[i].cachedPosition;
-                            Vector2 selectableLocation = position1;
-                            Vector2 direction = selectableLocation - currentSelectableLocation;
-                            float distance = direction.sqrMagnitude;
-                            Vector2 directionNormalized = direction.normalized;
-                            if (distance < minDistance && Vector2.Dot(directionNormalized, inputDirection) > .5f)
-                            {
-                                minDistance = distance;
-                                _currentSelection[0] = _instanceWindows.IndexOf(window);
-                                _currentSelection[1] = i;
-                            }
-                        }
-                    }
-                }
-                else if (_menuSetup.navigationDirection == UISystemNavigationDirection.TwoWay)
-                {
-                    if (Mathf.Abs(_move.x) > Mathf.Abs(_move.y))
-                    {
-                        int offset = Mathf.RoundToInt(_move.x) switch
-                        {
-                            1 => 1,
-                            -1 => -1,
-                            _ => 0
-                        };
-                        int targetSelection = _currentSelection[0];
-                        while (targetSelection == _currentSelection[0] || GetSelectableList(targetSelection).Count == 0)
-                        {
-                            targetSelection += offset;
-                            if (_menuSetup.allowCycle && targetSelection < 0)
-                            {
-                                targetSelection = _instanceWindows.Count - 1;
-                            }
-                            else if (_menuSetup.allowCycle && targetSelection >= _instanceWindows.Count)
-                            {
-                                targetSelection = 0;
-                            }
-                            else if (!_menuSetup.allowCycle &&
-                                     (targetSelection < 0 || targetSelection >= _instanceWindows.Count) ||
-                                     targetSelection == _currentSelection[0])
-                            {
-                                targetSelection = _currentSelection[0];
-                                break;
-                            }
-                        }
-
-                        if (targetSelection != _currentSelection[0])
-                        {
-                            Vector2 currentSelectableLocation = _instanceWindows[_currentSelection[0]]
-                                .interactables[_currentSelection[1]].cachedPosition.Item1;
-                            _currentSelection[0] = targetSelection;
-                            float minDistanceY = Mathf.Infinity;
-                            for (int i = 0; i < _instanceWindows[_currentSelection[0]].interactables.Count; i++)
-                            {
-                                Vector2 selectableLocation = _instanceWindows[_currentSelection[0]].interactables[i]
-                                    .cachedPosition.Item1;
-                                float distanceY = Mathf.Abs(selectableLocation.y - currentSelectableLocation.y);
-                                if (distanceY < minDistanceY)
-                                {
-                                    minDistanceY = distanceY;
-                                    _currentSelection[1] = i;
-                                }
-                            }
-
-                            _currentSelection[1] = Mathf.Clamp(_currentSelection[1], 0,
-                                GetSelectableList(_currentSelection[0]).Count - 1);
-                        }
-                    }
-                    else
-                    {
-                        int offset = Mathf.RoundToInt(_move.y) switch
-                        {
-                            1 => -1,
-                            -1 => 1,
-                            _ => 0
-                        };
-                        _currentSelection[1] += offset;
-                        int count = GetSelectableList(_currentSelection[0]).Count;
-                        if (_menuSetup.allowCycle)
-                            _currentSelection[1] = _currentSelection[1] >= 0 ? _currentSelection[1] % count : count - 1;
-                        else
-                            _currentSelection[1] = Mathf.Clamp(_currentSelection[1], 0, count - 1);
+                        minScore = distance;
+                        nearestInteractableIndex = i;
                     }
                 }
 
-                if (xBefore != _currentSelection[0] || yBefore != _currentSelection[1])
+                if (nearestInteractableIndex != _currentSelection[1])
                 {
+                    currentSelectable?.SetFocus(false);
+                    _currentSelection[1] = nearestInteractableIndex;
+                    currentSelectable?.SetFocus(true);
                     _selectionUpdated = true;
                 }
 
-                currentSelectable?.SetFocus(true);
+                // Check for movement between windows if no changes were made within the same window
+                if (!_selectionUpdated && _windowInstances.Count(x => x.canInteract) > 1)
+                {
+                    minScore = Mathf.Infinity;
+                    int nearestWindowIndex = _currentSelection[0];
+                    for (int i = 0; i < _windowInstances.Count; i++)
+                    {
+                        if (i == _currentSelection[0] || !_windowInstances[i].canInteract)
+                            continue;
+                        Vector2 windowCenter = _windowInstances[i].cachedCenter;
+                        Vector2 direction = windowCenter - currentWindow.cachedCenter;
+                        float distance = direction.magnitude;
+                        Vector2 directionNormalized = direction / distance;
+                        float dotProduct = Vector2.Dot(move, directionNormalized);
+                        if (dotProduct < .45f)
+                            continue;
+                        // Favoring both shorter distance and better directional match
+                        float score = distance * (2 - Mathf.Sqrt(dotProduct));
+                        if (score < minScore)
+                        {
+                            minScore = score;
+                            nearestWindowIndex = i;
+                        }
+                    }
+
+                    if (nearestWindowIndex != _currentSelection[0])
+                    {
+                        nearestInteractableIndex = -1;
+                        minScore = Mathf.Infinity;
+                        for (int i = 0; i < _windowInstances[nearestWindowIndex].interactables.Count; i++)
+                        {
+                            Vector2 selectableLocation = _windowInstances[nearestWindowIndex].interactables[i]
+                                .cachedPosition.Item1;
+                            Vector2 direction = selectableLocation - currentSelectable.cachedPosition.Item1;
+                            float distance = direction.sqrMagnitude;
+                            if (distance < minScore)
+                            {
+                                minScore = distance;
+                                nearestInteractableIndex = i;
+                            }
+                        }
+
+                        currentSelectable?.SetFocus(false);
+                        _currentSelection[0] = nearestWindowIndex;
+                        _currentSelection[1] = nearestInteractableIndex;
+                        currentSelectable?.SetFocus(true);
+                        _selectionUpdated = true;
+                    }
+                }
+
+                // If no movement within and between window, we prioritize cycling within window if allowed
+                if (!_selectionUpdated && _menuSetup.allowCycleWithinWindow && Mathf.Abs(_move.y) >= Mathf.Abs(_move.x))
+                {
+                    float maxScore = Mathf.NegativeInfinity;
+                    int farthestInteractableIndex = _currentSelection[1];
+                    for (int i = 0; i < currentWindow.interactables.Count; i++)
+                    {
+                        if (i == _currentSelection[1])
+                            continue;
+                        Vector2 selectableLocation = currentWindow.interactables[i].cachedPosition.Item1;
+                        Vector2 direction = selectableLocation - currentSelectable.cachedPosition.Item1;
+                        float distance = direction.sqrMagnitude;
+                        if (distance > maxScore)
+                        {
+                            maxScore = distance;
+                            farthestInteractableIndex = i;
+                        }
+                    }
+
+                    if (farthestInteractableIndex != _currentSelection[1])
+                    {
+                        currentSelectable?.SetFocus(false);
+                        _currentSelection[1] = farthestInteractableIndex;
+                        currentSelectable?.SetFocus(true);
+                        _selectionUpdated = true;
+                    }
+                }
+
+                // If all things failed, cycling between windows will be checked
+                if (!_selectionUpdated && _menuSetup.allowCycleBetweenWindows &&
+                    _windowInstances.Count(x => x.canInteract) > 1)
+                {
+                    float maxScore = Mathf.NegativeInfinity;
+                    int farthestWindowIndex = _currentSelection[0];
+                    for (int i = 0; i < _windowInstances.Count; i++)
+                    {
+                        if (i == _currentSelection[0] || !_windowInstances[i].canInteract)
+                            continue;
+                        Vector2 windowCenter = _windowInstances[i].cachedCenter;
+                        Vector2 direction = windowCenter - currentWindow.cachedCenter;
+                        float distance = direction.magnitude;
+                        Vector2 directionNormalized = direction / distance;
+                        float dotProduct = Vector2.Dot(-move, directionNormalized);
+                        if (dotProduct < .45f)
+                            continue;
+                        // Favoring both longer distance and better directional match
+                        float score = distance * Mathf.Sqrt(dotProduct);
+                        if (score > maxScore)
+                        {
+                            maxScore = score;
+                            farthestWindowIndex = i;
+                        }
+                    }
+
+                    if (farthestWindowIndex != _currentSelection[0])
+                    {
+                        currentSelectable?.SetFocus(false);
+                        _currentSelection[0] = farthestWindowIndex;
+                        _currentSelection[1] = 0;
+                        currentSelectable?.SetFocus(true);
+                        _selectionUpdated = true;
+                    }
+                }
             }
             else
             {
@@ -839,13 +802,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!_displayActive)
                 return;
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
                 UpdateWindowLocation();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
-                if (window.interactables.Count == 0)
+                if (!window.canInteract)
                     continue;
                 for (int i = 0; i < window.interactables.Count; i++)
                 {
@@ -854,7 +817,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     if (distance < minDistance)
                     {
                         minDistance = distance;
-                        _currentSelection[0] = _instanceWindows.IndexOf(window);
+                        _currentSelection[0] = _windowInstances.IndexOf(window);
                         _currentSelection[1] = i;
                     }
                 }
@@ -869,12 +832,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!_displayActive)
                 return;
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
                 UpdateWindowLocation();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
-            WindowUI window = _instanceWindows[windowIndex];
-            if (window.interactables.Count > 0)
+            WindowUI window = _windowInstances[windowIndex];
+            if (window.canInteract)
             {
                 for (int i = 0; i < window.interactables.Count; i++)
                 {
@@ -897,12 +860,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!_displayActive)
                 return;
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
                 UpdateWindowLocation();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
-            WindowUI window = _instanceWindows[windowIndex];
-            if (window.interactables.Count > 0)
+            WindowUI window = _windowInstances[windowIndex];
+            if (window.canInteract)
             {
                 for (int i = 0; i < window.interactables.Count; i++)
                 {
@@ -1329,7 +1292,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             AddSliderWithChoice<T>(string elementName, WindowUI window, Action<T> action = null) =>
             window.AddSliderWithChoice<T>(elementName, action);
 
-        bool BaseConfirmAction()
+        public virtual bool BaseConfirmAction()
         {
             bool result = currentSelectable switch
             {
@@ -1408,7 +1371,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
         }
 
-        bool ConfirmSelection()
+        protected virtual bool ConfirmSelection()
         {
             if (!_displayActive)
                 return false;
@@ -1421,7 +1384,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return BaseConfirmAction();
         }
 
-        bool MouseConfirmSelection()
+        protected virtual bool MouseConfirmSelection()
         {
             if (!_displayActive || !_mouseActive)
             {
@@ -1453,30 +1416,36 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ClearWindowLocation();
             if (_hoverOnDecrease)
             {
+                int initialCount = currentSelectable.count;
                 currentSelectable.count -= 1;
+                if (initialCount != currentSelectable.count)
+                    _selectionUpdated = true;
             }
             else if (_hoverOnIncrease)
             {
+                int initialCount = currentSelectable.count;
                 currentSelectable.count += 1;
+                if (initialCount != currentSelectable.count)
+                    _selectionUpdated = true;
             }
 
             return true;
         }
 
-        bool ButtonAction(ButtonUI button)
+        protected virtual bool ButtonAction(ButtonUI button)
         {
             button.TriggerAction();
             return true;
         }
 
-        bool ToggleAction(ToggleUI toggle)
+        protected virtual bool ToggleAction(ToggleUI toggle)
         {
             if (toggle.available)
                 toggle.Toggle();
             return true;
         }
 
-        bool ButtonWithCountAction(ButtonUICountable button, bool increment)
+        protected virtual bool ButtonWithCountAction(ButtonUICountable button, bool increment)
         {
             if (increment)
                 button.count++;
@@ -1485,7 +1454,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool DoubleConfirmAction(ButtonUIDoubleConfirm button, bool confirm)
+        protected virtual bool DoubleConfirmAction(ButtonUIDoubleConfirm button, bool confirm)
         {
             if (confirm)
             {
@@ -1499,7 +1468,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool TextInputAction(TextInputUI textInput)
+        protected virtual bool TextInputAction(TextInputUI textInput)
         {
             CloseMenu();
             WindowManager.instance.GetTextInput(this,
@@ -1508,7 +1477,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool ScrollableTextAction(ScrollableTextUI scrollableText, bool setInput)
+        protected virtual bool ScrollableTextAction(ScrollableTextUI scrollableText, bool setInput)
         {
             if (setInput && !_inElementInputMode)
             {
@@ -1526,7 +1495,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool SliderAction(SliderUI slider, bool setInput)
+        protected virtual bool SliderAction(SliderUI slider, bool setInput)
         {
             if (setInput && !_inElementInputMode)
             {
@@ -1546,7 +1515,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool CancelSelection()
+        protected virtual bool CancelSelection()
         {
             if (!_displayActive)
                 return false;
@@ -1573,7 +1542,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void UpdateWindows()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.InvokeUpdate();
             }
@@ -1581,26 +1550,23 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearWindowLocation(float delay = .1f)
         {
-            // SetOpacity(0.1f, true);
             if (_nextNavigationUpdate < Time.unscaledTime + delay)
             {
                 DelayInput(delay);
             }
 
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.ClearCachedPosition();
             }
-
-            _windowElementLocationCached = false;
         }
 
-        public bool OpenMenu()
+        public virtual bool OpenMenu()
         {
             return OpenMenu(_menuSetup.allowNavigationOnOpen);
         }
 
-        public bool OpenMenu(bool enableNavigation)
+        public virtual bool OpenMenu(bool enableNavigation)
         {
             _displayActive = true;
             _selectionUpdated = true;
@@ -1620,7 +1586,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             _mouseActive = false;
             currentSelectable?.SetFocus(true);
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.SetActive(true);
             }
@@ -1628,7 +1594,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        public bool CloseMenu()
+        public virtual bool CloseMenu()
         {
             if (!_displayActive)
                 return false;
@@ -1646,7 +1612,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             currentSelectable?.SetFocus(false);
             _nextNavigationUpdate = Mathf.Infinity;
             _displayActive = false;
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.SetActive(false);
             }
@@ -1654,9 +1620,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        void TriggerSelectionUpdate()
+        protected virtual void TriggerSelectionUpdate()
         {
-            foreach (WindowUI window in _instanceWindows)
+            foreach (WindowUI window in _windowInstances)
             {
                 window.TriggerSelectionUpdate();
             }

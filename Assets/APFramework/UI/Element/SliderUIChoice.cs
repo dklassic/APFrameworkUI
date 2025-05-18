@@ -37,8 +37,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             get
             {
                 if (_choiceList.Count == 0)
-                    return TextUtility.ActualLength(labelPrefix) + 2;
-                return TextUtility.ActualLength(labelPrefix) + maxContentLength + 2;
+                    return TextUtility.WidthSensitiveLength(labelPrefix) + 2;
+                return TextUtility.WidthSensitiveLength(labelPrefix) + maxContentLength + 2;
             }
         }
 
@@ -56,7 +56,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 int count = 0;
                 foreach (string choice in choiceListContent)
                 {
-                    int choiceLength = TextUtility.ActualLength(choice);
+                    int choiceLength = TextUtility.WidthSensitiveLength(choice);
                     if (choiceLength > count)
                     {
                         count = choiceLength;

@@ -7,6 +7,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         bool _inputEnabled;
         bool _isController;
+        Vector2 _lastMovement;
 
         public bool hasMouse => Mouse.current != null;
         public Vector2 mousePosition => Mouse.current.position.ReadValue();
@@ -74,7 +75,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     _activeTarget?.OnScroll(mouseScroll);
                 }
             }
-            _activeTarget?.OnMove(movement);
+            if(_lastMovement != movement)
+            {
+                _lastMovement = movement;
+                _activeTarget?.OnMove(_lastMovement);
+            }
         }
     }
 }

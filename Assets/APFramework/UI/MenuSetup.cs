@@ -5,9 +5,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
     [Serializable]
     public struct MenuSetup
     {
-        public UISystemNavigationDirection navigationDirection;
         public UISystemSliderDirection slideDirection;
-        public bool allowCycle;
+        public bool allowCycleWithinWindow;
+        public bool allowCycleBetweenWindows;
         public bool cancelOutAllowed;
         public UISystemResetOnOpenBehavior resetOnOpen;
         public bool allowNavigationOnOpen;
@@ -20,9 +20,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public static MenuSetup defaultSetup => new()
         {
-            navigationDirection = UISystemNavigationDirection.TwoWay,
             slideDirection = UISystemSliderDirection.X,
-            allowCycle = false,
+            allowCycleWithinWindow = false,
+            allowCycleBetweenWindows = false,
             cancelOutAllowed = false,
             resetOnOpen = UISystemResetOnOpenBehavior.Disable,
             allowNavigationOnOpen = true,

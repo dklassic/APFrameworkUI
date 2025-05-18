@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using ChosenConcept.APFramework.Interface.Framework.Element;
-using Unity.Collections;
 using Object = UnityEngine.Object;
 
 namespace ChosenConcept.APFramework.Interface.Framework
@@ -9,30 +8,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
     [Serializable]
     public class SimpleMenu : IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
     {
-        [Header("Debug View")]
-        [SerializeField]  string _menuName;
-        [SerializeField]  MenuSetup _menuSetup;
-        [SerializeField]  MenuStyling _menuStyling;
-        [SerializeField]  WindowUI _instanceWindow;
-        [SerializeField]  LayoutAlignment _instanceLayoutAlignment;
-        [SerializeField]  bool _displayActive;
-        [SerializeField]  bool _navigationActive;
-        [SerializeField]  int _linkFrame = -1;
-        [SerializeField]  float _nextNavigationUpdate = Mathf.Infinity;
-        [SerializeField]  int _currentSelection = -1;
-        [SerializeField]  bool _windowElementLocationCached;
-        [SerializeField]  float _holdStart = Mathf.Infinity;
-        [SerializeField]  float _holdNavigationNext = Mathf.Infinity;
-        [SerializeField]  Vector2 _move = Vector2.zero;
-        [SerializeField]  Vector2 _mouseScroll = Vector2.zero;
-        [SerializeField]  Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField]  bool _mouseActive;
-        [SerializeField]  bool _hoverOnDecrease;
-        [SerializeField]  bool _hoverOnIncrease;
-        [SerializeField]  bool _inElementInputMode;
-        [SerializeField]  bool _selectionUpdated;
-        [SerializeField]  bool _focused;
+        [Header("Debug View")] [SerializeField]
+        string _menuName;
 
+        [SerializeField] MenuSetup _menuSetup;
+        [SerializeField] MenuStyling _menuStyling;
+        [SerializeField] WindowUI _windowInstance;
+        [SerializeField] LayoutAlignment _layoutAlignmentInstance;
+        [SerializeField] bool _displayActive;
+        [SerializeField] bool _navigationActive;
+        [SerializeField] int _linkFrame = -1;
+        [SerializeField] float _nextNavigationUpdate = Mathf.Infinity;
+        [SerializeField] int _currentSelection = -1;
+        [SerializeField] float _holdStart = Mathf.Infinity;
+        [SerializeField] float _holdNavigationNext = Mathf.Infinity;
+        [SerializeField] Vector2 _move = Vector2.zero;
+        [SerializeField] Vector2 _mouseScroll = Vector2.zero;
+        [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField] bool _mouseActive;
+        [SerializeField] bool _hoverOnDecrease;
+        [SerializeField] bool _hoverOnIncrease;
+        [SerializeField] bool _inElementInputMode;
+        [SerializeField] bool _selectionUpdated;
+        [SerializeField] bool _focused;
+        bool windowPositionCached => _windowInstance.positionCached;
         public ButtonUI currentSelectable
         {
             get
@@ -46,7 +45,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public string menuTag => $"Interface.{_menuName}";
         public bool isDisplayActive => _displayActive;
         public bool isNavigationActive => _navigationActive;
-        public WindowUI instanceWindow => _instanceWindow;
+        public WindowUI windowInstance => _windowInstance;
         public bool focused => _focused;
         public bool mouseActive => _mouseActive;
 
@@ -67,11 +66,20 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _menuStyling.layoutSetup = layoutSetup;
         }
 
+        public SimpleMenu(string name, MenuSetup menuSetup, WindowSetup windowSetup, LayoutAlignment layoutAlignment)
+        {
+            _menuName = name;
+            _menuSetup = menuSetup;
+            _menuStyling = MenuStyling.defaultStyling;
+            _menuStyling.windowSetup = windowSetup;
+            _layoutAlignmentInstance = layoutAlignment;
+        }
+
         public bool IsMouseInWindow(Vector2 mousePosition)
         {
-            if (_instanceWindow.interactables.Count == 0)
+            if (!_windowInstance.canInteract)
                 return false;
-            (Vector2 topLeft, Vector2 bottomRight) = _instanceWindow.cachedPosition;
+            (Vector2 topLeft, Vector2 bottomRight) = _windowInstance.cachedPosition;
             if (topLeft == Vector2.zero && bottomRight == Vector2.zero)
                 return false;
             Vector2 topLeftDelta = mousePosition - topLeft;
@@ -83,10 +91,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        public bool ExistsSelectable(int i) => _instanceWindow.interactables.Count > i && i >= 0;
+        public bool ExistsSelectable(int i) => _windowInstance.interactables.Count > i && i >= 0;
 
         public ButtonUI GetSelectable(int i) =>
-            i >= 0 && i < _instanceWindow.interactables.Count ? _instanceWindow.interactables[i] : null;
+            i >= 0 && i < _windowInstance.interactables.Count ? _windowInstance.interactables[i] : null;
 
         public void UpdateMenu()
         {
@@ -99,7 +107,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateNavigation()
         {
-            if (_instanceWindow.interactables.Count == 0 || _linkFrame == Time.frameCount)
+            if (!_windowInstance.canInteract || _linkFrame == Time.frameCount)
                 return;
             UpdateMouseNavigation();
             if (Time.unscaledTime < _nextNavigationUpdate)
@@ -121,12 +129,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ForceUpdateDisplayContent()
         {
-            _instanceWindow.InvokeUpdate();
+            _windowInstance.InvokeUpdate();
         }
 
         public void SetOpacity(float opacity)
         {
-            _instanceWindow.SetOpacity(opacity);
+            _windowInstance.SetOpacity(opacity);
         }
 
         public void InitNewLayout()
@@ -134,7 +142,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             LayoutAlignment layout =
                 WindowManager.instance.InstantiateLayout(_menuStyling.layoutSetup,
                     menuTag);
-            _instanceLayoutAlignment = layout;
+            _layoutAlignmentInstance = layout;
         }
 
         /// <summary>
@@ -142,12 +150,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// </summary>
         void NewWindow(string windowName, WindowSetup setup)
         {
-            if (_instanceLayoutAlignment == null)
+            if (_layoutAlignmentInstance == null)
                 InitNewLayout();
             WindowUI window =
-                WindowManager.instance.NewWindow(windowName, _instanceLayoutAlignment, setup,
+                WindowManager.instance.NewWindow(windowName, _layoutAlignmentInstance, setup,
                     menuTag);
-            _instanceWindow = window;
+            _windowInstance = window;
         }
 
         /// <summary>
@@ -155,14 +163,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// </summary>
         public TextUI AddText(string elementName, int length = 0)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, _menuStyling.windowSetup);
             TextUI text;
             if (length == 0)
-                text = _instanceWindow.AddText(elementName);
+                text = _windowInstance.AddText(elementName);
             else
-                text = _instanceWindow.AddText(TextUtility.PlaceHolder(length));
-            _instanceWindow.AutoResize();
+                text = _windowInstance.AddText(TextUtility.PlaceHolder(length));
+            _windowInstance.AutoResize();
             return text;
         }
 
@@ -183,53 +191,57 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void RemoveWindowsAndLayoutGroups()
         {
             ClearWindow(true);
-            Object.Destroy(_instanceLayoutAlignment.gameObject);
-            _instanceLayoutAlignment = null;
+            // with shared instance, it is possible that another menu destroys the layout
+            if (_layoutAlignmentInstance != null)
+            {
+                Object.Destroy(_layoutAlignmentInstance.gameObject);
+                _layoutAlignmentInstance = null;
+            }
         }
 
         public void ClearWindow(bool removeWindow)
         {
             ClearWindowLocation();
             _currentSelection = -1;
-            _instanceWindow.ClearElements();
+            _windowInstance.ClearElements();
             if (removeWindow)
             {
-                WindowManager.instance.CloseWindow(_instanceWindow);
-                _instanceWindow = null;
+                WindowManager.instance.CloseWindow(_windowInstance);
+                _windowInstance = null;
             }
         }
 
         public void SetWindowLocalizedByTag()
         {
-            _instanceWindow.SetLocalizedByTag();
+            _windowInstance.SetLocalizedByTag();
         }
 
         public void AutoResizeWindow(int extraWidth = 0)
         {
-            _instanceWindow.AutoResize(extraWidth);
+            _windowInstance.AutoResize(extraWidth);
         }
 
         public void Refresh()
         {
-            _instanceWindow.InvokeUpdate();
-            _instanceWindow.RefreshSize();
+            _windowInstance.InvokeUpdate();
+            _windowInstance.RefreshSize();
         }
 
         public void ContextLanguageChange()
         {
-            _instanceWindow.ContextLanguageChange();
+            _windowInstance.ContextLanguageChange();
         }
 
         public void TriggerResolutionChange()
         {
-            _instanceLayoutAlignment.ContextResolutionChange();
+            _layoutAlignmentInstance.ContextResolutionChange();
         }
 
         void UpdateMouseNavigation()
         {
             if (!_displayActive || !WindowManager.instance.inputProvider.inputEnabled ||
                 _lastMousePosition == WindowManager.instance.inputProvider.mousePosition ||
-                !WindowManager.instance.inputProvider.hasMouse || _instanceWindow == null
+                !WindowManager.instance.inputProvider.hasMouse || _windowInstance == null
                 || !_navigationActive)
             {
                 return;
@@ -240,11 +252,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 _mouseActive = false;
                 // if selectables are more than 1, do precise detection
-                if (_instanceWindow.interactables.Count > 1)
+                if (_windowInstance.interactables.Count > 1)
                 {
-                    for (int i = 0; i < _instanceWindow.interactables.Count; i++)
+                    for (int i = 0; i < _windowInstance.interactables.Count; i++)
                     {
-                        (Vector2 bottomLeft, Vector2 topRight) = _instanceWindow.SelectableBound(i);
+                        (Vector2 bottomLeft, Vector2 topRight) = _windowInstance.SelectableBound(i);
                         if (bottomLeft == Vector2.zero && topRight == Vector2.zero)
                             continue;
                         Vector2 bottomLeftDelta = _lastMousePosition - bottomLeft;
@@ -329,34 +341,41 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateWindowLocation()
         {
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
             {
-                // SetOpacity(1, true);
-                _windowElementLocationCached = true;
-                _instanceWindow.UpdateElementsAndWindowPosition();
+                _windowInstance.UpdateElementsAndWindowPosition();
             }
         }
 
         public void LinkInput()
         {
             _linkFrame = Time.frameCount;
+            ResetInput();
             WindowManager.instance.LinkInputTarget(this);
         }
 
         public void UnlinkInput()
         {
+            ResetInput();
             WindowManager.instance.UnlinkInput(this);
+        }
+
+        void ResetInput()
+        {
+            _move = Vector2.zero;
+            _mouseScroll = Vector2.zero;
         }
 
         public void ResetSelection()
         {
-            foreach (ButtonUI element in _instanceWindow.interactables)
+            ResetInput();
+            foreach (ButtonUI element in _windowInstance.interactables)
             {
                 element.SetFocus(false);
             }
 
             _currentSelection = -1;
-            if (GetSelectable(_currentSelection) == null && _instanceWindow.interactables.Count > 0)
+            if (GetSelectable(_currentSelection) == null && _windowInstance.canInteract)
             {
                 _currentSelection = 0;
             }
@@ -367,7 +386,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         // Used to set all windows in unselected state
         public void ClearSelection()
         {
-            foreach (ButtonUI element in _instanceWindow.interactables)
+            foreach (ButtonUI element in _windowInstance.interactables)
             {
                 element.SetFocus(false);
             }
@@ -398,12 +417,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearElementsFocus()
         {
-            _instanceWindow.ClearElementsFocus();
+            _windowInstance.ClearElementsFocus();
         }
 
         public void ClearWindowFocus()
         {
-            _instanceWindow.ClearWindowFocus();
+            _windowInstance.ClearWindowFocus();
         }
 
         void UpdateSelection()
@@ -427,10 +446,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             else
             {
                 UpdateSelectionProcess();
+                // Ignore when mouse scroll to prevent scrolling out of a window
                 if (!_selectionUpdated && !mouseScrollOverride)
                 {
                     WindowManager.instance.CheckClosestDirectionalMatch(this,
-                        currentSelectable.cachedPosition.Item1, _move.normalized);
+                        currentSelectable.cachedPosition.Item1, _move.normalized, _menuSetup.allowCycleBetweenWindows);
                 }
 
                 _move = Vector2.zero;
@@ -456,8 +476,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     _ => 0
                 };
                 _currentSelection += offset;
-                int count = _instanceWindow.interactables.Count;
-                if (_menuSetup.allowCycle)
+                int count = _windowInstance.interactables.Count;
+                if (_menuSetup.allowCycleWithinWindow)
                     _currentSelection = _currentSelection >= 0 ? _currentSelection % count : count - 1;
                 else
                     _currentSelection = Mathf.Clamp(_currentSelection, 0, count - 1);
@@ -553,15 +573,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!_displayActive)
                 return;
-            if (!_windowElementLocationCached)
+            if (!windowPositionCached)
                 UpdateWindowLocation();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
-            if (_instanceWindow.interactables.Count == 0)
+            if (!_windowInstance.canInteract)
                 return;
-            for (int i = 0; i < _instanceWindow.interactables.Count; i++)
+            for (int i = 0; i < _windowInstance.interactables.Count; i++)
             {
-                Vector2 selectableLocation = _instanceWindow.interactables[i].cachedPosition.Item1;
+                Vector2 selectableLocation = _windowInstance.interactables[i].cachedPosition.Item1;
                 float distance = (selectableLocation - referenceLocation).sqrMagnitude;
                 if (distance < minDistance)
                 {
@@ -570,7 +590,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 }
             }
 
-            _currentSelection = Mathf.Clamp(_currentSelection, 0, _instanceWindow.interactables.Count - 1);
+            _currentSelection = Mathf.Clamp(_currentSelection, 0, _windowInstance.interactables.Count - 1);
 
             currentSelectable?.SetFocus(true);
         }
@@ -583,10 +603,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, WindowSetup setup,
             Action action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ButtonUIDoubleConfirm button = AddDoubleConfirmButton(elementName, _instanceWindow, action);
-            _instanceWindow.AutoResize();
+            ButtonUIDoubleConfirm button = AddDoubleConfirmButton(elementName, _windowInstance, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -600,10 +620,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ButtonUI AddButton(string elementName, WindowSetup setup, Action action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ButtonUI button = _instanceWindow.AddButton(elementName, action);
-            _instanceWindow.AutoResize();
+            ButtonUI button = _windowInstance.AddButton(elementName, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -617,10 +637,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ScrollableTextUI AddScrollableText(string elementName, WindowSetup setup, Action action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ScrollableTextUI button = _instanceWindow.AddScrollableText(elementName, action);
-            _instanceWindow.AutoResize();
+            ScrollableTextUI button = _windowInstance.AddScrollableText(elementName, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -634,10 +654,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ButtonUIWithContent AddButtonWithContent(string elementName, WindowSetup setup, Action action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ButtonUIWithContent button = _instanceWindow.AddButtonWithContent(elementName, action);
-            _instanceWindow.AutoResize();
+            ButtonUIWithContent button = _windowInstance.AddButtonWithContent(elementName, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -652,10 +672,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, WindowSetup setup,
             Action<T> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            SingleSelectionUI<T> button = _instanceWindow.AddSingleSelection(elementName, action);
-            _instanceWindow.AutoResize();
+            SingleSelectionUI<T> button = _windowInstance.AddSingleSelection(elementName, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -670,10 +690,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public TextInputUI AddTextInput(string elementName, WindowSetup setup, Action<string> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            TextInputUI button = _instanceWindow.AddTextInput(elementName, action);
-            _instanceWindow.AutoResize();
+            TextInputUI button = _windowInstance.AddTextInput(elementName, action);
+            _windowInstance.AutoResize();
             return button;
         }
 
@@ -692,10 +712,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ToggleUI AddToggle(string elementName, WindowSetup setup, float font = 30f,
             Action<bool> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ToggleUI toggle = _instanceWindow.AddToggle(elementName, action);
-            _instanceWindow.AutoResize();
+            ToggleUI toggle = _windowInstance.AddToggle(elementName, action);
+            _windowInstance.AutoResize();
             return toggle;
         }
 
@@ -710,16 +730,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ToggleUIWithContent AddToggleWithContent(string elementName, WindowSetup setup,
             Action<bool> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            ToggleUIWithContent toggle = _instanceWindow.AddToggleWithContent(elementName, action);
-            _instanceWindow.AutoResize();
+            ToggleUIWithContent toggle = _windowInstance.AddToggleWithContent(elementName, action);
+            _windowInstance.AutoResize();
             return toggle;
         }
 
         public ToggleUIWithContent AddToggleWithContent(string elementName, WindowUI window,
             Action<bool> action = null) => window.AddToggleWithContent(elementName, action);
-        
+
         public SliderUI AddSlider(string elementName, Action<int> action = null)
         {
             return AddSlider(elementName, _menuStyling.windowSetup, action);
@@ -727,10 +747,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public SliderUI AddSlider(string elementName, WindowSetup setup, Action<int> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            SliderUI slider = _instanceWindow.AddSlider(elementName, action);
-            _instanceWindow.AutoResize();
+            SliderUI slider = _windowInstance.AddSlider(elementName, action);
+            _windowInstance.AutoResize();
             return slider;
         }
 
@@ -745,10 +765,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, WindowSetup setup,
             Action<T> action = null)
         {
-            if (_instanceWindow == null)
+            if (_windowInstance == null)
                 NewWindow(elementName, setup);
-            SliderUIChoice<T> slider = _instanceWindow.AddSliderWithChoice<T>(elementName, action);
-            _instanceWindow.AutoResize();
+            SliderUIChoice<T> slider = _windowInstance.AddSliderWithChoice<T>(elementName, action);
+            _windowInstance.AutoResize();
             return slider;
         }
 
@@ -868,11 +888,17 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ClearWindowLocation();
             if (_hoverOnDecrease)
             {
+                int initialCount = currentSelectable.count;
                 currentSelectable.count -= 1;
+                if (initialCount != currentSelectable.count)
+                    _selectionUpdated = true;
             }
             else if (_hoverOnIncrease)
             {
+                int initialCount = currentSelectable.count;
                 currentSelectable.count += 1;
+                if (initialCount != currentSelectable.count)
+                    _selectionUpdated = true;
             }
 
             return true;
@@ -996,20 +1022,17 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void UpdateWindows()
         {
-            _instanceWindow.InvokeUpdate();
+            _windowInstance.InvokeUpdate();
         }
 
         public void ClearWindowLocation(float delay = .1f)
         {
-            // SetOpacity(0.1f, true);
             if (_nextNavigationUpdate < Time.unscaledTime + delay)
             {
                 DelayInput(delay);
             }
 
-            _instanceWindow.ClearCachedPosition();
-
-            _windowElementLocationCached = false;
+            _windowInstance.ClearCachedPosition();
         }
 
         public bool OpenMenu(bool enableNavigation)
@@ -1038,7 +1061,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             _mouseActive = false;
             currentSelectable?.SetFocus(true);
-            _instanceWindow.SetActive(true);
+            _windowInstance.SetActive(true);
 
             return true;
         }
@@ -1062,14 +1085,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
             currentSelectable?.SetFocus(false);
 
             _displayActive = false;
-            _instanceWindow.SetActive(false);
+            _windowInstance.SetActive(false);
 
             return true;
         }
 
         void OnSelectionUpdate()
         {
-            _instanceWindow.TriggerSelectionUpdate();
+            _windowInstance.TriggerSelectionUpdate();
         }
 
         bool CancelOut()
@@ -1087,6 +1110,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (_focused == focused)
                 return;
+            ResetInput();
             _focused = focused;
             if (!focused)
             {
@@ -1094,10 +1118,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ClearWindowFocus();
                 ClearElementsFocus();
                 UnlinkInput();
+                _nextNavigationUpdate = Mathf.Infinity;
             }
             else
             {
                 LinkInput();
+                DelayInput(0.05f);
             }
         }
     }

@@ -21,20 +21,24 @@ The creation of this UI system is heavily inspired by [PhiOS](https://github.com
 
 APFramework's UI system is a very code based system, it is best used when you want to have a quick debug menu instantiated everywhere without the need to commit to making UIs for every random usage. That being said, you can also try to make use of APFramework's UI logic and rework the presentation yourself.
 
-There are three styles of APFramework usage:
+There are two styles of APFramework usage:
 
-- CompositeMenuMono
 - CompositeMenu
 - SimpleMenu
 
-I would advise agaisnt mixing and matching them but you do you.
-
-## CompositeMenuMono
-
-
+Beware that since each relies on different navigation logic, best not to mix them together, unless one of them is not interactable.
 
 ## CompositeMenu
+
+`CompositeMenu` is a class that manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenu`, it is expected that all windows will be activated and deactivated together.
+
+When utilizing `CompositeMenu`, it is expected that you'll attempt to inherit 
+
 ## SimpleMenu
+
+`SimpleMenu` is a class that only contains a single window and the logic to navigate within this window. When multiple instances of `SimpleMenu` is active, the `WindowManager` instance will be responsible for navigation between the windows.
+
+This is most useful 
 
 A quick UI code would look like this:
 ```C#

@@ -12,6 +12,7 @@ public static class TextUtility
     public const char FULL_SIZE_SPACE = '　';
     public static string LineBreaker = FULL_SIZE_SPACE + "\n";
     public static string TitleOpener = LineBreaker + FULL_SIZE_SPACE;
+    public const char BLOCK = '█';
     public const string FADE_IN = "█▓▒░ ";
     public const string FADE_OUT = " ░▒▓█";
     public const string FADE_IN_OUT = " ░▒▓██▓▒░ ";
@@ -22,17 +23,38 @@ public static class TextUtility
         "\"\'!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ ‐‑–—―‗‘’‚‛“”„†‡•․…‰′″‹›‼‾⁄€™≡─┌┐└┘├┬┴┼═║╔╗╚╝╠╣╦╩╬▀▄█░▒▓■□ ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω";
 
     [BurstCompile]
-    public static bool IsAscii(char text)
+    public static bool IsFullWidth(char c)
     {
-        return ASCII_CHARACTERS.Contains(text);
+        return c >= 0x1100 &&
+               (c <= 0x115f || // Hangul Jamo init. consonants
+                c == 0x2329 || c == 0x232a ||
+                (c >= 0x2e80 && c <= 0xa4cf &&
+                 c != 0x303f) || // CJK ... Yi
+                (c >= 0xac00 && c <= 0xd7a3) || // Hangul Syllables
+                (c >= 0xf900 && c <= 0xfaff) || // CJK Compatibility Ideographs
+                (c >= 0xfe10 && c <= 0xfe19) || // Vertical forms
+                (c >= 0xfe30 && c <= 0xfe6f) || // CJK Compatibility Forms
+                (c >= 0xff00 && c <= 0xff60) || // Fullwidth Forms
+                (c >= 0xffe0 && c <= 0xffe6) ||
+                (c >= 0x20000 && c <= 0x2fffd) ||
+                (c >= 0x30000 && c <= 0x3fffd));
+    }
+
+    public static int CalcCharLength(char c)
+    {
+        return c switch
+        {
+            '\0' => 0,
+            _ => IsFullWidth(c) ? 2 : 1
+        };
     }
 
     [BurstCompile]
-    public static bool AllAscii(string text)
+    public static bool AllHalfWidth(string text)
     {
         foreach (char c in text)
         {
-            if (!IsAscii(c))
+            if (IsFullWidth(c))
                 return false;
         }
 
@@ -160,7 +182,7 @@ public static class TextUtility
     }
 
     [BurstCompile]
-    public static int ActualLength(string text)
+    public static int WidthSensitiveLength(string text)
     {
         if (IsSingleControlCode(text))
             return 0;
@@ -170,17 +192,12 @@ public static class TextUtility
         string parsedText = StripRichTagsFromStr(text);
         for (int i = 0; i < parsedText.Length; i++)
         {
-            if (IsAscii(parsedText[i]))
-                count++;
-            else
-            {
-                count += 2;
-            }
+            count += CalcCharLength(parsedText[i]);
         }
 
         return count;
     }
-    
+
     [BurstCompile]
     public static List<string> SplitStringByControlCode(string input)
     {
@@ -237,7 +254,7 @@ public static class TextUtility
         {
             if (word == string.Empty)
                 continue;
-            if (AllAscii(word))
+            if (AllHalfWidth(word))
             {
                 candidates.Add(word);
             }
@@ -257,7 +274,7 @@ public static class TextUtility
         {
             foreach (string candidate in candidates)
             {
-                if (accumulatedLength + ActualLength(candidate) + 1 > limit)
+                if (accumulatedLength + WidthSensitiveLength(candidate) + 1 > limit)
                 {
                     results.Add(internalStringBuilder.ToString());
                     internalStringBuilder.Clear();
@@ -270,7 +287,7 @@ public static class TextUtility
                 if (internalStringBuilder.Length > 0 && lastCharacter != string.Empty &&
                     !IsSingleControlCode(candidate) &&
                     !IsSingleControlCode(lastWord) &&
-                    (AllAscii(lastCharacter) || AllAscii(candidate)))
+                    (AllHalfWidth(lastCharacter) || AllHalfWidth(candidate)))
                 {
                     internalStringBuilder.Append(' ');
                     accumulatedLength++;
@@ -279,7 +296,7 @@ public static class TextUtility
                 lastCharacter = candidate != string.Empty ? candidate.Substring(candidate.Length - 1) : string.Empty;
                 lastWord = candidate;
                 internalStringBuilder.Append(candidate);
-                accumulatedLength += ActualLength(candidate);
+                accumulatedLength += WidthSensitiveLength(candidate);
             }
 
             if (internalStringBuilder.Length > 0)

@@ -65,7 +65,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 int maxLength = -1;
                 foreach (string line in lines)
                 {
-                    int length = TextUtility.ActualLength(line);
+                    int length = TextUtility.WidthSensitiveLength(line);
                     if (length > maxLength)
                     {
                         maxLength = length;
@@ -105,7 +105,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _characterIndex[1] = characterIndex;
         }
 
-        public void ClearCachedPosition()
+        public virtual void ClearCachedPosition()
         {
             _cachedPositionStart = Vector2.zero;
             _cachedPositionEnd = Vector2.zero;
@@ -165,7 +165,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                if (TextUtility.ActualLength(line) > contentWidth)
+                if (TextUtility.WidthSensitiveLength(line) > contentWidth)
                 {
                     modifiedLines.AddRange(TextUtility.StringCutter(line, contentWidth));
                 }
@@ -188,7 +188,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                if (TextUtility.ActualLength(line) > contentWidth)
+                if (TextUtility.WidthSensitiveLength(line) > contentWidth)
                 {
                     counter += TextUtility.StringCutter(line, contentWidth).Count;
                 }

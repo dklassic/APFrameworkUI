@@ -34,7 +34,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         (Vector2, Vector2) _cachedArrowPosition = (Vector2.zero, Vector2.zero);
         public (Vector2, Vector2) cachedArrowPosition => _cachedArrowPosition;
-        public override int getMaxLength => TextUtility.ActualLength(labelPrefix) + _maxLength + 3;
+        public override int getMaxLength => TextUtility.WidthSensitiveLength(labelPrefix) + _maxLength + 3;
         public override string formattedContent => labelPrefix + _count;
 
         public override int count
@@ -57,7 +57,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 return base.displayText;
             }
         }
-        
+
         public void SetActiveCount(int count)
         {
             _count = Mathf.Clamp(count, _min, _max);
@@ -75,13 +75,19 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public virtual string OptionFillString(string activeOption)
         {
-            int totalLengthRequired = maxContentLength - TextUtility.ActualLength(activeOption);
+            int totalLengthRequired = maxContentLength - TextUtility.WidthSensitiveLength(activeOption);
             return TextUtility.Repeat(' ', totalLengthRequired - totalLengthRequired / 2) + activeOption +
                    TextUtility.Repeat(' ', totalLengthRequired / 2);
         }
 
         public void SetCachedArrowPosition((Vector2, Vector2) position) => _cachedArrowPosition = position;
-        public void ClearCachedArrowPosition() => _cachedArrowPosition = (Vector2.zero, Vector2.zero);
+
+        public override void ClearCachedPosition()
+        {
+            base.ClearCachedPosition();
+            _cachedArrowPosition = (Vector2.zero, Vector2.zero);
+        }
+
 
         public SliderUI(string label, WindowUI parent) : base(label, parent)
         {

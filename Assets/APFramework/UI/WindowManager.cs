@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using ChosenConcept.APFramework.Interface.Framework.Element;
 using Cysharp.Text;
-using Unity.Collections;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
@@ -23,12 +22,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] Material _blurMaterial;
         [SerializeField] Material _transparentMaterial;
         [SerializeField] Camera _interfaceCamera;
-        [SerializeField]  List<WindowUI> _windows = new();
-        [SerializeField]  List<CompositeMenuMono> _compositeMenuMonos = new();
-        [SerializeField]  List<CompositeMenu> _compositeMenus = new();
-        [SerializeField]  List<SimpleMenu> _simpleMenus = new();
-        [SerializeField]  Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField]  RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
+        [SerializeField] List<WindowUI> _windows = new();
+        [SerializeField] List<CompositeMenuMono> _compositeMenuMonos = new();
+        [SerializeField] List<CompositeMenu> _compositeMenus = new();
+        [SerializeField] List<SimpleMenu> _simpleMenus = new();
+        [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
+        [SerializeField] RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
         Dictionary<WindowLayer, Canvas> _layers = new();
         Dictionary<WindowLayer, Canvas> _backgroundLayers = new();
         IMenuInputTarget _activeMenuTarget;
@@ -145,7 +144,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return;
             foreach (SimpleMenu menu in _simpleMenus)
             {
-                if (!menu.isDisplayActive || !menu.isNavigationActive)
+                if (!menu.isDisplayActive || !menu.isNavigationActive || !menu.windowInstance.canInteract)
                     continue;
                 menu.SetFocused(menu.IsMouseInWindow(_inputProvider.mousePosition));
             }
@@ -378,38 +377,56 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _confirmationProvider.GetConfirm(title, message, confirm, null, onConfirm, null, defaultChoice);
         }
 
-        public bool CheckClosestDirectionalMatch(SimpleMenu source, Vector2 currentPosition, Vector2 inputDirection)
+        public bool CheckClosestDirectionalMatch(SimpleMenu source, Vector2 currentPosition, Vector2 inputDirection, bool allowCycleBetweenWindows)
         {
-            float minDistance = Mathf.Infinity;
+            float minScore = Mathf.Infinity;
             SimpleMenu nearestMenu = source;
-            int nearestInteractableIndex = -1;
             foreach (SimpleMenu menu in _simpleMenus)
             {
                 if (menu == source || !menu.isDisplayActive || !menu.isNavigationActive ||
-                    menu.instanceWindow.interactables.Count == 0)
+                    !menu.windowInstance.canInteract)
                     continue;
-                for (int i = 0; i < menu.instanceWindow.interactables.Count; i++)
+                Vector2 windowCenter =
+                    (menu.windowInstance.cachedPosition.Item1 + menu.windowInstance.cachedPosition.Item2) / 2f;
+                Vector2 direction = windowCenter - currentPosition;
+                float distance = direction.sqrMagnitude;
+                Vector2 directionNormalized = direction.normalized;
+                float dotProduct = Vector2.Dot(inputDirection, directionNormalized);
+                float score = distance * (1 - Mathf.Sqrt(dotProduct));
+                if (score < minScore && dotProduct > .45f)
                 {
-                    (Vector2 position1, _) = menu.instanceWindow.interactables[i].cachedPosition;
-                    Vector2 selectableLocation = position1;
-                    Vector2 direction = selectableLocation - currentPosition;
-                    float distance = direction.sqrMagnitude;
-                    Vector2 directionNormalized = direction.normalized;
-                    if (distance < minDistance && Vector2.Dot(directionNormalized, inputDirection) > .5f)
-                    {
-                        minDistance = distance;
-                        nearestMenu = menu;
-                        nearestInteractableIndex = i;
-                    }
+                    minScore = score;
+                    nearestMenu = menu;
                 }
             }
 
             if (nearestMenu != source)
             {
+                int nearestInteractableIndex = -1;
+                minScore = Mathf.Infinity;
+                for (int i = 0; i < nearestMenu.windowInstance.interactables.Count; i++)
+                {
+                    // Using only the starting position for consistency
+                    (Vector2 position1, _) = nearestMenu.windowInstance.interactables[i].cachedPosition;
+                    Vector2 selectableLocation = position1;
+                    Vector2 direction = selectableLocation - currentPosition;
+                    float distance = direction.sqrMagnitude;
+                    if (distance < minScore)
+                    {
+                        minScore = distance;
+                        nearestInteractableIndex = i;
+                    }
+                }
+
                 source.SetFocused(false);
                 nearestMenu.SetFocused(true);
                 nearestMenu.SetCurrentSelection(nearestInteractableIndex);
                 return true;
+            }
+
+            if (allowCycleBetweenWindows)
+            {
+                
             }
 
             return false;
