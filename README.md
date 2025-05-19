@@ -61,7 +61,7 @@ But if you're aiming to use it more than just a utility menu, best implement the
 
 ## Window Elements
 
-Every window element inherits from the `WindowElement` class, which features a `IStringLabel` label for display, as the element will cache the string value using `IStringLabel.GetValue()`, you can implement the interface in other ways such as returning a function value, or in my own use case, returning a localized value for localization. Each elements will also have a tag that directly represents the hierarchy path of the element, which should be useful as some string id.
+Every window element inherits from the `WindowElement` class, which features a `IStringLabel` label for display, as the element will cache the string value using `IStringLabel.GetValue()`, you can implement the interface in other ways such as returning a function value, or in my own use case, returning a localized value for localization. Each elements will also have a tag that directly represents the hierarchy path of the element, which should be useful as some localization string id.
 
 Currently window elements implemented are all based on my own needs, which are:
 
@@ -81,7 +81,13 @@ Currently window elements implemented are all based on my own needs, which are:
 - Dragging
 - Tons of predefined text based window style
 - Tons of window mask animations to be used upon opening and closing UI
-- 
+
+## Futurework
+
+- Add icon to pin window
+- Add icon to close window
+- Add ability to resize window with mouse
+- Rework element instantiation to use IStringLabel better
 
 # Fonts Included
 
@@ -92,4 +98,4 @@ For demonstration purpose, two fonts are included in this project:
 
 Both of which are licensed under OFL.
 
-Several magic numbers are specifically tuned around these two fonts and the need to display Chinese characters properly, therefore when coupled with different fonts several adjustments will have to be made.
+Several magic numbers are specifically tuned around these two fonts to make sure each characters are always in width of 1 or 2, therefore when coupled with different fonts several adjustments will have to be made.
