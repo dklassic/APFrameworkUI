@@ -21,7 +21,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ButtonUI button = AddButton(choice, _layout);
                 button.SetLabel(choice);
                 button.SetAction(CompleteInput);
-                button.parentWindow.SetSingleWindowOverride(true);
                 button.parentWindow.AutoResize();
             }
 

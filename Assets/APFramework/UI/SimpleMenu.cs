@@ -31,7 +31,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _inElementInputMode;
         [SerializeField] bool _selectionUpdated;
         [SerializeField] bool _focused;
+        [SerializeField] bool _movingWindow;
+        public bool movingWindow => _movingWindow;
         bool windowPositionCached => _windowInstance.positionCached;
+
         public ButtonUI currentSelectable
         {
             get
@@ -77,18 +80,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public bool IsMouseInWindow(Vector2 mousePosition)
         {
-            if (!_windowInstance.canInteract)
-                return false;
-            (Vector2 topLeft, Vector2 bottomRight) = _windowInstance.cachedPosition;
-            if (topLeft == Vector2.zero && bottomRight == Vector2.zero)
-                return false;
-            Vector2 topLeftDelta = mousePosition - topLeft;
-            if (topLeftDelta.x <= 0 || topLeftDelta.y <= 0)
-                return false;
-            Vector2 bottomRightDelta = mousePosition - bottomRight;
-            if (bottomRightDelta.x >= 0 || bottomRightDelta.y >= 0)
-                return false;
-            return true;
+            return _windowInstance.ContainsPosition(mousePosition);
         }
 
         public bool ExistsSelectable(int i) => _windowInstance.interactables.Count > i && i >= 0;
@@ -107,8 +99,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateNavigation()
         {
-            if (!_windowInstance.canInteract || _linkFrame == Time.frameCount)
+            if (!_windowInstance.canNavigate || _linkFrame == Time.frameCount)
                 return;
+            if (_movingWindow)
+            {
+                _windowInstance.Move(WindowManager.instance.inputProvider.mouseDelta);
+                return;
+            }
+
             UpdateMouseNavigation();
             if (Time.unscaledTime < _nextNavigationUpdate)
                 return;
@@ -251,19 +249,34 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (!_inElementInputMode)
             {
                 _mouseActive = false;
-                // if selectables are more than 1, do precise detection
-                if (_windowInstance.interactables.Count > 1)
+                // if the window is a single button window, perform window check only
+                if (_windowInstance.isSingleButtonWindow)
                 {
+                    if (!IsMouseInWindow(_lastMousePosition))
+                    {
+                        _windowInstance.interactables[0].SetFocus(false);
+                        ClearSelection();
+                        return;
+                    }
+                    
+                    _currentSelection = 0;
+                    _windowInstance.interactables[0].SetFocus(true);
+                    _selectionUpdated = true;
+                    _mouseActive = true;
+                }
+                else
+                {
+                    if (!IsMouseInWindow(_lastMousePosition))
+                    {
+                        _windowInstance.SetFocus(false);
+                        ClearSelection();
+                        return;
+                    }
+
+                    _windowInstance.SetFocus(true);
                     for (int i = 0; i < _windowInstance.interactables.Count; i++)
                     {
-                        (Vector2 bottomLeft, Vector2 topRight) = _windowInstance.SelectableBound(i);
-                        if (bottomLeft == Vector2.zero && topRight == Vector2.zero)
-                            continue;
-                        Vector2 bottomLeftDelta = _lastMousePosition - bottomLeft;
-                        if (bottomLeftDelta.x <= 0 || bottomLeftDelta.y <= 0)
-                            continue;
-                        Vector2 topRightDelta = _lastMousePosition - topRight;
-                        if (topRightDelta.x >= 0 || topRightDelta.y >= 0)
+                        if (!_windowInstance.InteractableContainsPosition(i, _lastMousePosition))
                             continue;
                         if (i != _currentSelection)
                         {
@@ -276,65 +289,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         _mouseActive = true;
                         break;
                     }
-                }
-                // Otherwise do window check alone
-                else
-                {
-                    if (!IsMouseInWindow(_lastMousePosition))
-                        return;
-                    if (0 != _currentSelection)
-                    {
-                        _selectionUpdated = true;
-                        currentSelectable?.SetFocus(false);
-                        _currentSelection = 0;
-                        currentSelectable?.SetFocus(true);
-                    }
-
-                    _mouseActive = true;
+                    if(!_mouseActive)
+                        ClearSelection();
                 }
             }
             // if input mode is active
             else
             {
-                float fontSize = currentSelectable.parentWindow.setup.fontSize;
                 if (currentSelectable is SliderUI slider)
                 {
-                    Vector2 leftArrowPosition = slider.cachedArrowPosition.Item1;
-                    Vector2 rightArrowPosition = slider.cachedArrowPosition.Item2;
-                    _hoverOnDecrease = false;
-                    _hoverOnIncrease = false;
-                    Vector2 leftArrowDelta = _lastMousePosition - leftArrowPosition;
-                    Vector2 rightArrowDelta = _lastMousePosition - rightArrowPosition;
-                    if (leftArrowDelta.sqrMagnitude < rightArrowDelta.sqrMagnitude &&
-                        Mathf.Abs(leftArrowDelta.x) < fontSize && Mathf.Abs(leftArrowDelta.y) < fontSize)
-                    {
-                        _hoverOnDecrease = true;
-                    }
-                    else if (Mathf.Abs(rightArrowDelta.x) < fontSize && Mathf.Abs(rightArrowDelta.y) < fontSize)
-                    {
-                        _hoverOnIncrease = true;
-                    }
+                    (_hoverOnDecrease, _hoverOnIncrease) = slider.HoverOnArrow(_lastMousePosition);
                 }
 
                 if (currentSelectable is ScrollableTextUI scrollableTextUI)
                 {
-                    Vector2 upperArrowDelta = scrollableTextUI.cachedPosition.Item2 - _lastMousePosition;
-                    Vector2 lowerArrowDelta = _lastMousePosition - scrollableTextUI.cachedPosition.Item1;
-                    _hoverOnDecrease = false;
-                    _hoverOnIncrease = false;
-                    if (upperArrowDelta is { x: >= 0, y: >= 0 } && lowerArrowDelta is { x: >= 0, y: >= 0 })
-                    {
-                        if (upperArrowDelta.y < lowerArrowDelta.y &&
-                            upperArrowDelta.y < fontSize * 0.75f)
-                        {
-                            _hoverOnDecrease = true;
-                        }
-                        else if (upperArrowDelta.y > lowerArrowDelta.y &&
-                                 lowerArrowDelta.y < fontSize * 0.75f)
-                        {
-                            _hoverOnIncrease = true;
-                        }
-                    }
+                    (_hoverOnDecrease, _hoverOnIncrease) = scrollableTextUI.HoverOnArrow(_lastMousePosition);
                 }
             }
         }
@@ -375,7 +344,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             _currentSelection = -1;
-            if (GetSelectable(_currentSelection) == null && _windowInstance.canInteract)
+            if (GetSelectable(_currentSelection) == null && _windowInstance.canNavigate)
             {
                 _currentSelection = 0;
             }
@@ -445,7 +414,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
             else
             {
-                UpdateSelectionProcess();
+                UpdateSelectionByMovement(_move.normalized);
                 // Ignore when mouse scroll to prevent scrolling out of a window
                 if (!_selectionUpdated && !mouseScrollOverride)
                 {
@@ -463,13 +432,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        void UpdateSelectionProcess()
+        void UpdateSelectionByMovement(Vector2 move)
         {
             if (!_inElementInputMode)
             {
                 currentSelectable?.SetFocus(false);
                 int yBefore = _currentSelection;
-                int offset = Mathf.RoundToInt(_move.y) switch
+                int offset = Mathf.RoundToInt(move.y) switch
                 {
                     1 => -1,
                     -1 => 1,
@@ -493,28 +462,17 @@ namespace ChosenConcept.APFramework.Interface.Framework
             else
             {
                 int result = currentSelectable.count;
-                // update with opposite direction
-                int offset = _menuSetup.slideDirection switch
+                int offset = Mathf.RoundToInt(move.x) switch
                 {
-                    UISystemSliderDirection.X => Mathf.RoundToInt(_move.x) switch
-                    {
-                        1 => 1,
-                        -1 => -1,
-                        _ => 0
-                    },
-                    UISystemSliderDirection.Y => Mathf.RoundToInt(_move.y) switch
-                    {
-                        1 => -1,
-                        -1 => 1,
-                        _ => 0
-                    },
+                    1 => 1,
+                    -1 => -1,
                     _ => 0
                 };
                 if (currentSelectable is ScrollableTextUI scrollableText)
                 {
-                    if (_move.y != 0)
+                    if (move.y != 0)
                     {
-                        offset = Mathf.RoundToInt(_move.y) switch
+                        offset = Mathf.RoundToInt(move.y) switch
                         {
                             1 => -1,
                             -1 => 1,
@@ -577,7 +535,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 UpdateWindowLocation();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
-            if (!_windowInstance.canInteract)
+            if (!_windowInstance.canNavigate)
                 return;
             for (int i = 0; i < _windowInstance.interactables.Count; i++)
             {
@@ -829,9 +787,24 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ConfirmSelection();
         }
 
-        void IMenuInputTarget.OnMouseConfirm()
+        void IMenuInputTarget.OnMouseConfirmPressed()
         {
             MouseConfirmSelection();
+            if (!_movingWindow && _currentSelection == -1 &&
+                _windowInstance.ContainsPosition(WindowManager.instance.inputProvider.mousePosition))
+            {
+                _movingWindow = true;
+                _windowInstance.Move(Vector2.zero);
+            }
+        }
+
+        void IMenuInputTarget.OnMouseConfirmReleased()
+        {
+            if (!_movingWindow)
+                return;
+            _movingWindow = false;
+            _windowInstance.ClearCachedPosition();
+            _windowInstance.UpdateElementsAndWindowPosition();
         }
 
         void IMenuInputTarget.OnMouseCancel()
@@ -1054,8 +1027,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ResetHold();
             switch (_menuSetup.resetOnOpen)
             {
-                case UISystemResetOnOpenBehavior.Always:
+                case UISystemResetOnOpenBehavior.ResetSelection:
                     ResetSelection();
+                    break;
+                case UISystemResetOnOpenBehavior.ClearSelection:
+                    ClearSelection();
+                    break;
+                case UISystemResetOnOpenBehavior.Disable:
                     break;
             }
 
@@ -1082,9 +1060,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     scrollableText.SetScrolling(false);
             }
 
-            currentSelectable?.SetFocus(false);
-
+            ClearWindowFocus();
+            ClearElementsFocus();
+            _focused = false;
             _displayActive = false;
+            _navigationActive = false;
+            _nextNavigationUpdate = Mathf.Infinity;
             _windowInstance.SetActive(false);
 
             return true;
@@ -1110,7 +1091,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (_focused == focused)
                 return;
-            ResetInput();
             _focused = focused;
             if (!focused)
             {
@@ -1118,12 +1098,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ClearWindowFocus();
                 ClearElementsFocus();
                 UnlinkInput();
-                _nextNavigationUpdate = Mathf.Infinity;
             }
             else
             {
+                _windowInstance.SetFocus(true);
                 LinkInput();
-                DelayInput(0.05f);
             }
         }
     }

@@ -75,6 +75,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             SetConfirm(false);
         }
 
+        public override void Reset() => SetConfirm(false);
+
         public override void SetFocus(bool v)
         {
             if (!v)
@@ -89,12 +91,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 _awaitConfirm = true;
                 _selectAction?.Invoke();
                 _parentWindow.InvokeUpdate();
-                _parentWindow.UpdateElementPosition(this);
+                // only if the content becomes longer we resize the position
+                // so that when the text shrinks, the confirm click can still happen in place
+                if (TextUtility.WidthSensitiveLength(base.formattedContent) <
+                    TextUtility.WidthSensitiveLength(confirmTextContent))
+                    _parentWindow.UpdateElementPosition(this);
                 return;
             }
 
             CancelAwait();
             base.TriggerAction();
+            _parentWindow.UpdateElementPosition(this);
         }
 
         public override void SetAvailable(bool availability)
@@ -102,10 +109,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _available = availability;
             if (!availability)
                 _awaitConfirm = false;
-            if (isSingleButtonWindow)
-                _parentWindow.SetFocusAndAvailable(_inFocus, _available);
-            else
-                _parentWindow.InvokeUpdate();
+            if (parentWindow.isSingleButtonWindow)
+                _parentWindow.SetAvailable(_available);
+            _parentWindow.InvokeUpdate();
         }
     }
 }

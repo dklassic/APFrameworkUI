@@ -1,20 +1,20 @@
 using System;
+using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
     public class ButtonUI : WindowElement
     {
         Action _action;
-        protected bool _inFocus;
         Action _focusAction = null;
+        protected bool _inFocus;
         public bool inFocus => _inFocus;
-        public bool isSingleButtonWindow => _parentWindow.isSingleButtonWindow;
 
         public override string displayText
         {
             get
             {
-                if (_inFocus)
+                if (_inFocus && !_parentWindow.isSingleButtonWindow)
                     return StyleUtility.StringColored(TextUtility.StripRichTagsFromStr(formattedContent),
                         _available ? StyleUtility.Selected : StyleUtility.DisableSelected);
                 return _available
@@ -26,6 +26,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public ButtonUI(string content, WindowUI parent) : base(content, parent)
         {
         }
+
         public void ClearFocus()
         {
             _inFocus = false;
@@ -43,13 +44,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public virtual void SetFocus(bool setFocus)
         {
-            if (!isSingleButtonWindow)
-            {
-                _inFocus = setFocus;
-                _parentWindow.InvokeUpdate();
-            }
+            if (_inFocus == setFocus)
+                return;
+            _inFocus = setFocus;
+            _parentWindow.InvokeUpdate();
 
-            _parentWindow.SetFocusAndAvailable(setFocus, _available);
             if (setFocus)
                 _focusAction?.Invoke();
         }
@@ -57,9 +56,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public override void SetAvailable(bool availability)
         {
             _available = availability;
-            _parentWindow.SetFocusAndAvailable(_inFocus, _available);
-            if (!isSingleButtonWindow)
-                _parentWindow.InvokeUpdate();
+            _parentWindow.InvokeUpdate();
         }
     }
 }

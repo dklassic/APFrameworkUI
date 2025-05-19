@@ -117,8 +117,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             foreach (WindowUI window in _windows)
             {
-                if (!window.isActive)
-                    continue;
                 window.ContextUpdate();
             }
         }
@@ -127,8 +125,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             foreach (WindowUI window in _windows)
             {
-                if (!window.isActive)
-                    continue;
                 window.ContextLateUpdate();
             }
         }
@@ -140,11 +136,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_lastMousePosition == _inputProvider.mousePosition)
                 return;
             _lastMousePosition = _inputProvider.mousePosition;
-            if (_simpleMenus.Count == 0 || _simpleMenus.Any(x => x.focused && x.IsMouseInWindow(_lastMousePosition)))
+            if (_simpleMenus.Count == 0 ||
+                _simpleMenus.Any(x =>
+                    x.focused && x.windowInstance.canNavigate && x.IsMouseInWindow(_lastMousePosition) ||
+                    x.movingWindow))
                 return;
             foreach (SimpleMenu menu in _simpleMenus)
             {
-                if (!menu.isDisplayActive || !menu.isNavigationActive || !menu.windowInstance.canInteract)
+                if (!menu.isDisplayActive || !menu.isNavigationActive || !menu.windowInstance.canNavigate)
                     continue;
                 menu.SetFocused(menu.IsMouseInWindow(_inputProvider.mousePosition));
             }
@@ -377,14 +376,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _confirmationProvider.GetConfirm(title, message, confirm, null, onConfirm, null, defaultChoice);
         }
 
-        public bool CheckClosestDirectionalMatch(SimpleMenu source, Vector2 currentPosition, Vector2 inputDirection, bool allowCycleBetweenWindows)
+        public bool CheckClosestDirectionalMatch(SimpleMenu source, Vector2 currentPosition, Vector2 inputDirection,
+            bool allowCycleBetweenWindows)
         {
             float minScore = Mathf.Infinity;
             SimpleMenu nearestMenu = source;
             foreach (SimpleMenu menu in _simpleMenus)
             {
                 if (menu == source || !menu.isDisplayActive || !menu.isNavigationActive ||
-                    !menu.windowInstance.canInteract)
+                    !menu.windowInstance.canNavigate)
                     continue;
                 Vector2 windowCenter =
                     (menu.windowInstance.cachedPosition.Item1 + menu.windowInstance.cachedPosition.Item2) / 2f;
@@ -392,8 +392,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 float distance = direction.sqrMagnitude;
                 Vector2 directionNormalized = direction.normalized;
                 float dotProduct = Vector2.Dot(inputDirection, directionNormalized);
-                float score = distance * (1 - Mathf.Sqrt(dotProduct));
-                if (score < minScore && dotProduct > .45f)
+                if (dotProduct < .3f)
+                    continue;
+                // Favoring both shorter distance and better directional match
+                float score = distance * (2 - dotProduct);
+                if (score < minScore)
                 {
                     minScore = score;
                     nearestMenu = menu;
@@ -407,7 +410,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 for (int i = 0; i < nearestMenu.windowInstance.interactables.Count; i++)
                 {
                     // Using only the starting position for consistency
-                    (Vector2 position1, _) = nearestMenu.windowInstance.interactables[i].cachedPosition;
+                    Vector2 position1 = nearestMenu.windowInstance.interactables[i].cachedPosition.Item1;
                     Vector2 selectableLocation = position1;
                     Vector2 direction = selectableLocation - currentPosition;
                     float distance = direction.sqrMagnitude;
@@ -426,7 +429,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             if (allowCycleBetweenWindows)
             {
-                
+                // TODO: maybe?
             }
 
             return false;
@@ -454,8 +457,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             if (_simpleMenus.Count == 0 || Mathf.Approximately(0, move.sqrMagnitude))
                 return;
-            _simpleMenus[0].SetFocused(true);
-            _simpleMenus[0].SetCurrentSelection(0);
+            foreach (SimpleMenu menu in _simpleMenus)
+            {
+                if (!menu.isDisplayActive || !menu.isNavigationActive)
+                    continue;
+                menu.SetFocused(true);
+                menu.SetCurrentSelection(0);
+                break;
+            }
         }
 
         void IMenuInputTarget.OnScroll(Vector2 scroll)
@@ -464,10 +473,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _activeMenuTarget.OnScroll(scroll);
         }
 
-        void IMenuInputTarget.OnMouseConfirm()
+        void IMenuInputTarget.OnMouseConfirmPressed()
         {
             if (_activeMenuTarget != null)
-                _activeMenuTarget.OnMouseConfirm();
+                _activeMenuTarget.OnMouseConfirmPressed();
+        }
+
+        void IMenuInputTarget.OnMouseConfirmReleased()
+        {
+            if (_activeMenuTarget != null)
+                _activeMenuTarget.OnMouseConfirmReleased();
         }
 
         void IMenuInputTarget.OnMouseCancel()

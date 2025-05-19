@@ -1,9 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using ChosenConcept.APFramework.Interface.Framework;
 using UnityEngine;
 
 public class StartScript : MonoBehaviour
 {
-    void Start()
+    IEnumerator Start()
     {
         CompositeMenuMono[] menus =
             FindObjectsByType<CompositeMenuMono>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -13,6 +15,7 @@ public class StartScript : MonoBehaviour
             WindowManager.instance.RegisterMenu(menu);
         }
 
+        yield return null;
         WindowManager.instance.GetMenu<ExampleMenu>().OpenMenu(true);
     }
 }

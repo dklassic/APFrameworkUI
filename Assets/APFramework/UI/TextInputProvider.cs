@@ -141,7 +141,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
         }
 
-        void IMenuInputTarget.OnMouseConfirm()
+        void IMenuInputTarget.OnMouseConfirmPressed()
+        {
+        }
+
+        void IMenuInputTarget.OnMouseConfirmReleased()
         {
         }
 

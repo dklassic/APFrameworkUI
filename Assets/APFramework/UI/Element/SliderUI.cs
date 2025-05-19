@@ -116,5 +116,24 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _max = max;
             count = Mathf.Clamp(_count, min, max);
         }
+
+        public (bool, bool) HoverOnArrow(Vector2 position)
+        {
+            bool hoverOnDecrease = false;
+            bool hoverOnIncrease = false;
+            float fontSize = _parentWindow.setup.fontSize;
+            Vector2 leftArrowDelta = position - _cachedArrowPosition.Item1;
+            Vector2 rightArrowDelta = position - _cachedArrowPosition.Item2;
+            if (leftArrowDelta.sqrMagnitude < rightArrowDelta.sqrMagnitude &&
+                Mathf.Abs(leftArrowDelta.x) < fontSize && Mathf.Abs(leftArrowDelta.y) < fontSize)
+            {
+                hoverOnDecrease = true;
+            }
+            else if (Mathf.Abs(rightArrowDelta.x) < fontSize && Mathf.Abs(rightArrowDelta.y) < fontSize)
+            {
+                hoverOnIncrease = true;
+            }
+            return (hoverOnDecrease, hoverOnIncrease);
+        }
     }
 }

@@ -34,13 +34,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _height = 0,
             _titleStyle = WindowTitleStyle.None,
             _outlineStyle = WindowOutlineStyle.CornerOnly,
-            _outlineDisplayStyle = WindowOutlineDisplayStyle.Always,
+            _outlineDisplayStyle = WindowOutlineDisplayStyle.WhenSelected,
             _thickenStyle = WindowThickenStyle.None,
             _labelStyle = WindowLabelStyle.None,
             _transitionIn = WindowTransition.Glitch,
             _transitionOut = WindowTransition.Glitch,
             _fontSize = 30,
-            _backgroundColor = Color.clear,
+            _backgroundColor = Color.black,
         };
         
         public WindowSetup(WindowSetup setup)

@@ -8,8 +8,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         bool _inputEnabled;
         bool _isController;
         Vector2 _lastMovement;
+        Vector2 _mouseDelta;
+        Vector2 _lastMousePosition;
+        Vector2 _lastLeftStickInput;
 
         public bool hasMouse => Mouse.current != null;
+        public Vector2 mouseDelta => _mouseDelta;
         public Vector2 mousePosition => Mouse.current.position.ReadValue();
         public bool inputEnabled => _inputEnabled;
         IMenuInputTarget _activeTarget;
@@ -65,8 +69,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Mouse mouse = Mouse.current;
             if (mouse != null)
             {
+                _mouseDelta = mouse.position.ReadValue() - _lastMousePosition;
+                _lastMousePosition = mouse.position.ReadValue();
                 if (mouse.leftButton.wasPressedThisFrame)
-                    _activeTarget?.OnMouseConfirm();
+                    _activeTarget?.OnMouseConfirmPressed();
+                if (mouse.leftButton.wasReleasedThisFrame)
+                    _activeTarget?.OnMouseConfirmReleased();
                 if (mouse.rightButton.wasPressedThisFrame)
                     _activeTarget?.OnMouseCancel();
                 if (mouse.scroll.ReadValue().sqrMagnitude > 0)
@@ -77,8 +85,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
             if(_lastMovement != movement)
             {
+                if (movement.magnitude > 0.5f)
+                {
+                    _activeTarget?.OnMove(movement);
+                }
+                else
+                {
+                    _activeTarget?.OnMove(Vector2.zero);
+                }
                 _lastMovement = movement;
-                _activeTarget?.OnMove(_lastMovement);
             }
         }
     }

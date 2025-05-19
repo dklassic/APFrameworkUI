@@ -22,7 +22,6 @@ public class SimpleMenuInstance : MonoBehaviour
             menu.AddText("Close all menu to quit");
             menu.AddSlider("slider");
             menu.AddButton("close", () => menu.CloseMenu());
-            menu.AutoResizeWindow();
             WindowManager.instance.RegisterMenu(menu);
             i++;
         }

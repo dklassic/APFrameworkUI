@@ -150,9 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
     cancelOutAllowed: 1
     resetOnOpen: 0
     allowNavigationOnOpen: 1
@@ -182,8 +181,8 @@ MonoBehaviour:
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -191,7 +190,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -203,6 +201,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!4 &4987564
 Transform:
   m_ObjectHideFlags: 0
@@ -248,9 +247,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
     cancelOutAllowed: 1
     resetOnOpen: 0
     allowNavigationOnOpen: 1
@@ -280,8 +278,8 @@ MonoBehaviour:
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -289,7 +287,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -301,6 +298,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!4 &414863406
 Transform:
   m_ObjectHideFlags: 0
@@ -431,9 +429,8 @@ MonoBehaviour:
   _compositeMenu:
     _menuName: 
     _menuSetup:
-      navigationDirection: 0
-      slideDirection: 0
-      allowCycle: 0
+      allowCycleWithinWindow: 0
+      allowCycleBetweenWindows: 0
       cancelOutAllowed: 0
       resetOnOpen: 0
       allowNavigationOnOpen: 0
@@ -463,14 +460,13 @@ MonoBehaviour:
         _offsetType: 0
         _offset: {x: 0, y: 0, z: 0, w: 0}
         _spacing: 0
-    _instanceWindows: []
-    _instanceLayoutAlignment: []
+    _windowInstances: []
+    _layoutAlignmentInstances: []
     _displayActive: 0
     _navigationActive: 0
     _linkFrame: 0
     _nextNavigationUpdate: 0
     _currentSelection: {x: 0, y: 0}
-    _windowElementLocationCached: 0
     _holdStart: 0
     _holdNavigationNext: 0
     _move: {x: 0, y: 0}
@@ -481,6 +477,7 @@ MonoBehaviour:
     _hoverOnIncrease: 0
     _inElementInputMode: 0
     _selectionUpdated: 0
+    _movingWindow: 0
 --- !u!4 &1130014114
 Transform:
   m_ObjectHideFlags: 0
@@ -637,9 +634,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
     cancelOutAllowed: 1
     resetOnOpen: 0
     allowNavigationOnOpen: 1
@@ -669,8 +665,8 @@ MonoBehaviour:
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -678,7 +674,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -690,6 +685,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!4 &1670502285
 Transform:
   m_ObjectHideFlags: 0
@@ -750,9 +746,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
     cancelOutAllowed: 0
     resetOnOpen: 0
     allowNavigationOnOpen: 1
@@ -782,8 +777,8 @@ MonoBehaviour:
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -791,7 +786,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -803,6 +797,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!1001 &2020591752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -956,9 +951,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 2
-    slideDirection: 0
-    allowCycle: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
     cancelOutAllowed: 1
     resetOnOpen: 0
     allowNavigationOnOpen: 1
@@ -988,8 +982,8 @@ MonoBehaviour:
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -997,7 +991,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -1009,6 +1002,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1016,10 +1010,10 @@ SceneRoots:
   - {fileID: 2020591752}
   - {fileID: 767879070}
   - {fileID: 1200194476}
-  - {fileID: 1130014114}
-  - {fileID: 1247323582}
   - {fileID: 1829867530}
   - {fileID: 414863406}
   - {fileID: 2097710385}
   - {fileID: 1670502285}
   - {fileID: 4987564}
+  - {fileID: 1130014114}
+  - {fileID: 1247323582}

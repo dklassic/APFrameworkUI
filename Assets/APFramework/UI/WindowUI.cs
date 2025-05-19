@@ -24,7 +24,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         [SerializeField] string _windowTag;
         [SerializeField] string _windowLabelContent;
-        [SerializeField] bool _isSingleButtonWindow = false;
         [SerializeField] string _windowSubscriptContent = null;
         [SerializeField] WindowSetup _setup;
         [SerializeField] LayoutAlignment _layoutAlignment;
@@ -40,22 +39,24 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] Vector2 _cachedPositionStart = Vector2.zero;
         [SerializeField] Vector2 _cachedPositionEnd = Vector2.zero;
         [SerializeField] bool _active = false;
-        [SerializeField] bool _inFocus = false;
+        [SerializeField] bool _isFocused = false;
         [SerializeField] bool _available = true;
         [SerializeField] bool _inInput = false;
+        [SerializeField] bool _sizeFixed = false;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
         List<ButtonUI> _interactables = new();
 
+        public bool isFocused => _isFocused;
         public bool positionCached => _positionCached;
         public List<ButtonUI> interactables => _interactables;
         public bool isActive => _active;
         public (Vector2, Vector2) cachedPosition => (_cachedPositionStart, _cachedPositionEnd);
         public Vector2 cachedCenter => (_cachedPositionStart + _cachedPositionEnd) / 2f;
-        public bool canInteract => _active && _interactables.Any();
+        public bool canNavigate => _active && _interactables.Any();
         string windowName => _windowName;
         public string windowTag => _windowTag;
-        public bool isSingleButtonWindow => _isSingleButtonWindow;
+        public bool isSingleButtonWindow => _interactables.Count == 1;
 
         public string windowLabelContent
         {
@@ -97,6 +98,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool hasOutline => setup.outlineStyle != WindowOutlineStyle.None;
         public bool isFullFrame => setup.outlineStyle == WindowOutlineStyle.FullFrame;
 
+        public bool ContainsPosition(Vector2 position)
+        {
+            if (!_positionCached)
+                return false;
+            if (_cachedPositionStart == Vector2.zero && _cachedPositionEnd == Vector2.zero)
+                return false;
+            Vector2 topLeftDelta = position - _cachedPositionStart;
+            if (topLeftDelta.x <= 0 || topLeftDelta.y <= 0)
+                return false;
+            Vector2 bottomRightDelta = position - _cachedPositionEnd;
+            if (bottomRightDelta.x >= 0 || bottomRightDelta.y >= 0)
+                return false;
+            return true;
+        }
+
         public (Vector2, Vector2) SelectableBound(int index)
         {
             if (index < 0 || index > _interactables.Count || _interactables[index].firstCharacterIndex == -1 ||
@@ -106,24 +122,31 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _interactables[index].cachedPosition;
         }
 
+        public bool InteractableContainsPosition(int index, Vector2 position)
+        {
+            (Vector2 bottomLeft, Vector2 topRight) = SelectableBound(index);
+            if (bottomLeft == Vector2.zero && topRight == Vector2.zero)
+                return false;
+            Vector2 bottomLeftDelta = position - bottomLeft;
+            if (bottomLeftDelta.x <= 0 || bottomLeftDelta.y <= 0)
+                return false;
+            Vector2 topRightDelta = position - topRight;
+            if (topRightDelta.x >= 0 || topRightDelta.y >= 0)
+                return false;
+            return true;
+        }
+
         public void ClearElementsFocus()
         {
-            foreach (WindowElement element in _elements)
+            foreach (ButtonUI element in _interactables)
             {
-                if (element is not ButtonUI ui)
-                    continue;
-                ui.ClearFocus();
+                element.ClearFocus();
             }
         }
 
         public void ClearWindowFocus()
         {
-            SetFocusAndAvailable(false, true);
-        }
-
-        public void SetSingleWindowOverride(bool v)
-        {
-            _isSingleButtonWindow = v;
+            SetFocus(false);
         }
 
         public void ContextLanguageChange()
@@ -214,6 +237,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 arrowPosition.Item2 = rightArrowPosition;
                 uI.SetCachedArrowPosition(arrowPosition);
             }
+
             return true;
         }
 
@@ -289,10 +313,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateContent()
         {
+            if (!_sizeFixed)
+                AutoResize(_extraWidth);
             int count = _elements.Count;
-            if (!_active)
-                return;
-            using (var windowStringBuilder = ZString.CreateStringBuilder())
+            using (Utf16ValueStringBuilder windowStringBuilder = ZString.CreateStringBuilder())
             {
                 windowStringBuilder.Append(TitleBuild());
                 if (count == 0)
@@ -355,11 +379,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     }
                 }
 
-                if (count == 0)
-                {
-                    _elements.Clear();
-                }
-
                 int compensate = 0;
                 if (!hasTitle)
                     compensate = -1;
@@ -372,7 +391,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(
                                                                                windowSubscriptContent)));
-                        if (_inFocus)
+                        if (_isFocused)
                             windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
                                 _available ? StyleUtility.Selected : StyleUtility.DisableSelected));
                         else
@@ -389,7 +408,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(
                                                                                windowSubscriptContent)));
-                        if (_inFocus)
+                        if (_isFocused)
                             windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
                                 _available ? StyleUtility.Selected : StyleUtility.DisableSelected));
                         else
@@ -435,7 +454,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (hasTitleBar)
                 return TextUtility.TitleOpener + (_elements.Count == 1) switch
                 {
-                    true => _inFocus switch
+                    true => _isFocused switch
                     {
                         false => _available
                             ? StyleUtility.StringBold(windowLabelContent.ToUpper())
@@ -450,7 +469,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return " " +
                        (_elements.Count == 1) switch
                        {
-                           true => _inFocus switch
+                           true => _isFocused switch
                            {
                                false => _available
                                    ? StyleUtility.StringBold(windowLabelContent.ToUpper())
@@ -514,6 +533,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// <param name="extraWidth">Extra amount of width to preserve.</param>
         public void AutoResize(int extraWidth = 0)
         {
+            _sizeFixed = false;
             _extraWidth = extraWidth;
             int targetHeight = GetAutoResizeHeight();
             int targetWidth = GetAutoResizeWidth(extraWidth);
@@ -583,6 +603,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// </summary>
         public void Resize(int width)
         {
+            _sizeFixed = true;
             _extraWidth = 0;
             int minimumHeight = 0;
             int count = _elements.Count;
@@ -616,6 +637,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// </summary>
         public void Resize(int width, int height)
         {
+            _sizeFixed = true;
             _extraWidth = 0;
             _endFillCount = 2;
             if (hasEmbeddedTitle)
@@ -814,7 +836,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 _outlineBuilder.SetActive(false);
                 _windowMask.FadeOut();
-                ElementClearState();
+                ResetAllWindowElement();
                 DeactivateGameObject();
                 _background.SetActive(false);
                 _drawText.SetText(string.Empty);
@@ -925,15 +947,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void SetInput(bool inInput)
         {
             _inInput = inInput;
-            _outlineBuilder.SetFocusAndAvailable(_isSingleButtonWindow, _inFocus, _available, _inInput);
+            _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
             _isDirty = true;
         }
 
-        internal void SetFocusAndAvailable(bool inFocus, bool available)
+        internal void SetFocus(bool inFocus)
         {
-            _inFocus = inFocus;
+            _isFocused = inFocus;
+            _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
+            _isDirty = true;
+        }
+
+        internal void SetAvailable(bool available)
+        {
             _available = available;
-            _outlineBuilder.SetFocusAndAvailable(_isSingleButtonWindow, _inFocus, _available, _inInput);
+            _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
             _isDirty = true;
         }
 
@@ -949,6 +977,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void RegisterLayout(LayoutAlignment layout)
         {
             _layoutAlignment = layout;
+        }
+
+        public void Move(Vector2 delta)
+        {
+            if (transform.IsChildOf(_layoutAlignment.transform))
+                transform.SetParent(_layoutAlignment.transform.parent);
+            transform.Translate(delta.x, delta.y, 0);
+        }
+
+        public void RevertPosition()
+        {
+            transform.SetParent(_layoutAlignment.transform);
         }
     }
 }

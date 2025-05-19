@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Text;
+using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
@@ -10,6 +11,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         int _cachedContentWidth = -1;
         public int contentHeight => _contentHeight;
         public override string displayText => formattedContent;
+
         public override int count
         {
             get => _count;
@@ -29,18 +31,22 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public ScrollableTextUI(string content, WindowUI parent) : base(content, parent)
         {
         }
+
         public override void Reset() => count = 0;
+
         public void SetContentHeight(int contentHeight)
         {
             if (contentHeight <= 1)
                 return;
             _contentHeight = contentHeight;
         }
+
         public void SetScrolling(bool inScroll)
         {
             _inScroll = inScroll;
             _parentWindow.InvokeUpdate();
         }
+
         //▲▼＜＞
         public override string[] GetSplitDisplayText(int contentWidth)
         {
@@ -72,11 +78,13 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     currentLineCounter++;
                 }
             }
+
             // Pad out the height
             while (modifiedLines.Count < _contentHeight)
             {
                 modifiedLines.Add("");
             }
+
             using (Utf16ValueStringBuilder builder = ZString.CreateStringBuilder())
             {
                 string fullLine = TextUtility.Repeat('─', _cachedContentWidth - 2);
@@ -87,7 +95,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     else
                         builder.Append(fullLine);
                     if (_inScroll)
-                        builder.Append(StyleUtility.StringColored("▲", _count == 0 ? StyleUtility.DisableSelected : StyleUtility.Selected));
+                        builder.Append(StyleUtility.StringColored("▲",
+                            _count == 0 ? StyleUtility.DisableSelected : StyleUtility.Selected));
                     else
                         builder.Append(_count == 0 ? StyleUtility.StringColored("▲", StyleUtility.Disabled) : "▲");
                     modifiedLines.Insert(0, builder.ToString());
@@ -99,13 +108,42 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     else
                         builder.Append(fullLine);
                     if (_inScroll)
-                        builder.Append(StyleUtility.StringColored("▼", _count + _contentHeight == totalHeight ? StyleUtility.DisableSelected : StyleUtility.Selected));
+                        builder.Append(StyleUtility.StringColored("▼",
+                            _count + _contentHeight == totalHeight
+                                ? StyleUtility.DisableSelected
+                                : StyleUtility.Selected));
                     else
-                        builder.Append(_count + _contentHeight == totalHeight ? StyleUtility.StringColored("▼", StyleUtility.Disabled) : "▼");
+                        builder.Append(_count + _contentHeight == totalHeight
+                            ? StyleUtility.StringColored("▼", StyleUtility.Disabled)
+                            : "▼");
                     modifiedLines.Add(builder.ToString());
                 }
             }
+
             return modifiedLines.ToArray();
+        }
+
+        public (bool _hoverOnDecrease, bool _hoverOnIncrease) HoverOnArrow(Vector2 position)
+        {
+            Vector2 upperArrowDelta = cachedPosition.Item2 - position;
+            Vector2 lowerArrowDelta = position - cachedPosition.Item1;
+            float fontSize = _parentWindow.setup.fontSize;
+            bool hoverOnDecrease = false;
+            bool hoverOnIncrease = false;
+            if (upperArrowDelta is { x: >= 0, y: >= 0 } && lowerArrowDelta is { x: >= 0, y: >= 0 })
+            {
+                if (upperArrowDelta.y < lowerArrowDelta.y &&
+                    upperArrowDelta.y < fontSize * 0.75f)
+                {
+                    hoverOnDecrease = true;
+                }
+                else if (upperArrowDelta.y > lowerArrowDelta.y &&
+                         lowerArrowDelta.y < fontSize * 0.75f)
+                {
+                    hoverOnIncrease = true;
+                }
+            }
+            return (hoverOnDecrease, hoverOnIncrease);
         }
     }
 }

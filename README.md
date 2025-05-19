@@ -30,9 +30,9 @@ Beware that since each relies on different navigation logic, best not to mix the
 
 ## CompositeMenu
 
-`CompositeMenu` is a class that manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenu`, it is expected that all windows will be activated and deactivated together.
+`CompositeMenu` is a class that manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenu`, it is expected that all windows will be activated and deactivated together. When working with `CompositeMenu`, you can attempt to inherit the class to create custom navigation logic yourself.
 
-When utilizing `CompositeMenu`, it is expected that you'll attempt to inherit 
+Alternatively, you can use `CompositeMenuMono`, which provides 
 
 ## SimpleMenu
 

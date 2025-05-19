@@ -11,10 +11,15 @@ public class ExampleMenu : CompositeMenuMono
             CloseMenu(false);
             WindowManager.instance.GetMenu<ElementsShowcase>().OpenMenu(this, true);
         });
-        AddButton("Multiple window example", systemWindow, () =>
+        AddButton("Multiple window example (Horizontal)", systemWindow, () =>
         {
             CloseMenu(false);
-            WindowManager.instance.GetMenu<MultipleWindow>().OpenMenu(this, true);
+            WindowManager.instance.GetMenu<MultipleWindowHorizontal>().OpenMenu(this, true);
+        });
+        AddButton("Multiple window example (Vertical)", systemWindow, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<MultipleWindowVertical>().OpenMenu(this, true);
         });
         AddButton("中文顯示", systemWindow, () =>
         {
@@ -38,7 +43,6 @@ public class ExampleMenu : CompositeMenuMono
         });
         AddGap(systemWindow);
         AddButton("Quit", systemWindow, Quit);
-        systemWindow.AutoResize();
     }
 
     void Quit()
