@@ -1260,7 +1260,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (currentSelectable is TextInputUI textInput)
             {
                 textInput.SetInputContent(text);
+                textInput.SetInput(false);
             }
+            _inElementInputMode = false;
+            LinkInput();
         }
 
         void ISelectionInputTarget.SetSelection(int count)
@@ -1269,7 +1272,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 target.SetCount(count);
             }
-
             OpenMenu(true);
         }
 
@@ -1429,9 +1431,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         protected virtual bool TextInputAction(TextInputUI textInput)
         {
-            CloseMenu(false);
             WindowManager.instance.GetTextInput(this,
                 textInput);
+            _inElementInputMode = true;
             textInput.SetInput(true);
             return true;
         }

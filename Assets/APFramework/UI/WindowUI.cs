@@ -671,7 +671,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void Close()
         {
-            // Do fancy animation
+            _layoutAlignment.UnregisterWindow(this);
             WindowManager.instance.DelistWindow(this);
         }
 
@@ -691,6 +691,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _elements.Where(x => x is ButtonUI).ToList().ForEach(x => _interactables.Add(x as ButtonUI));
         }
 
+        public void AddElement(WindowElement element)
+        {
+            _elements.Add(element);
+            if (element is ButtonUI uI)
+                _interactables.Add(uI);
+        }
+
         public void RemoveElement(WindowElement element)
         {
             _elements.Remove(element);
@@ -701,7 +708,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextUI AddText(string elementName)
         {
             TextUI text = new(elementName, this);
-            _elements.Add(text);
+            AddElement(text);
             return text;
         }
 
@@ -709,8 +716,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             ButtonUI button = new(elementName, this);
             button.SetAction(action);
-            _elements.Add(button);
-            _interactables.Add(button);
+            AddElement(button);
             return button;
         }
 
@@ -718,8 +724,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             ScrollableTextUI button = new(elementName, this);
             button.SetAction(action);
-            _elements.Add(button);
-            _interactables.Add(button);
+            AddElement(button);
             return button;
         }
 
@@ -736,8 +741,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             ButtonUIDoubleConfirm button = new(elementName, this);
             button.SetAction(action);
-            _elements.Add(button);
-            _interactables.Add(button);
+            AddElement(button);
             return button;
         }
 
@@ -745,8 +749,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             ToggleUI toggle = new(elementName, this);
             toggle.SetAction(action);
-            _elements.Add(toggle);
-            _interactables.Add(toggle);
+            AddElement(toggle);
             return toggle;
         }
 
@@ -754,8 +757,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             ToggleUIWithContent toggle = new(elementName, this);
             toggle.SetAction(action);
-            _elements.Add(toggle);
-            _interactables.Add(toggle);
+            AddElement(toggle);
             return toggle;
         }
 
@@ -763,8 +765,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             SliderUI slider = new(elementName, this);
             slider.SetAction(action);
-            _elements.Add(slider);
-            _interactables.Add(slider);
+            AddElement(slider);
             return slider;
         }
 
@@ -772,8 +773,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             SliderUIChoice<T> slider = new SliderUIChoice<T>(elementName, this);
             slider.SetAction(action);
-            _elements.Add(slider);
-            _interactables.Add(slider);
+            AddElement(slider);
             return slider;
         }
 
@@ -790,31 +790,28 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             SingleSelectionUI<T> selection = new SingleSelectionUI<T>(elementName, this);
             selection.SetAction(action);
-            _elements.Add(selection);
-            _interactables.Add(selection);
+            AddElement(selection);
             return selection;
         }
 
         public TextInputUI AddTextInput(string elementName, Action<string> action = null)
         {
-            TextInputUI selection = new(elementName, this);
-            selection.SetAction(action);
-            _elements.Add(selection);
-            _interactables.Add(selection);
-            return selection;
+            TextInputUI textInput = new(elementName, this);
+            textInput.SetAction(action);
+            AddElement(textInput);
+            return textInput;
         }
 
         public TextInputUIWithPrediction AddTextInputNoLabelWithPrediction(string elementName,
             Action<string> action = null)
         {
-            TextInputUIWithPrediction selection = new(elementName, this);
-            selection.SetAction(action);
-            _elements.Add(selection);
-            _interactables.Add(selection);
-            return selection;
+            TextInputUIWithPrediction textInput = new(elementName, this);
+            textInput.SetAction(action);
+            AddElement(textInput);
+            return textInput;
         }
 
-        public void SetActive(bool v, bool syncGameObject = true)
+        public void SetActive(bool v, bool showMaskAnimation = true, bool syncGameObject = true)
         {
             if (hasOutline && !_outlineReady || !_maskReady)
                 return;
@@ -828,14 +825,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 // SetOpacity(alpha, false);
                 ResetAllWindowElement();
                 _outlineBuilder.SetActive(true);
-                _windowMask.FadeIn();
+                if (showMaskAnimation)
+                    _windowMask.FadeIn();
                 _background.SetActive(true);
                 InvokeUpdate();
             }
             else
             {
                 _outlineBuilder.SetActive(false);
-                _windowMask.FadeOut();
+                if (showMaskAnimation)
+                    _windowMask.FadeOut();
                 ResetAllWindowElement();
                 DeactivateGameObject();
                 _background.SetActive(false);
@@ -848,29 +847,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             foreach (WindowElement element in _elements)
             {
                 element.Reset();
-            }
-        }
-
-        internal void SetActiveNoVFX(bool v, bool syncGameObject = true)
-        {
-            if (hasOutline && !_outlineReady || !_maskReady)
-                return;
-            if (_active == v)
-                return;
-            _active = v;
-            if (syncGameObject)
-                gameObject.SetActive(v);
-            if (_active)
-            {
-                _outlineBuilder.SetActive(true);
-                _background.SetActive(true);
-                InvokeUpdate();
-            }
-            else
-            {
-                _outlineBuilder.SetActive(false);
-                _background.SetActive(false);
-                _drawText.SetText(string.Empty);
             }
         }
 
@@ -934,11 +910,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_maskReady) _windowMask.TriggerEffect(transitionSetup);
         }
 
-        public void TriggerDamageGlitch()
-        {
-            if (_maskReady) _windowMask.TriggerDamageGlitch();
-        }
-
         internal void SetMaskColor(ColorCode code)
         {
             _windowMask.SetColor(code);
@@ -965,15 +936,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _isDirty = true;
         }
 
-        void ElementClearState()
-        {
-            foreach (WindowElement element in _elements)
-            {
-                if (element is ButtonUIDoubleConfirm)
-                    (element as ButtonUIDoubleConfirm).SetConfirm(false);
-            }
-        }
-
         public void RegisterLayout(LayoutAlignment layout)
         {
             _layoutAlignment = layout;
@@ -986,7 +948,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             transform.Translate(delta.x, delta.y, 0);
         }
 
-        public void RevertPosition()
+        public void RevertAlignment()
         {
             transform.SetParent(_layoutAlignment.transform);
         }

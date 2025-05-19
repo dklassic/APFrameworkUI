@@ -118,6 +118,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             _windows.Add(window);
         }
+        public void UnregisterWindow(WindowUI window)
+        {
+            _windows.Remove(window);
+        }
         public void ContextResolutionChange()
         {
             UpdateLayout();

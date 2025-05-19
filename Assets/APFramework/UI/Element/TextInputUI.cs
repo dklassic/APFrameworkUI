@@ -57,7 +57,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _setStringAction?.Invoke(value);
         }
 
-        public void SetInputContentNoAction(string value)
+        public void SetActiveInputContent(string value)
         {
             _inputContent = value;
             parentWindow?.InvokeUpdate();

@@ -26,6 +26,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] List<CompositeMenuMono> _compositeMenuMonos = new();
         [SerializeField] List<CompositeMenu> _compositeMenus = new();
         [SerializeField] List<SimpleMenu> _simpleMenus = new();
+        [SerializeField] List<LayoutAlignment> _layoutAlignments = new();
         [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
         [SerializeField] RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
         Dictionary<WindowLayer, Canvas> _layers = new();

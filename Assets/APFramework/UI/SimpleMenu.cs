@@ -258,7 +258,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         ClearSelection();
                         return;
                     }
-                    
+
                     _currentSelection = 0;
                     _windowInstance.interactables[0].SetFocus(true);
                     _selectionUpdated = true;
@@ -289,7 +289,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         _mouseActive = true;
                         break;
                     }
-                    if(!_mouseActive)
+
+                    if (!_mouseActive)
                         ClearSelection();
                 }
             }
@@ -757,6 +758,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 textInput.SetInputContent(text);
             }
+            _inElementInputMode = false;
+            LinkInput();
         }
 
         void ISelectionInputTarget.SetSelection(int count)
@@ -915,9 +918,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         bool TextInputAction(TextInputUI textInput)
         {
-            CloseMenu();
             WindowManager.instance.GetTextInput(this,
                 textInput);
+            _inElementInputMode = true;
             textInput.SetInput(true);
             return true;
         }
@@ -1008,21 +1011,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _windowInstance.ClearCachedPosition();
         }
 
+        public bool OpenMenu()
+        {
+            return OpenMenu(_menuSetup.allowNavigationOnOpen);
+        }
+
         public bool OpenMenu(bool enableNavigation)
-        {
-            return OpenMenu(null, enableNavigation);
-        }
-
-        public bool OpenMenu(CompositeMenuMono sourceMenu)
-        {
-            return OpenMenu(sourceMenu, _menuSetup.allowNavigationOnOpen);
-        }
-
-        public bool OpenMenu(CompositeMenuMono sourceMenu, bool enableNavigation)
         {
             _displayActive = true;
             _selectionUpdated = true;
-            if (_menuSetup.allowNavigationOnOpen)
+            if (enableNavigation)
                 DelayInput(_menuSetup.menuOpenInputDelay);
             ResetHold();
             switch (_menuSetup.resetOnOpen)

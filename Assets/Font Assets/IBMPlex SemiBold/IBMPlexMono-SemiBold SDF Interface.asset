@@ -12,15 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: IBMPlexMono-SemiBold SDF Interface
   m_EditorClassIdentifier: 
-  hashCode: -709436630
-  material: {fileID: 8417707870875067453}
-  materialHashCode: 1756518090
   m_Version: 1.1.0
-  m_SourceFontFileGUID: cc24a3f5de86c7e448805bb27cfe9a5e
-  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: cc24a3f5de86c7e448805bb27cfe9a5e,
-    type: 3}
-  m_SourceFontFile: {fileID: 0}
-  m_AtlasPopulationMode: 0
   m_FaceInfo:
     m_FaceIndex: 0
     m_FamilyName: IBM Plex Mono
@@ -43,6 +35,31 @@ MonoBehaviour:
     m_StrikethroughOffset: 7.2
     m_StrikethroughThickness: 2.992
     m_TabWidth: 20
+  m_Material: {fileID: 8417707870875067453}
+  m_SourceFontFileGUID: cc24a3f5de86c7e448805bb27cfe9a5e
+  m_CreationSettings:
+    sourceFontFileName: 
+    sourceFontFileGUID: cc24a3f5de86c7e448805bb27cfe9a5e
+    faceIndex: 0
+    pointSizeSamplingMode: 0
+    pointSize: 34
+    padding: 5
+    paddingMode: 0
+    packingMode: 0
+    atlasWidth: 512
+    atlasHeight: 512
+    characterSetSelectionMode: 5
+    characterSequence: 32-126,160-255,8200,8208-8209,8211-8213,8215-8222,8224-8226,8228,8230,8232,8240,8242-8243,8249-8250,8252,8254,8260,8364,8482,8801,9472,9474,9484,9488,9492,9496,9500,9508,9516,9524,9532,9552-9553,9556,9559,9562,9565,9568,9571,9574,9577,9580,9600,9604,9608,9617-9619,9632-9633
+    referencedFontAssetGUID: 9d35e4529fa25b54f95abada87a0c782
+    referencedTextAssetGUID: 
+    fontStyle: 0
+    fontStyleModifier: 0
+    renderMode: 4165
+    includeFontFeatures: 0
+  m_SourceFontFile: {fileID: 0}
+  m_SourceFontFilePath: 
+  m_AtlasPopulationMode: 0
+  InternalDynamicOS: 0
   m_GlyphTable:
   - m_Index: 1
     m_Metrics:
@@ -4590,7 +4607,12 @@ MonoBehaviour:
   - {fileID: 408542479355678517}
   m_AtlasTextureIndex: 0
   m_IsMultiAtlasTexturesEnabled: 0
+  m_GetFontFeatures: 1
   m_ClearDynamicDataOnBuild: 0
+  m_AtlasWidth: 512
+  m_AtlasHeight: 512
+  m_AtlasPadding: 5
+  m_AtlasRenderMode: 4165
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0
@@ -6169,61 +6191,16 @@ MonoBehaviour:
     m_Y: 345
     m_Width: 25
     m_Height: 41
-  m_fontInfo:
-    Name: 
-    PointSize: 0
-    Scale: 0
-    CharacterCount: 0
-    LineHeight: 0
-    Baseline: 0
-    Ascender: 0
-    CapHeight: 0
-    Descender: 0
-    CenterLine: 0
-    SuperscriptOffset: 0
-    SubscriptOffset: 0
-    SubSize: 0
-    Underline: 0
-    UnderlineThickness: 0
-    strikethrough: 0
-    strikethroughThickness: 0
-    TabWidth: 0
-    Padding: 0
-    AtlasWidth: 0
-    AtlasHeight: 0
-  atlas: {fileID: 0}
-  m_AtlasWidth: 512
-  m_AtlasHeight: 512
-  m_AtlasPadding: 5
-  m_AtlasRenderMode: 4165
-  m_glyphInfoList: []
-  m_KerningTable:
-    kerningPairs: []
   m_FontFeatureTable:
+    m_MultipleSubstitutionRecords: []
+    m_LigatureSubstitutionRecords: []
     m_GlyphPairAdjustmentRecords: []
-  fallbackFontAssets: []
+    m_MarkToBaseAdjustmentRecords: []
+    m_MarkToMarkAdjustmentRecords: []
+  m_ShouldReimportFontFeatures: 0
   m_FallbackFontAssetTable:
   - {fileID: 11400000, guid: 8184e513cefb6c14f8f579780aaa8367, type: 2}
   - {fileID: 11400000, guid: 18005f570e534864199618b62e418baa, type: 2}
-  - {fileID: 11400000, guid: e0f6205b209a2f14197080cdb8fb2014, type: 2}
-  - {fileID: 11400000, guid: bd925d33edff14b4896f5929e327ac5d, type: 2}
-  m_CreationSettings:
-    sourceFontFileName: 
-    sourceFontFileGUID: cc24a3f5de86c7e448805bb27cfe9a5e
-    pointSizeSamplingMode: 0
-    pointSize: 34
-    padding: 5
-    packingMode: 0
-    atlasWidth: 512
-    atlasHeight: 512
-    characterSetSelectionMode: 5
-    characterSequence: 32-126,160-255,8200,8208-8209,8211-8213,8215-8222,8224-8226,8228,8230,8232,8240,8242-8243,8249-8250,8252,8254,8260,8364,8482,8801,9472,9474,9484,9488,9492,9496,9500,9508,9516,9524,9532,9552-9553,9556,9559,9562,9565,9568,9571,9574,9577,9580,9600,9604,9608,9617-9619,9632-9633
-    referencedFontAssetGUID: 9d35e4529fa25b54f95abada87a0c782
-    referencedTextAssetGUID: 
-    fontStyle: 0
-    fontStyleModifier: 0
-    renderMode: 4165
-    includeFontFeatures: 0
   m_FontWeightTable:
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
@@ -6252,6 +6229,33 @@ MonoBehaviour:
   boldSpacing: 7
   italicStyle: 35
   tabSize: 10
+  m_fontInfo:
+    Name: 
+    PointSize: 0
+    Scale: 0
+    CharacterCount: 0
+    LineHeight: 0
+    Baseline: 0
+    Ascender: 0
+    CapHeight: 0
+    Descender: 0
+    CenterLine: 0
+    SuperscriptOffset: 0
+    SubscriptOffset: 0
+    SubSize: 0
+    Underline: 0
+    UnderlineThickness: 0
+    strikethrough: 0
+    strikethroughThickness: 0
+    TabWidth: 0
+    Padding: 0
+    AtlasWidth: 0
+    AtlasHeight: 0
+  m_glyphInfoList: []
+  m_KerningTable:
+    kerningPairs: []
+  fallbackFontAssets: []
+  atlas: {fileID: 0}
 --- !u!28 &408542479355678517
 Texture2D:
   m_ObjectHideFlags: 0
@@ -6262,10 +6266,8 @@ Texture2D:
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
-  serializedVersion: 2
+  serializedVersion: 3
   m_Width: 512
   m_Height: 512
   m_CompleteImageSize: 262144
@@ -6274,7 +6276,8 @@ Texture2D:
   m_MipCount: 1
   m_IsReadable: 0
   m_IsPreProcessed: 0
-  m_IgnoreMasterTextureLimit: 0
+  m_IgnoreMipmapLimit: 0
+  m_MipmapLimitGroupName: 
   m_StreamingMipmaps: 0
   m_StreamingMipmapsPriority: 0
   m_VTOnly: 0
@@ -6308,6 +6311,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: IBMPlexMono-SemiBold SDF Material
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -6316,6 +6321,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -6350,6 +6356,7 @@ Material:
     - _BumpFace: 0
     - _BumpOutline: 0
     - _ColorMask: 15
+    - _CullMode: 0
     - _Diffuse: 0.5
     - _FaceDilate: 0
     - _FaceUVSpeedX: 0
@@ -6403,3 +6410,4 @@ Material:
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

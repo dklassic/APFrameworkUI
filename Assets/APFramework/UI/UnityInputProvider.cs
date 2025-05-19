@@ -62,7 +62,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
                 if (keyboard.spaceKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame)
                     _activeTarget?.OnConfirm();
-                if (keyboard.escapeKey.wasPressedThisFrame || keyboard.backspaceKey.wasPressedThisFrame)
+                if (keyboard.escapeKey.wasPressedThisFrame)
                     _activeTarget?.OnCancel();
             }
 

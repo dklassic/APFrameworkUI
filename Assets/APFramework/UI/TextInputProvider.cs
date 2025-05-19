@@ -74,7 +74,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void OnValueChanged(string value)
         {
-            _textInputUI.SetInputContentNoAction(value);
+            _textInputUI.SetActiveInputContent(value);
             _textInputUI.SetCaretPosition(_inputField.caretPosition);
             _textInputUI.SetSelectionRange(0, 0);
         }
@@ -96,14 +96,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             WindowManager.instance.LinkInputTarget(null);
             _target.SetTextInput(_inputField.text);
             _target = null;
-            _textInputUI.SetInput(false);
             _textInputUI = null;
         }
 
         public void SetTextAndConfirm(string submittedText)
         {
             _inputField.text = submittedText;
-            _textInputUI.SetInputContentNoAction(submittedText);
+            _textInputUI.SetActiveInputContent(submittedText);
             _textInputUI.SetCaretPosition(_inputField.caretPosition);
             _textInputUI.SetSelectionRange(0, 0);
             CompleteInput();

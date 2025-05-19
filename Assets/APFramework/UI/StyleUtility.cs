@@ -1,42 +1,6 @@
 using Cysharp.Text;
 using UnityEngine;
 
-public enum ColorCode
-{
-    Red,
-    MikadoYellow,
-    RoyalOrange,
-    Blue,
-    Purple,
-    PersianRose,
-    Violet,
-    White,
-    Grey,
-    VioletBlue,
-    Tangerine,
-    Volt,
-    CatalinaBlue,
-    CosmicLatte,
-    Crayola,
-    PaleMagenta,
-    Tangle,
-    DodgerBlue,
-    BlueSapphire,
-    RichElectricBlue,
-    MagicPotion,
-    LightMediumOrchid,
-    GoldenYellow,
-}
-
-public enum Rarity
-{
-    NA,
-    Mk1,
-    Mk2,
-    Mk3,
-    Mk4
-}
-
 public class StyleUtility
 {
     public static ColorCode Selected = ColorCode.Blue;
@@ -123,31 +87,6 @@ public class StyleUtility
         return ZString.Format("<b>{0}</b>", text);
     }
 
-    internal static Color EnvironmentProjectileColor => ColorSetting(ColorCode.Purple);
-
-    public static Color HighContrastColor(ObjectType type) => type switch
-    {
-        ObjectType.Enemy => ColorSetting(ColorCode.Red),
-        ObjectType.Player => ColorSetting(ColorCode.Blue),
-        ObjectType.Environment => ColorSetting(ColorCode.Purple),
-        ObjectType.Projectile => ColorSetting(ColorCode.RoyalOrange),
-        _ => ColorSetting(ColorCode.White)
-    };
-
-    public static ColorCode SpeakerStringToNameColor(string speaker) => speaker switch
-    {
-        "ui_username_ErrorDuplicateID" => ColorCode.Red,
-        _ => ColorCode.White,
-    };
-
-    public static Color SpeakerStringToBackgroundColor(string speaker) => speaker switch
-    {
-        "ui_username_ErrorDuplicateID" => new Color32(117, 255, 251, 5),
-        "ui_username_Naumi" => new Color32(117, 255, 251, 5),
-        "ui_username_Al" => Color.clear,
-        _ => Color.clear,
-    };
-
     public static Color DarkenColor(Color color, float percentage)
     {
         Color.RGBToHSV(color, out float h, out float s, out float v);
@@ -157,13 +96,4 @@ public class StyleUtility
     public static Color ClearColor(Color color) => new Color(color.r, color.g, color.b, 0);
     public static Color FullColor(Color color) => new Color(color.r, color.g, color.b, 1);
     public static Color AlphaColor(Color color, float alpha) => new Color(color.r, color.g, color.b, alpha);
-
-    public enum ObjectType
-    {
-        Player,
-        Enemy,
-        Projectile,
-        Environment,
-        UI
-    }
 }
