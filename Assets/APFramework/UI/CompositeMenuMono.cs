@@ -35,6 +35,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] protected CompositeMenuMono _lastMenu;
         [SerializeField] protected bool _movingWindow;
 
+        Action _menuCloseAction;
         bool windowPositionCached => _windowInstances.All(x => x.positionCached);
 
         public ButtonUI currentSelectable
@@ -436,7 +437,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 {
                     (_hoverOnDecrease, _hoverOnIncrease) = scrollableTextUI.HoverOnArrow(_lastMousePosition);
                 }
-                if(_hoverOnDecrease || _hoverOnIncrease)
+
+                if (_hoverOnDecrease || _hoverOnIncrease)
                     _mouseActive = true;
             }
         }
@@ -1262,6 +1264,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 textInput.SetInputContent(text);
                 textInput.SetInput(false);
             }
+
             _inElementInputMode = false;
             LinkInput();
         }
@@ -1272,6 +1275,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 target.SetCount(count);
             }
+
             OpenMenu(true);
         }
 
@@ -1600,6 +1604,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 window.SetActive(false);
             }
 
+            _menuCloseAction?.Invoke();
+
             return true;
         }
 
@@ -1620,6 +1626,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         protected void DelayInput(float delay)
         {
             _nextNavigationUpdate = Time.unscaledTime + delay;
+        }
+
+        public void SetMenuCloseAction(Action action)
+        {
+            _menuCloseAction = action;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _selectionUpdated;
         [SerializeField] bool _focused;
         [SerializeField] bool _movingWindow;
+        Action _menuCloseAction;
         public bool movingWindow => _movingWindow;
         bool windowPositionCached => _windowInstance.positionCached;
 
@@ -758,6 +759,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 textInput.SetInputContent(text);
             }
+
             _inElementInputMode = false;
             LinkInput();
         }
@@ -1065,6 +1067,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _navigationActive = false;
             _nextNavigationUpdate = Mathf.Infinity;
             _windowInstance.SetActive(false);
+            _menuCloseAction?.Invoke();
 
             return true;
         }
@@ -1102,6 +1105,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _windowInstance.SetFocus(true);
                 LinkInput();
             }
+        }
+
+        public void SetMenuCloseAction(Action action)
+        {
+            _menuCloseAction = action;
         }
     }
 }
