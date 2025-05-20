@@ -71,11 +71,19 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
         }
 
-        public SliderUIChoice(string label, WindowUI parent, List<LocalizedStringLabel> choice) : base(label, parent)
+        public SliderUIChoice(string label, WindowUI parent, List<IStringLabel> choice, List<T> value) : base(label,
+            parent)
         {
-            SetChoice(choice);
+            SetChoice(choice, value);
         }
+
+        public SliderUIChoice(string label, WindowUI parent, List<string> choice, List<T> value) : base(label, parent)
+        {
+            SetChoice(choice, value);
+        }
+
         public void SetAction(Action<T> action) => _action = action;
+
         public void SetActiveValue(T value)
         {
             int index = _choiceValueList.IndexOf(value);
@@ -83,6 +91,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 return;
             }
+
             _count = Mathf.Clamp(index, _min, _max);
             _parentWindow?.InvokeUpdate();
         }
@@ -100,40 +109,51 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceList.Clear();
         }
 
-        public void SetChoice(List<LocalizedStringLabel> choice)
+        public void SetChoice(List<IStringLabel> choice, List<T> value)
         {
-            ClearChoice();
-            foreach (LocalizedStringLabel item in choice)
+            if (choice.Count != value.Count)
             {
-                _choiceList.Add(item);
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
             }
 
+            ClearChoice();
+            _choiceList.AddRange(choice);
+            _choiceValueList.AddRange(value);
+        }
+
+        public void SetChoice(List<string> choice, List<T> value)
+        {
+            if (choice.Count != value.Count)
+            {
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
+            }
+
+            ClearChoice();
+            for (int i = 0; i < choice.Count; i++)
+            {
+                AddChoice(choice[i], value[i]);
+            }
             SetLimit(0, choice.Count - 1);
         }
 
-        public void SetChoice(List<string> choice)
+        public void SetChoiceByValue(List<T> value)
         {
             ClearChoice();
-            foreach (string c in choice)
+            foreach (T choice in value)
             {
-                AddChoice(new StringLabel(c));
+                AddChoice(choice.ToString(), choice);
             }
-
-            SetLimit(0, choice.Count - 1);
+            SetLimit(0, value.Count - 1);
         }
 
-        public void AddChoice(IStringLabel choice)
-        {
-            _choiceListContentCache.Clear();
-            _choiceList.Add(choice);
-            _max = _choiceList.Count - 1;
-        }
-
-        public void AddChoice(string choice)
+        public void AddChoice(string choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(new StringLabel(choice));
             _max = _choiceList.Count - 1;
+            _choiceValueList.Add(value);
         }
 
         public void RemoveChoiceAt(int index)
@@ -141,17 +161,23 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceListContentCache.Clear();
             _choiceList.RemoveAt(index);
             _max = _choiceList.Count - 1;
+            _choiceValueList.RemoveAt(index);
         }
 
-        public void SetChoiceValue(List<T> list)
+        public void AddChoiceByValue(T choice)
         {
-            _choiceValueList.Clear();
-            _choiceValueList.AddRange(list);
-        }
-
-        public void AddChoiceValue(T choice)
-        {
+            _choiceList.Add(new StringLabel(choice.ToString()));
             _choiceValueList.Add(choice);
+        }
+
+        public void RemoveValue(T value)
+        {
+            _choiceListContentCache.Clear();
+            int index = _choiceValueList.IndexOf(value);
+            if (index < 0)
+                return;
+            _choiceList.RemoveAt(index);
+            _choiceValueList.RemoveAt(index);
         }
 
         public override string SliderText()

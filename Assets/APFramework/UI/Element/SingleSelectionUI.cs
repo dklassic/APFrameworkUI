@@ -83,61 +83,91 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _action.Invoke(_choiceValueList[_count]);
         }
 
-        public SingleSelectionUI(string label, WindowUI parent, List<LocalizedStringLabel> choice) : base(label, parent)
+        public SingleSelectionUI(string label, WindowUI parent, List<IStringLabel> choice, List<T> value) : base(label,
+            parent)
         {
-            SetChoice(choice);
+            SetChoice(choice, value);
         }
+
+        public SingleSelectionUI(string label, WindowUI parent, List<string> choice, List<T> value) : base(label,
+            parent)
+        {
+            SetChoice(choice, value);
+        }
+
 
         public void ClearChoice()
         {
             _choiceList.Clear();
+            _choiceValueList.Clear();
         }
 
-        public void SetChoice(List<LocalizedStringLabel> choice)
+        public void SetChoice(List<IStringLabel> choice, List<T> value)
         {
-            _choiceList.Clear();
-            foreach (LocalizedStringLabel item in choice)
+            if (choice.Count != value.Count)
             {
-                _choiceList.Add(item);
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
+            }
+
+            ClearChoice();
+            _choiceList.AddRange(choice);
+            _choiceValueList.AddRange(value);
+        }
+
+        public void SetChoice(List<string> choice, List<T> value)
+        {
+            if (choice.Count != value.Count)
+            {
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
+            }
+
+            ClearChoice();
+            for (int i = 0; i < choice.Count; i++)
+            {
+                AddChoice(choice[i], value[i]);
             }
         }
 
-        public void SetChoice(List<string> choice)
+        public void SetChoiceByValue(List<T> value)
         {
             ClearChoice();
-            foreach (string c in choice)
+            foreach (T item in value)
             {
-                AddChoice(c);
+                AddChoice(item.ToString(), item);
             }
         }
 
-        public void AddChoice(string choice)
+        public void AddChoice(string choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(new StringLabel(choice));
+            _choiceValueList.Add(value);
         }
 
-        public void AddChoice(IStringLabel choice)
+        public void AddChoice(IStringLabel choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(choice);
+            _choiceValueList.Add(value);
         }
 
         public void RemoveChoiceAt(int index)
         {
             _choiceListContentCache.Clear();
             _choiceList.RemoveAt(index);
+            _choiceValueList.RemoveAt(index);
         }
 
-        public void SetChoiceValue(List<T> list)
+        public void RemoveValue(T value)
         {
-            _choiceValueList.Clear();
-            _choiceValueList.AddRange(list);
-        }
-
-        public void AddChoiceValue(T choice)
-        {
-            _choiceValueList.Add(choice);
+            _choiceListContentCache.Clear();
+            int index = _choiceValueList.IndexOf(value);
+            if (index < 0)
+                return;
+            _choiceList.RemoveAt(index);
+            _choiceValueList.RemoveAt(index);
         }
 
         public override void ClearCachedValue()

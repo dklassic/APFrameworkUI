@@ -15,17 +15,15 @@ public class ResolutionSetting : CompositeMenuMono
         List<(int, int)> activeResolutionList = ResolutionUtility.AvailableResolutions();
         SingleSelectionUI<(int, int)> resolutionChoice =
             AddSingleSelection<(int, int)>("Resolution", systemWindow, UpdateResolution);
-        resolutionChoice.SetChoiceValue(activeResolutionList);
-        resolutionChoice.SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList());
+        resolutionChoice.SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(),
+            activeResolutionList);
         resolutionChoice.SetActiveValue((Screen.width, Screen.height));
         AddGap(systemWindow);
         AddText("Both camera and overlay mode of canvas are supported.", systemWindow);
         SliderUIChoice<RenderMode> uiMode =
             AddSliderWithChoice<RenderMode>("CanvasMode", systemWindow, ChangeCanvasMode);
-        uiMode.AddChoice(nameof(RenderMode.ScreenSpaceOverlay));
-        uiMode.AddChoice(nameof(RenderMode.ScreenSpaceCamera));
-        uiMode.AddChoiceValue(RenderMode.ScreenSpaceOverlay);
-        uiMode.AddChoiceValue(RenderMode.ScreenSpaceCamera);
+        uiMode.AddChoiceByValue(RenderMode.ScreenSpaceOverlay);
+        uiMode.AddChoiceByValue(RenderMode.ScreenSpaceCamera);
         systemWindow.Resize(50);
     }
 

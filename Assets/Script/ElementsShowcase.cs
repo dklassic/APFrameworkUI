@@ -27,8 +27,7 @@ public class ElementsShowcase : CompositeMenuMono
         SliderUIChoice<Quality> sliderChoice =
             AddSliderWithChoice<Quality>("This is a Slider that takes string options", systemWindow);
         List<Quality> result = Enum.GetValues(typeof(Quality)).Cast<Quality>().ToList();
-        sliderChoice.SetChoice(result.Select(x => x.ToString()).ToList());
-        sliderChoice.SetChoiceValue(result);
+        sliderChoice.SetChoiceByValue(result);
         sliderChoice.SetActiveValue(Quality.High);
 
         AddGap(systemWindow);
@@ -41,8 +40,9 @@ public class ElementsShowcase : CompositeMenuMono
         AddGap(systemWindow);
         AddTextInput("This is a Text Input", systemWindow);
 
-        SingleSelectionUI<int> choice = AddSingleSelection<int>("This is a single selection element", systemWindow);
-        choice.SetChoice(new List<string>() { "Here are", "Some", "Options" });
+        SingleSelectionUI<Choices> choice =
+            AddSingleSelection<Choices>("This is a single selection element", systemWindow);
+        choice.SetChoiceByValue(Enum.GetValues(typeof(Choices)).Cast<Choices>().ToList());
 
         AddGap(systemWindow);
         ButtonUI disabledButton = AddButton("You can also disable interaction", systemWindow);
@@ -51,5 +51,12 @@ public class ElementsShowcase : CompositeMenuMono
         AddText("Here is a Button that takes double confirm to trigger:", systemWindow);
         AddDoubleConfirmButton("Double confirm to return", systemWindow, () => CloseMenu(true));
         systemWindow.Resize(50);
+    }
+
+    public enum Choices
+    {
+        HereAreSomeChoices,
+        ThatYouCanPasThrough,
+        WithAGenericType
     }
 }
