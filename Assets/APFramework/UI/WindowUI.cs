@@ -11,6 +11,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 {
     public class WindowUI : MonoBehaviour
     {
+        const int OUTLINE_PADDING = 1;
+
         [Header("Components")] [SerializeField]
         private RectTransform _transform;
 
@@ -45,6 +47,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _inInput = false;
         [SerializeField] bool _sizeFixed = false;
         [SerializeField] bool _awaitDeactivate = false;
+        [SerializeField] bool _preciseSizeSync = false;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
         List<ButtonUI> _interactables = new();
@@ -318,7 +321,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void UpdateContent()
         {
             if (!_sizeFixed)
+            {
                 AutoResize(_extraWidth);
+            }
+
             int count = _elements.Count;
             using (Utf16ValueStringBuilder windowStringBuilder = ZString.CreateStringBuilder())
             {
@@ -516,7 +522,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void SetLayout(int widthCount, int heightCount)
         {
-            _layout.minWidth = setup.fontSize * Mathf.Max(0.65f * widthCount, 7);
+            _layout.minWidth = setup.fontSize * 0.635f * widthCount;
             _layout.minHeight = setup.fontSize * 1.05f * heightCount;
             _layoutAlignment.UpdateLayout();
             _transform.sizeDelta = new Vector2(_layout.minWidth, _layout.minHeight);
@@ -533,16 +539,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int targetHeight = GetAutoResizeHeight();
             int targetWidth = GetAutoResizeWidth(extraWidth);
             _endFillCount = GetEndFillCount();
-            if (hasOutline)
-            {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
-                SetupOutline(targetWidth + 1, targetHeight, _setup, titlePreserveLength + 2, subscriptLength);
-            }
-
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
-            SetLayout(targetWidth, targetHeight);
+            if (hasOutline)
+            {
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
+                    subscriptLength);
+                SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
+            }
+            else
+            {
+                SetLayout(targetWidth, targetHeight);
+            }
+
             _noCut = true;
         }
 
@@ -614,16 +625,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _endFillCount = 1;
             int targetWidth = width + 4;
             int targetHeight = minimumHeight + 2;
-            if (hasOutline)
-            {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
-                SetupOutline(targetWidth + 1, targetHeight, _setup, titlePreserveLength + 2, subscriptLength);
-            }
-
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
-            SetLayout(targetWidth, targetHeight);
+            if (hasOutline)
+            {
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
+                    subscriptLength);
+                SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
+            }
+            else
+            {
+                SetLayout(targetWidth, targetHeight);
+            }
+
             _noCut = false;
         }
 
@@ -639,16 +655,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _endFillCount = 1;
             int targetWidth = width + 4;
             int targetHeight = height + 2;
-            if (hasOutline)
-            {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
-                SetupOutline(targetWidth + 1, targetHeight, _setup, titlePreserveLength + 2, subscriptLength);
-            }
-
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
-            SetLayout(targetWidth, targetHeight);
+            if (hasOutline)
+            {
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
+                    subscriptLength);
+                SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
+            }
+            else
+            {
+                SetLayout(targetWidth, targetHeight);
+            }
+
             _noCut = false;
         }
 
@@ -806,6 +827,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 if (showMaskAnimation)
                     _windowMask.FadeIn();
                 _background.SetActive(true);
+                _drawText.gameObject.SetActive(true);
                 InvokeUpdate();
             }
             else

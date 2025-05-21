@@ -352,7 +352,7 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
-    resetOnOpen: 0
+    resetOnOpen: 2
     allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
@@ -858,7 +858,7 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 0
     allowCloseOnClick: 0
-    resetOnOpen: 0
+    resetOnOpen: 2
     allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
@@ -975,6 +975,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WindowHandler
+      objectReference: {fileID: 0}
+    - target: {fileID: 2104586366433644346, guid: 85dfd34d3cd3941edb24edd9b41859c7,
+        type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128753936356321704, guid: 85dfd34d3cd3941edb24edd9b41859c7,
+        type: 3}
+      propertyPath: _menuSetup.allowMove
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128753936356321704, guid: 85dfd34d3cd3941edb24edd9b41859c7,
+        type: 3}
+      propertyPath: _menuSetup.allowCycleBetweenWindows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

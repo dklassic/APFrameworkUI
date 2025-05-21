@@ -338,6 +338,7 @@ MonoBehaviour:
   _inInput: 0
   _sizeFixed: 0
   _awaitDeactivate: 0
+  _preciseSizeSync: 0
 --- !u!114 &8218788028618388918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,7 +619,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 8
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: -0.5
@@ -1334,7 +1335,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 1
     resetOnOpen: 2
-    allowMove: 0
+    allowMove: 1
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1353,7 +1354,7 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.22745098}
     layoutSetup:
       _windowLayer: 2
       _windowAlignment: 4

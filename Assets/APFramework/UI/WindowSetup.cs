@@ -40,7 +40,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _transitionIn = WindowTransition.Glitch,
             _transitionOut = WindowTransition.Glitch,
             _fontSize = 30,
-            _backgroundColor = Color.black,
+            _backgroundColor = Color.clear,
         };
         
         public WindowSetup(WindowSetup setup)

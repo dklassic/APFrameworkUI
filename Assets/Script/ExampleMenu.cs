@@ -43,6 +43,7 @@ public class ExampleMenu : CompositeMenuMono
         });
         AddGap(systemWindow);
         AddButton("Quit", systemWindow, Quit);
+        systemWindow.AutoResize();
     }
 
     void Quit()

@@ -129,7 +129,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             UpdateMouseNavigation();
             if (Time.unscaledTime < _nextNavigationUpdate)
                 return;
-            UpdateWindowLocation();
+            UpdateWindowPosition();
             if (float.IsPositiveInfinity(_holdStart) || _holdNavigationNext <= Time.unscaledTime)
             {
                 UpdateSelection();
@@ -330,7 +330,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        void UpdateWindowLocation()
+        void UpdateWindowPosition()
         {
             if (!windowPositionCached)
             {
@@ -554,7 +554,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (!_displayActive)
                 return;
             if (!windowPositionCached)
-                UpdateWindowLocation();
+                UpdateWindowPosition();
             float minDistance = Mathf.Infinity;
             currentSelectable?.SetFocus(false);
             if (!_windowInstance.canNavigate)
