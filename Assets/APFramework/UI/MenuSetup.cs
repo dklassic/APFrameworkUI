@@ -7,8 +7,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         public bool allowCycleWithinWindow;
         public bool allowCycleBetweenWindows;
-        public bool cancelOutAllowed;
+        public bool allowCloseMenuWithCancelAction;
+        public UISystemCloseOnClickBehavior allowCloseOnClick;
         public UISystemResetOnOpenBehavior resetOnOpen;
+        public bool allowMove;
         public bool allowNavigationOnOpen;
         public float menuOpenInputDelay;
         public bool singlePressOnly;
@@ -21,9 +23,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             allowCycleWithinWindow = false,
             allowCycleBetweenWindows = false,
-            cancelOutAllowed = false,
+            allowCloseMenuWithCancelAction = false,
+            allowCloseOnClick = UISystemCloseOnClickBehavior.Disable,
             resetOnOpen = UISystemResetOnOpenBehavior.ClearSelection,
             allowNavigationOnOpen = true,
+            allowMove = false,
             menuOpenInputDelay = .2f,
             singlePressOnly = false,
             holdNavigationDelay = 0.5f,

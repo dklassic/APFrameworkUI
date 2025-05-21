@@ -82,12 +82,29 @@ Currently window elements implemented are all based on my own needs, which are:
 - Tons of predefined text based window style
 - Tons of window mask animations to be used upon opening and closing UI
 
+## Pre-made Menu Utility
+
+### Confirmation Provider
+
+Access through `WindowManager.instance.GetConfirm`, which will show a menu with confirm button and optionally a cancel button, with callbacks available.
+
+### Context Menu Provider
+
+Access through `WindowManager.instance.OpenContextMenu`, which can show a context menu with quick access to actions at a designated position. A callback is available for when the context menu closes.
+
 ## Futurework
 
 - Add icon to pin window
 - Add icon to close window
 - Add ability to resize window with mouse
 - Rework element instantiation to use IStringLabel better
+- Setup line break better when dealing with labeled elements
+- Fix Compsite menu multi window focus issue
+- Add a better way of setting up moveable window
+- Add the ability to reorder windows within the same layout
+- Consider builder pattern
+- Restructure Menu element adder (Auto resize is maybe not needed anymore)
+- Implement CompositeMenuMono using CompositeMenu for logic reusing
 
 # Fonts Included
 

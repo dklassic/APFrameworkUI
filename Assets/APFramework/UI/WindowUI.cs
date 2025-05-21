@@ -43,6 +43,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _available = true;
         [SerializeField] bool _inInput = false;
         [SerializeField] bool _sizeFixed = false;
+        [SerializeField] bool _awaitDeactivate = false;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
         List<ButtonUI> _interactables = new();
@@ -56,7 +57,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool canNavigate => _active && _interactables.Any();
         string windowName => _windowName;
         public string windowTag => _windowTag;
-        public bool isSingleButtonWindow => _interactables.Count == 1;
+        public bool isSingleButtonWindow => _elements.Count == 1 && _elements[0] is ButtonUI;
 
         public string windowLabelContent
         {
@@ -169,9 +170,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ContextUpdate()
         {
-            if (!_active)
+            if (!_active && !_awaitDeactivate)
                 return;
             _windowMask.ContextUpdate();
+            if (_awaitDeactivate && !_windowMask.needUpdate)
+                SetGameObjectActive(false);
         }
 
         public void TriggerSelectionUpdate()
@@ -218,7 +221,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             result.Item1 = WindowManager.instance.UIBoundRetriever(transform, result.Item1);
             result.Item2 = WindowManager.instance.UIBoundRetriever(transform, result.Item2);
             element.SetCachedPosition(result);
-            if (element is SliderUI uI)
+            if (element is ISlider uI)
             {
                 (Vector2, Vector2) arrowPosition = (Vector2.zero, Vector2.zero);
                 Vector2 leftArrowPosition = Vector2.zero;
@@ -728,15 +731,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return button;
         }
 
-        public ButtonUIWithContent AddButtonWithContent(string elementName, Action action = null)
-        {
-            ButtonUIWithContent button = new(elementName, this);
-            button.SetAction(action);
-            _elements.Add(button);
-            _interactables.Add(button);
-            return button;
-        }
-
         public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, Action action = null)
         {
             ButtonUIDoubleConfirm button = new(elementName, this);
@@ -761,17 +755,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return toggle;
         }
 
-        public SliderUI AddSlider(string elementName, Action<int> action = null)
+        public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
         {
-            SliderUI slider = new(elementName, this);
-            slider.SetAction(action);
-            AddElement(slider);
-            return slider;
-        }
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, Action<T> action = null)
-        {
-            SliderUIChoice<T> slider = new SliderUIChoice<T>(elementName, this);
+            SliderUI<T> slider = new SliderUI<T>(elementName, this);
             slider.SetAction(action);
             AddElement(slider);
             return slider;
@@ -819,10 +805,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return;
             _active = v;
             if (syncGameObject && v)
-                gameObject.SetActive(true);
+                SetGameObjectActive(true);
             if (_active)
             {
-                // SetOpacity(alpha, false);
+                _awaitDeactivate = false;
                 ResetAllWindowElement();
                 _outlineBuilder.SetActive(true);
                 if (showMaskAnimation)
@@ -835,8 +821,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _outlineBuilder.SetActive(false);
                 if (showMaskAnimation)
                     _windowMask.FadeOut();
+                _awaitDeactivate = true;
                 ResetAllWindowElement();
-                DeactivateGameObject();
                 _background.SetActive(false);
                 _drawText.SetText(string.Empty);
             }
@@ -853,11 +839,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void SetGameObjectActive(bool v)
         {
             gameObject.SetActive(v);
-        }
-
-        void DeactivateGameObject()
-        {
-            SetGameObjectActive(false);
         }
 
         public void SetLabel(string label)
@@ -946,6 +927,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (transform.IsChildOf(_layoutAlignment.transform))
                 transform.SetParent(_layoutAlignment.transform.parent);
             transform.Translate(delta.x, delta.y, 0);
+        }
+
+        public void MoveTo(Vector2 position)
+        {
+            if (transform.IsChildOf(_layoutAlignment.transform))
+                transform.SetParent(_layoutAlignment.transform.parent);
+            transform.position = new(position.x, position.y);
         }
 
         public void RevertAlignment()

@@ -31,15 +31,15 @@ public class ExampleMenu : CompositeMenuMono
             CloseMenu(false);
             WindowManager.instance.GetMenu<ResolutionSetting>().OpenMenu(this, true);
         });
-        AddButton("Code Initialized CompositeMenu", systemWindow, () =>
-        {
-            CloseMenu(false);
-            FindAnyObjectByType<CompositeMenuInstance>().OpenMenu();
-        });
         AddButton("Code Initialized SimpleMenus", systemWindow, () =>
         {
             CloseMenu(false);
             FindAnyObjectByType<SimpleMenuInstance>().OpenMenu();
+        });
+        AddButton("Context Menu Example", systemWindow, () =>
+        {
+            CloseMenu(false);
+            FindAnyObjectByType<ContextMenuExample>().Open();
         });
         AddGap(systemWindow);
         AddButton("Quit", systemWindow, Quit);

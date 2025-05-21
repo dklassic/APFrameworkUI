@@ -8,7 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         protected bool _awaitConfirm;
         protected string _confirmTextContent;
         protected IStringLabel _confirmText;
-        Action _selectAction;
+        Action _onAwaitAction;
 
         public override string formattedContent => _awaitConfirm
             ? ZString.Concat("> ",
@@ -47,7 +47,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _confirmText = new StringLabel("Confirm");
         }
 
-        public void SetSelectAction(Action selectAction) => _selectAction = selectAction;
+        public void SetOnAwaitAction(Action action) => _onAwaitAction = action;
 
         public void SetConfirm(bool confirm)
         {
@@ -62,12 +62,12 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public void SetConfirmText(string confirmText)
         {
-            _confirmText = new StringLabel(confirmText);
+            SetConfirmText(new StringLabel(confirmText));
         }
 
         public void SetConfirmText(Func<string> confirmTextFunc)
         {
-            _confirmText = new FuncStringLabel(confirmTextFunc);
+            SetConfirmText(new FuncStringLabel(confirmTextFunc));
         }
 
         public void CancelAwait()
@@ -89,7 +89,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             if (!awaitConfirm)
             {
                 _awaitConfirm = true;
-                _selectAction?.Invoke();
+                _onAwaitAction?.Invoke();
                 _parentWindow.InvokeUpdate();
                 // only if the content becomes longer we resize the position
                 // so that when the text shrinks, the confirm click can still happen in place

@@ -152,8 +152,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    cancelOutAllowed: 1
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -217,6 +219,105 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &46032516
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 46032518}
+  - component: {fileID: 46032517}
+  m_Layer: 0
+  m_Name: Multiple Window (Vertical)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &46032517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46032516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca59b273b9f4cb2a27558d20e05eb0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _menuSetup:
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
+    resetOnOpen: 0
+    allowMove: 0
+    allowNavigationOnOpen: 1
+    menuOpenInputDelay: 0.2
+    singlePressOnly: 0
+    holdNavigationDelay: 0.5
+    holdNavigationInterval: 0.2
+    holdNavigationSpeedUpInterval: 2
+  _menuDefaultStyling:
+    windowSetup:
+      _width: 0
+      _height: 0
+      _titleStyle: 0
+      _outlineStyle: 4
+      _outlineDisplayStyle: 0
+      _thickenStyle: 0
+      _labelStyle: 0
+      _transitionIn: 8
+      _transitionOut: 8
+      _fontSize: 30
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    layoutSetup:
+      _windowLayer: 0
+      _windowAlignment: 4
+      _windowDirection: 0
+      _offsetSource: 0
+      _offsetType: 1
+      _offset: {x: 0, y: 0, z: 0, w: 0}
+      _spacing: -10
+  _windowInstances: []
+  _layoutAlignmentInstances: []
+  _initialized: 0
+  _displayActive: 0
+  _navigationActive: 0
+  _valueDirty: 0
+  _linkFrame: -1
+  _nextNavigationUpdate: Infinity
+  _currentSelection: {x: 0, y: 0}
+  _holdStart: Infinity
+  _holdNavigationNext: Infinity
+  _move: {x: 0, y: 0}
+  _mouseScroll: {x: 0, y: 0}
+  _lastMousePosition: {x: -Infinity, y: -Infinity}
+  _mouseActive: 0
+  _hoverOnDecrease: 0
+  _hoverOnIncrease: 0
+  _inElementInputMode: 0
+  _selectionUpdated: 0
+  _lastMenu: {fileID: 0}
+  _movingWindow: 0
+--- !u!4 &46032518
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46032516}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &414863404
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,8 +350,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    cancelOutAllowed: 1
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -309,6 +412,105 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &632477212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 632477214}
+  - component: {fileID: 632477213}
+  m_Layer: 0
+  m_Name: ContextMenuExample
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &632477213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632477212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf5494e25d17420396d6cc670e35b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _returnButton:
+    _menuName: 
+    _menuSetup:
+      allowCycleWithinWindow: 0
+      allowCycleBetweenWindows: 0
+      allowCloseMenuWithCancelAction: 0
+      allowCloseOnClick: 0
+      resetOnOpen: 0
+      allowMove: 0
+      allowNavigationOnOpen: 0
+      menuOpenInputDelay: 0
+      singlePressOnly: 0
+      holdNavigationDelay: 0
+      holdNavigationInterval: 0
+      holdNavigationSpeedUpInterval: 0
+    _menuStyling:
+      windowSetup:
+        _width: 0
+        _height: 0
+        _titleStyle: 0
+        _outlineStyle: 0
+        _outlineDisplayStyle: 0
+        _thickenStyle: 0
+        _labelStyle: 0
+        _transitionIn: 0
+        _transitionOut: 0
+        _fontSize: 0
+        _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      layoutSetup:
+        _windowLayer: 0
+        _windowAlignment: 0
+        _windowDirection: 0
+        _offsetSource: 0
+        _offsetType: 0
+        _offset: {x: 0, y: 0, z: 0, w: 0}
+        _spacing: 0
+    _windowInstance: {fileID: 0}
+    _layoutAlignmentInstance: {fileID: 0}
+    _displayActive: 0
+    _navigationActive: 0
+    _linkFrame: 0
+    _nextNavigationUpdate: 0
+    _currentSelection: 0
+    _holdStart: 0
+    _holdNavigationNext: 0
+    _move: {x: 0, y: 0}
+    _mouseScroll: {x: 0, y: 0}
+    _lastMousePosition: {x: 0, y: 0}
+    _mouseActive: 0
+    _hoverOnDecrease: 0
+    _hoverOnIncrease: 0
+    _inElementInputMode: 0
+    _selectionUpdated: 0
+    _focused: 0
+    _movingWindow: 0
+--- !u!4 &632477214
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632477212}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 952.0342, y: 302.92105, z: 620.3482}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -391,102 +593,6 @@ Transform:
   m_GameObject: {fileID: 767879067}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1130014112
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1130014114}
-  - component: {fileID: 1130014113}
-  m_Layer: 0
-  m_Name: CompositeMenu
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1130014113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130014112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abcc14d60245248cdaf3550976248d91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _compositeMenu:
-    _menuName: 
-    _menuSetup:
-      allowCycleWithinWindow: 0
-      allowCycleBetweenWindows: 0
-      cancelOutAllowed: 0
-      resetOnOpen: 0
-      allowNavigationOnOpen: 0
-      menuOpenInputDelay: 0
-      singlePressOnly: 0
-      holdNavigationDelay: 0
-      holdNavigationInterval: 0
-      holdNavigationSpeedUpInterval: 0
-    _menuStyling:
-      windowSetup:
-        _width: 0
-        _height: 0
-        _titleStyle: 0
-        _outlineStyle: 0
-        _outlineDisplayStyle: 0
-        _thickenStyle: 0
-        _labelStyle: 0
-        _transitionIn: 0
-        _transitionOut: 0
-        _fontSize: 0
-        _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-      layoutSetup:
-        _windowLayer: 0
-        _windowAlignment: 0
-        _windowDirection: 0
-        _offsetSource: 0
-        _offsetType: 0
-        _offset: {x: 0, y: 0, z: 0, w: 0}
-        _spacing: 0
-    _windowInstances: []
-    _layoutAlignmentInstances: []
-    _displayActive: 0
-    _navigationActive: 0
-    _linkFrame: 0
-    _nextNavigationUpdate: 0
-    _currentSelection: {x: 0, y: 0}
-    _holdStart: 0
-    _holdNavigationNext: 0
-    _move: {x: 0, y: 0}
-    _mouseScroll: {x: 0, y: 0}
-    _lastMousePosition: {x: 0, y: 0}
-    _mouseActive: 0
-    _hoverOnDecrease: 0
-    _hoverOnIncrease: 0
-    _inElementInputMode: 0
-    _selectionUpdated: 0
-    _movingWindow: 0
---- !u!4 &1130014114
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130014112}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -636,8 +742,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    cancelOutAllowed: 1
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -748,8 +856,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    cancelOutAllowed: 0
+    allowCloseMenuWithCancelAction: 0
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -866,41 +976,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: WindowHandler
       objectReference: {fileID: 0}
-    - target: {fileID: 2419800907372681788, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuSetup.cancelOutAllowed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2419800907372681788, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.windowSetup._outlineStyle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2419800907372681788, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.layoutSetup._windowDirection
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2419800907372681788, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.windowSetup._outlineDisplayStyle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8889046183939953834, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.windowSetup._outlineStyle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8889046183939953834, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.layoutSetup._windowDirection
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8889046183939953834, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuDefaultStyling.windowSetup._outlineDisplayStyle
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -917,7 +992,7 @@ GameObject:
   - component: {fileID: 2097710385}
   - component: {fileID: 2097710386}
   m_Layer: 0
-  m_Name: Multiple Window
+  m_Name: Multiple Window (Horizontal)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -953,8 +1028,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    cancelOutAllowed: 1
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1013,7 +1090,8 @@ SceneRoots:
   - {fileID: 1829867530}
   - {fileID: 414863406}
   - {fileID: 2097710385}
+  - {fileID: 46032518}
   - {fileID: 1670502285}
   - {fileID: 4987564}
-  - {fileID: 1130014114}
   - {fileID: 1247323582}
+  - {fileID: 632477214}

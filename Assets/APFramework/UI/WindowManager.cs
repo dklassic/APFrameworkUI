@@ -19,12 +19,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] TextInputProvider _textInputProvider;
         [SerializeField] SelectionProvider _selectionProvider;
         [SerializeField] ConfirmationProvider _confirmationProvider;
-        [SerializeField] Material _blurMaterial;
-        [SerializeField] Material _transparentMaterial;
+        [SerializeField] ContextMenuProvider _contextMenuProvider;
         [SerializeField] Camera _interfaceCamera;
         [SerializeField] List<WindowUI> _windows = new();
         [SerializeField] List<CompositeMenuMono> _compositeMenuMonos = new();
-        [SerializeField] List<CompositeMenu> _compositeMenus = new();
         [SerializeField] List<SimpleMenu> _simpleMenus = new();
         [SerializeField] List<LayoutAlignment> _layoutAlignments = new();
         [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
@@ -49,6 +47,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public RenderMode overlayMode => _overlayMode;
 
+        public void OpenContextMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose)
+        {
+            _contextMenuProvider.SetupMenu(choices, actions, position, onClose);
+        }
+
         public void GetTextInput(ITextInputTarget sourceUI, TextInputUI text)
         {
             _textInputProvider.GetTextInput(sourceUI, text);
@@ -63,11 +66,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void TriggerResolutionChange()
         {
             foreach (CompositeMenuMono menu in _compositeMenuMonos)
-            {
-                menu.TriggerResolutionChange();
-            }
-
-            foreach (CompositeMenu menu in _compositeMenus)
             {
                 menu.TriggerResolutionChange();
             }
@@ -102,11 +100,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 if (!system.enabled)
                     continue;
-                system.UpdateMenu();
-            }
-
-            foreach (CompositeMenu system in _compositeMenus)
-            {
                 system.UpdateMenu();
             }
 
@@ -188,12 +181,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ui.RefreshWindows();
             }
 
-            foreach (CompositeMenu menu in _compositeMenus)
-            {
-                menu.ContextLanguageChange();
-                menu.Refresh();
-            }
-
             foreach (SimpleMenu menu in _simpleMenus)
             {
                 menu.ContextLanguageChange();
@@ -238,11 +225,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Transform targetLayer = InstantiateLayer(layoutSetup.windowLayer).transform;
             GameObject newLayout = Instantiate(_layoutTemplate, targetLayer);
             LayoutAlignment layoutAlignment = newLayout.AddComponent<LayoutAlignment>();
+            _layoutAlignments.Add(layoutAlignment);
             HorizontalOrVerticalLayoutGroup layoutGroup = layoutSetup.windowDirection switch
             {
                 WindowDirection.Vertical => newLayout.AddComponent<VerticalLayoutGroup>(),
                 WindowDirection.Horizontal => newLayout.AddComponent<HorizontalLayoutGroup>(),
-                _ => throw new System.NotImplementedException(),
+                _ => throw new NotImplementedException(),
             };
             layoutGroup.childControlHeight = true;
             layoutGroup.childControlWidth = true;
@@ -330,13 +318,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _compositeMenuMonos.Add(menu);
         }
 
-        public void RegisterMenu(CompositeMenu menu)
-        {
-            if (_compositeMenus.Contains(menu))
-                return;
-            _compositeMenus.Add(menu);
-        }
-
         public void RegisterMenu(SimpleMenu menu)
         {
             if (_simpleMenus.Contains(menu))
@@ -348,11 +329,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             float inputDelayDuration = Screen.fullScreenMode is FullScreenMode.ExclusiveFullScreen ? 1.5f : 0.5f;
             foreach (CompositeMenuMono menu in _compositeMenuMonos)
-            {
-                menu.ClearWindowLocation(inputDelayDuration);
-            }
-
-            foreach (CompositeMenu menu in _compositeMenus)
             {
                 menu.ClearWindowLocation(inputDelayDuration);
             }
@@ -476,6 +452,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void IMenuInputTarget.OnMouseConfirmPressed()
         {
+            IEnumerable<SimpleMenu> list = _simpleMenus.Where(x =>
+                x.canBeClosedByOutOfFocusClick && x.isDisplayActive && x.isNavigationActive && !x.focused);
+            foreach (SimpleMenu menu in list)
+            {
+                menu.CloseMenu();
+            }
             if (_activeMenuTarget != null)
                 _activeMenuTarget.OnMouseConfirmPressed();
         }

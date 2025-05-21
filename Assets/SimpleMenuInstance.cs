@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChosenConcept.APFramework.Interface;
 using ChosenConcept.APFramework.Interface.Framework;
+using ChosenConcept.APFramework.Interface.Framework.Element;
 using UnityEngine;
 
 public class SimpleMenuInstance : MonoBehaviour
@@ -16,11 +17,12 @@ public class SimpleMenuInstance : MonoBehaviour
         foreach (var layout in _layoutSetups)
         {
             MenuSetup setup = MenuSetup.defaultSetup;
-            setup.cancelOutAllowed = true;
+            setup.allowCloseMenuWithCancelAction = true;
             SimpleMenu menu = new(i.ToString(), MenuSetup.defaultSetup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
             menu.AddText("Close all menu to quit");
-            menu.AddSlider("slider");
+            SliderUI<int> slider = menu.AddSlider<int>("slider");
+            slider.SetChoiceByValue(new[] { 0, 1, 2, 3 });
             menu.AddButton("close", () => menu.CloseMenu());
             WindowManager.instance.RegisterMenu(menu);
             i++;

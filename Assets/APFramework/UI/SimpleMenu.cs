@@ -33,6 +33,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _focused;
         [SerializeField] bool _movingWindow;
         Action _menuCloseAction;
+
+        public bool canBeClosedByOutOfFocusClick =>
+            _menuSetup.allowCloseOnClick is UISystemCloseOnClickBehavior.Both
+                or UISystemCloseOnClickBehavior.OutOfFocus;
+
         public bool movingWindow => _movingWindow;
         bool windowPositionCached => _windowInstance.positionCached;
 
@@ -59,6 +64,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _menuSetup = MenuSetup.defaultSetup;
             _menuStyling = MenuStyling.defaultStyling;
             InitNewLayout();
+        }
+
+        public SimpleMenu(string name, MenuSetup menuSetup)
+        {
+            _menuName = name;
+            _menuSetup = menuSetup;
+            _menuStyling = MenuStyling.defaultStyling;
         }
 
         public SimpleMenu(string name, MenuSetup menuSetup, WindowSetup windowSetup, LayoutSetup layoutSetup)
@@ -136,25 +148,27 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _windowInstance.SetOpacity(opacity);
         }
 
-        public void InitNewLayout()
+        public LayoutAlignment InitNewLayout()
         {
             LayoutAlignment layout =
                 WindowManager.instance.InstantiateLayout(_menuStyling.layoutSetup,
                     menuTag);
             _layoutAlignmentInstance = layout;
+            return layout;
         }
 
         /// <summary>
         /// A simple method to spawn window
         /// </summary>
-        void NewWindow(string windowName, WindowSetup setup)
+        public WindowUI NewWindow(string windowName)
         {
             if (_layoutAlignmentInstance == null)
                 InitNewLayout();
             WindowUI window =
-                WindowManager.instance.NewWindow(windowName, _layoutAlignmentInstance, setup,
+                WindowManager.instance.NewWindow(windowName, _layoutAlignmentInstance, _menuStyling.windowSetup,
                     menuTag);
             _windowInstance = window;
+            return window;
         }
 
         /// <summary>
@@ -163,7 +177,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextUI AddText(string elementName, int length = 0)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, _menuStyling.windowSetup);
+                NewWindow(elementName);
             TextUI text;
             if (length == 0)
                 text = _windowInstance.AddText(elementName);
@@ -298,7 +312,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             // if input mode is active
             else
             {
-                if (currentSelectable is SliderUI slider)
+                if (currentSelectable is ISlider slider)
                 {
                     (_hoverOnDecrease, _hoverOnIncrease) = slider.HoverOnArrow(_lastMousePosition);
                 }
@@ -564,7 +578,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             ButtonUIDoubleConfirm button = AddDoubleConfirmButton(elementName, _windowInstance, action);
             _windowInstance.AutoResize();
             return button;
@@ -581,7 +595,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ButtonUI AddButton(string elementName, WindowSetup setup, Action action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             ButtonUI button = _windowInstance.AddButton(elementName, action);
             _windowInstance.AutoResize();
             return button;
@@ -598,7 +612,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ScrollableTextUI AddScrollableText(string elementName, WindowSetup setup, Action action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             ScrollableTextUI button = _windowInstance.AddScrollableText(elementName, action);
             _windowInstance.AutoResize();
             return button;
@@ -606,23 +620,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
             window.AddScrollableText(elementName, action);
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, Action action = null)
-        {
-            return AddButtonWithContent(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, WindowSetup setup, Action action = null)
-        {
-            if (_windowInstance == null)
-                NewWindow(elementName, setup);
-            ButtonUIWithContent button = _windowInstance.AddButtonWithContent(elementName, action);
-            _windowInstance.AutoResize();
-            return button;
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, WindowUI window, Action action = null) =>
-            window.AddButtonWithContent(elementName, action);
 
         public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
         {
@@ -633,7 +630,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             SingleSelectionUI<T> button = _windowInstance.AddSingleSelection(elementName, action);
             _windowInstance.AutoResize();
             return button;
@@ -651,7 +648,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextInputUI AddTextInput(string elementName, WindowSetup setup, Action<string> action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             TextInputUI button = _windowInstance.AddTextInput(elementName, action);
             _windowInstance.AutoResize();
             return button;
@@ -673,7 +670,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<bool> action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             ToggleUI toggle = _windowInstance.AddToggle(elementName, action);
             _windowInstance.AutoResize();
             return toggle;
@@ -691,7 +688,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<bool> action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
+                NewWindow(elementName);
             ToggleUIWithContent toggle = _windowInstance.AddToggleWithContent(elementName, action);
             _windowInstance.AutoResize();
             return toggle;
@@ -700,52 +697,35 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ToggleUIWithContent AddToggleWithContent(string elementName, WindowUI window,
             Action<bool> action = null) => window.AddToggleWithContent(elementName, action);
 
-        public SliderUI AddSlider(string elementName, Action<int> action = null)
+        public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
         {
             return AddSlider(elementName, _menuStyling.windowSetup, action);
         }
 
-        public SliderUI AddSlider(string elementName, WindowSetup setup, Action<int> action = null)
-        {
-            if (_windowInstance == null)
-                NewWindow(elementName, setup);
-            SliderUI slider = _windowInstance.AddSlider(elementName, action);
-            _windowInstance.AutoResize();
-            return slider;
-        }
-
-        public SliderUI AddSlider(string elementName, WindowUI window, Action<int> action = null) =>
-            window.AddSlider(elementName, action);
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, Action<T> action = null)
-        {
-            return AddSliderWithChoice<T>(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, WindowSetup setup,
+        public SliderUI<T> AddSlider<T>(string elementName, WindowSetup setup,
             Action<T> action = null)
         {
             if (_windowInstance == null)
-                NewWindow(elementName, setup);
-            SliderUIChoice<T> slider = _windowInstance.AddSliderWithChoice<T>(elementName, action);
+                NewWindow(elementName);
+            SliderUI<T> slider = _windowInstance.AddSlider(elementName, action);
             _windowInstance.AutoResize();
             return slider;
         }
 
-        public SliderUIChoice<T>
-            AddSliderWithChoice<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSliderWithChoice<T>(elementName, action);
+        public SliderUI<T>
+            AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
+            window.AddSlider(elementName, action);
 
         bool BaseConfirmAction()
         {
             bool result = currentSelectable switch
             {
-                SliderUI slider => SliderAction(slider, !_inElementInputMode),
                 ToggleUI toggle => ToggleAction(toggle),
                 ButtonUIDoubleConfirm button => DoubleConfirmAction(button, true),
                 ButtonUICountable button => ButtonWithCountAction(button, true),
                 TextInputUI textInput => TextInputAction(textInput),
-                SingleSelectionUI<int> selection => SingleSelectionAction(selection),
+                ISelectable selection => SingleSelectionAction(selection),
+                InputUI input => InputAction(input, !_inElementInputMode),
                 ScrollableTextUI scrollableText => ScrollableTextAction(scrollableText, !_inElementInputMode),
                 not null => ButtonAction(currentSelectable),
                 _ => false,
@@ -795,11 +775,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void IMenuInputTarget.OnMouseConfirmPressed()
         {
             MouseConfirmSelection();
-            if (!_movingWindow && _currentSelection == -1 &&
+            if (_menuSetup.allowMove && !_movingWindow && _currentSelection == -1 &&
                 _windowInstance.ContainsPosition(WindowManager.instance.inputProvider.mousePosition))
             {
                 _movingWindow = true;
                 _windowInstance.Move(Vector2.zero);
+            }
+            else if (_menuSetup.allowCloseOnClick is UISystemCloseOnClickBehavior.Both
+                         or UISystemCloseOnClickBehavior.InFocus && _currentSelection == -1)
+            {
+                CloseMenu();
             }
         }
 
@@ -927,11 +912,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool SingleSelectionAction<T>(SingleSelectionUI<T> selection)
+        bool SingleSelectionAction(ISelectable selection)
         {
             CloseMenu();
             WindowManager.instance.GetSingleSelectionInput(this,
-                selection.choiceListContent, selection.count);
+                selection.values, selection.activeCount);
             return true;
         }
 
@@ -953,11 +938,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool SliderAction(SliderUI slider, bool setInput)
+        bool InputAction(InputUI inputElement, bool setInput)
         {
             if (setInput && !_inElementInputMode)
             {
-                if (slider.SetInput(true))
+                if (inputElement.SetInput(true))
                 {
                     ClearWindowLocation();
                     _inElementInputMode = true;
@@ -966,7 +951,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             else if (!setInput && _inElementInputMode)
             {
                 _inElementInputMode = false;
-                slider.SetInput(false);
+                inputElement.SetInput(false);
                 ClearWindowLocation();
             }
 
@@ -981,18 +966,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return false;
             if (currentSelectable == null)
             {
-                if (_menuSetup.cancelOutAllowed)
+                if (_menuSetup.allowCloseMenuWithCancelAction)
                     return CancelOut();
                 return false;
             }
 
             bool result = currentSelectable switch
             {
-                SliderUI slider when _inElementInputMode => SliderAction(slider, false),
+                InputUI slider when _inElementInputMode => InputAction(slider, false),
                 ButtonUICountable button => ButtonWithCountAction(button, false),
                 ButtonUIDoubleConfirm { awaitConfirm: true } button => DoubleConfirmAction(button, false),
                 ScrollableTextUI scrollableText when _inElementInputMode => ScrollableTextAction(scrollableText, false),
-                _ when _menuSetup.cancelOutAllowed => CancelOut(),
+                _ when _menuSetup.allowCloseMenuWithCancelAction => CancelOut(),
                 _ => false
             };
             return result;
@@ -1054,8 +1039,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_inElementInputMode)
             {
                 _inElementInputMode = false;
-                if (currentSelectable is SliderUI slider)
-                    slider.SetInput(false);
+                if (currentSelectable is InputUI input)
+                    input.SetInput(false);
                 if (currentSelectable is ScrollableTextUI scrollableText)
                     scrollableText.SetScrolling(false);
             }

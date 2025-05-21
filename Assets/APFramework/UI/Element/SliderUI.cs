@@ -1,50 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Text;
 using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class SliderUI : InputUI
+    public class SliderUI<T> : InputUI, ISlider
     {
-        protected int _min;
-        protected int _max = 10;
-        Action<int> _action;
-        protected int _maxLength => Mathf.Max(_min.ToString().Length, _max.ToString().Length);
-        public virtual int firstSliderArrowIndex => firstCharacterIndex + labelPrefix.Length;
-        public virtual int lastSliderArrowIndex => lastCharacterIndex;
-
-        public virtual int maxContentLength
-        {
-            get
-            {
-                int minCount = Mathf.FloorToInt(Mathf.Log10(Mathf.Abs(_min))) + 1;
-                int maxCount = Mathf.FloorToInt(Mathf.Log10(Mathf.Abs(_max))) + 1;
-                if (minCount > maxCount)
-                {
-                    if (_min < 0)
-                        return minCount + 1;
-                    return minCount;
-                }
-
-                if (_max < 0)
-                    return maxCount + 1;
-                return maxCount;
-            }
-        }
+        List<string> _choiceListContentCache = new();
+        List<IStringLabel> _choiceList = new();
+        List<T> _choiceValueList = new();
+        Action<T> _action;
 
         (Vector2, Vector2) _cachedArrowPosition = (Vector2.zero, Vector2.zero);
+        int ISlider.firstSliderArrowIndex => firstCharacterIndex + labelPrefix.Length;
+        int ISlider.lastSliderArrowIndex => lastCharacterIndex;
         public (Vector2, Vector2) cachedArrowPosition => _cachedArrowPosition;
-        public override int getMaxLength => TextUtility.WidthSensitiveLength(labelPrefix) + _maxLength + 3;
-        public override string formattedContent => labelPrefix + _count;
 
         public override int count
         {
             get => _count;
             set
             {
-                _count = Mathf.Clamp(value, _min, _max);
+                _count = Mathf.Clamp(value, 0, _choiceList.Count - 1);
                 _parentWindow?.InvokeUpdate();
-                TriggerAction();
+                if (_count == value)
+                    TriggerAction();
             }
         }
 
@@ -58,19 +40,187 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public void SetActiveCount(int count)
+        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : "N/A";
+
+        public List<string> choiceListContent
         {
-            _count = Mathf.Clamp(count, _min, _max);
-            _parentWindow?.InvokeUpdate();
+            get
+            {
+                if (_choiceListContentCache.Count == 0)
+                {
+                    if (_choiceList.Count == 0)
+                    {
+                        return _choiceListContentCache;
+                    }
+
+                    _choiceListContentCache.AddRange(_choiceList.Select(x => x.GetValue()));
+                }
+
+                return _choiceListContentCache;
+            }
         }
 
-        public virtual void SetAction(Action<int> action) => _action = action;
+        public override int getMaxLength
+        {
+            get
+            {
+                if (_choiceList.Count == 0)
+                    return TextUtility.WidthSensitiveLength(labelPrefix) + 2;
+                return TextUtility.WidthSensitiveLength(labelPrefix) + maxContentLength + 2;
+            }
+        }
+
+        public override string formattedContent => labelPrefix + currentChoice;
+
+        public int maxContentLength
+        {
+            get
+            {
+                if (choiceListContent.Count == 0)
+                {
+                    return 0;
+                }
+
+                int count = 0;
+                foreach (string choice in choiceListContent)
+                {
+                    int choiceLength = TextUtility.WidthSensitiveLength(choice);
+                    if (choiceLength > count)
+                    {
+                        count = choiceLength;
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        public SliderUI(string label, WindowUI parent) : base(label, parent)
+        {
+        }
+
+        public SliderUI(string label, WindowUI parent, List<IStringLabel> choice, List<T> value) : base(label,
+            parent)
+        {
+            SetChoice(choice, value);
+        }
+
+        public SliderUI(string label, WindowUI parent, List<string> choice, List<T> value) : base(label, parent)
+        {
+            SetChoice(choice, value);
+        }
+
+        public void SetAction(Action<T> action) => _action = action;
+
+        public void SetActiveValue(T value)
+        {
+            int index = _choiceValueList.IndexOf(value);
+            if (index < 0)
+            {
+                return;
+            }
+
+            _count = index;
+            _parentWindow?.InvokeUpdate();
+        }
 
         public override void TriggerAction()
         {
             if (_action == null)
                 return;
-            _action.Invoke(_count);
+            _action.Invoke(_choiceValueList[_count]);
+        }
+
+        public void ClearChoice()
+        {
+            _choiceListContentCache.Clear();
+            _choiceList.Clear();
+        }
+
+        public void SetChoice(List<IStringLabel> choice, List<T> value)
+        {
+            if (choice.Count != value.Count)
+            {
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
+            }
+
+            ClearChoice();
+            _choiceList.AddRange(choice);
+            _choiceValueList.AddRange(value);
+        }
+
+        public void SetChoice(List<string> choice, List<T> value)
+        {
+            if (choice.Count != value.Count)
+            {
+                Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
+                return;
+            }
+
+            ClearChoice();
+            for (int i = 0; i < choice.Count; i++)
+            {
+                AddChoice(choice[i], value[i]);
+            }
+        }
+
+        public void SetChoiceByValue(IEnumerable<T> value)
+        {
+            ClearChoice();
+            foreach (T choice in value)
+            {
+                AddChoice(choice.ToString(), choice);
+            }
+        }
+
+        public void AddChoice(string choice, T value)
+        {
+            _choiceListContentCache.Clear();
+            _choiceList.Add(new StringLabel(choice));
+            _choiceValueList.Add(value);
+        }
+
+        public void RemoveChoiceAt(int index)
+        {
+            _choiceListContentCache.Clear();
+            _choiceList.RemoveAt(index);
+            _choiceValueList.RemoveAt(index);
+        }
+
+        public void AddChoiceByValue(T choice)
+        {
+            _choiceList.Add(new StringLabel(choice.ToString()));
+            _choiceValueList.Add(choice);
+        }
+
+        public void RemoveValue(T value)
+        {
+            _choiceListContentCache.Clear();
+            int index = _choiceValueList.IndexOf(value);
+            if (index < 0)
+                return;
+            _choiceList.RemoveAt(index);
+            _choiceValueList.RemoveAt(index);
+        }
+
+        public string SliderText()
+        {
+            string optionString = currentChoice;
+            if (_count == 0)
+                return StyleUtility.StringColored(ZString.Concat(" ", OptionFillString(optionString), "›"),
+                    StyleUtility.Selected);
+            if (_count == _choiceList.Count - 1)
+                return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(optionString), " "),
+                    StyleUtility.Selected);
+            return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(optionString), "›"),
+                StyleUtility.Selected);
+        }
+
+        public override void ClearCachedValue()
+        {
+            base.ClearCachedValue();
+            _choiceListContentCache.Clear();
         }
 
         public virtual string OptionFillString(string activeOption)
@@ -80,7 +230,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                    TextUtility.Repeat(' ', totalLengthRequired / 2);
         }
 
-        public void SetCachedArrowPosition((Vector2, Vector2) position) => _cachedArrowPosition = position;
+        void ISlider.SetCachedArrowPosition((Vector2, Vector2) position) => _cachedArrowPosition = position;
 
         public override void ClearCachedPosition()
         {
@@ -88,36 +238,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _cachedArrowPosition = (Vector2.zero, Vector2.zero);
         }
 
-
-        public SliderUI(string label, WindowUI parent) : base(label, parent)
-        {
-        }
-
-        public SliderUI(string label, WindowUI parent, int min, int max) : base(label, parent)
-        {
-            SetLimit(min, max);
-        }
-
-        public virtual string SliderText()
-        {
-            if (_count == _min)
-                return StyleUtility.StringColored(ZString.Concat(" ", OptionFillString(_count.ToString()), "›"),
-                    StyleUtility.Selected);
-            if (_count == _max)
-                return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(_count.ToString()), " "),
-                    StyleUtility.Selected);
-            return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(_count.ToString()), "›"),
-                StyleUtility.Selected);
-        }
-
-        public void SetLimit(int min, int max)
-        {
-            _min = min;
-            _max = max;
-            count = Mathf.Clamp(_count, min, max);
-        }
-
-        public (bool, bool) HoverOnArrow(Vector2 position)
+        (bool, bool) ISlider.HoverOnArrow(Vector2 position)
         {
             bool hoverOnDecrease = false;
             bool hoverOnIncrease = false;
@@ -133,7 +254,16 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 hoverOnIncrease = true;
             }
+
             return (hoverOnDecrease, hoverOnIncrease);
         }
+    }
+
+    public interface ISlider
+    {
+        (bool hoverOnDecrease, bool hoverOnIncrease) HoverOnArrow(Vector2 lastMousePosition);
+        int firstSliderArrowIndex { get; }
+        int lastSliderArrowIndex { get; }
+        void SetCachedArrowPosition((Vector2, Vector2) arrowPosition);
     }
 }

@@ -30,6 +30,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField]  int _endStep = 0;
         [SerializeField]  int _currentStep = -1;
         [SerializeField]  bool _initialized = false;
+        public bool needUpdate => _nextUpdate < Mathf.Infinity;
 
         public void Initialize()
         {

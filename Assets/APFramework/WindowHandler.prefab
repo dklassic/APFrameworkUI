@@ -216,6 +216,7 @@ Transform:
   - {fileID: 8727790561063441321}
   - {fileID: 2419800907372681789}
   - {fileID: 8858105482123882610}
+  - {fileID: 4341264469402694063}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2104586365100447668
@@ -237,14 +238,12 @@ MonoBehaviour:
   _textInputProvider: {fileID: 2419800906880326481}
   _selectionProvider: {fileID: 2419800907372681788}
   _confirmationProvider: {fileID: 8889046183939953834}
-  _blurMaterial: {fileID: 2100000, guid: 28f5eea94d1e07743907328410e0c73f, type: 2}
-  _transparentMaterial: {fileID: 2100000, guid: 80b55a8fd1d6dfc4fa0bf3cb79b6fa2e,
-    type: 2}
+  _contextMenuProvider: {fileID: 4128753936356321704}
   _interfaceCamera: {fileID: 0}
   _windows: []
   _compositeMenuMonos: []
-  _compositeMenus: []
   _simpleMenus: []
+  _layoutAlignments: []
   _lastMousePosition: {x: -Infinity, y: -Infinity}
   _overlayMode: 0
 --- !u!1 &2104586365875174832
@@ -300,17 +299,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d99874235fb3502439e960a173e4145c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _windowName: 
-  _windowTag: 
-  _elements: []
-  _cachedPositionStart: {x: 0, y: 0}
-  _cachedPositionEnd: {x: 0, y: 0}
   _drawText: {fileID: 2104586366433644346}
   _outlineBuilder: {fileID: 2104586366648872067}
   _windowMask: {fileID: 2104586366138600069}
   _background: {fileID: 8218788027945183361}
   _layout: {fileID: 8218788028618388918}
+  _windowName: 
+  _windowTag: 
+  _windowLabelContent: 
+  _windowSubscriptContent: 
+  _setup:
+    _width: 0
+    _height: 0
+    _titleStyle: 0
+    _outlineStyle: 0
+    _outlineDisplayStyle: 0
+    _thickenStyle: 0
+    _labelStyle: 0
+    _transitionIn: 0
+    _transitionOut: 0
+    _fontSize: 0
+    _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   _layoutAlignment: {fileID: 0}
+  _endFillCount: 5
+  _fontSize: 10
+  _maskReady: 0
+  _outlineReady: 0
+  _noCut: 0
+  _extraWidth: 0
+  _isDirty: 1
+  _elements: []
+  _positionCached: 0
+  _cachedPositionStart: {x: 0, y: 0}
+  _cachedPositionEnd: {x: 0, y: 0}
+  _active: 0
+  _isFocused: 0
+  _available: 1
+  _inInput: 0
+  _sizeFixed: 0
+  _awaitDeactivate: 0
 --- !u!114 &8218788028618388918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,11 +957,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
-    cancelOutAllowed: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
+    allowCloseMenuWithCancelAction: 0
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -946,8 +974,8 @@ MonoBehaviour:
       _width: 0
       _height: 0
       _titleStyle: 0
-      _outlineStyle: 4
-      _outlineDisplayStyle: 0
+      _outlineStyle: 1
+      _outlineDisplayStyle: 1
       _thickenStyle: 0
       _labelStyle: 0
       _transitionIn: 8
@@ -955,15 +983,15 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _windowLayer: 2
       _windowAlignment: 4
-      _windowDirection: 1
+      _windowDirection: 0
       _offsetSource: 0
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
-      _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+      _spacing: 10
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -971,7 +999,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -983,6 +1010,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!1 &2419800908121954085
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,6 +1284,120 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &3995833469217987127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4341264469402694063}
+  - component: {fileID: 4128753936356321704}
+  m_Layer: 3
+  m_Name: ContextMenuProvider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4341264469402694063
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995833469217987127}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2104586365100447669}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4128753936356321704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995833469217987127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d59731179284758b7d15c0fa92cedd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _menuSetup:
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 2
+    resetOnOpen: 2
+    allowMove: 0
+    allowNavigationOnOpen: 1
+    menuOpenInputDelay: 0.2
+    singlePressOnly: 0
+    holdNavigationDelay: 0.5
+    holdNavigationInterval: 0.2
+    holdNavigationSpeedUpInterval: 2
+  _contextMenuInstantiated: 0
+  _contextMenu:
+    _menuName: 
+    _menuSetup:
+      allowCycleWithinWindow: 0
+      allowCycleBetweenWindows: 0
+      allowCloseMenuWithCancelAction: 0
+      allowCloseOnClick: 0
+      resetOnOpen: 0
+      allowMove: 0
+      allowNavigationOnOpen: 0
+      menuOpenInputDelay: 0
+      singlePressOnly: 0
+      holdNavigationDelay: 0
+      holdNavigationInterval: 0
+      holdNavigationSpeedUpInterval: 0
+    _menuStyling:
+      windowSetup:
+        _width: 0
+        _height: 0
+        _titleStyle: 0
+        _outlineStyle: 0
+        _outlineDisplayStyle: 0
+        _thickenStyle: 0
+        _labelStyle: 0
+        _transitionIn: 0
+        _transitionOut: 0
+        _fontSize: 0
+        _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      layoutSetup:
+        _windowLayer: 0
+        _windowAlignment: 0
+        _windowDirection: 0
+        _offsetSource: 0
+        _offsetType: 0
+        _offset: {x: 0, y: 0, z: 0, w: 0}
+        _spacing: 0
+    _windowInstance: {fileID: 0}
+    _layoutAlignmentInstance: {fileID: 0}
+    _displayActive: 0
+    _navigationActive: 0
+    _linkFrame: 0
+    _nextNavigationUpdate: 0
+    _currentSelection: 0
+    _holdStart: 0
+    _holdNavigationNext: 0
+    _move: {x: 0, y: 0}
+    _mouseScroll: {x: 0, y: 0}
+    _lastMousePosition: {x: 0, y: 0}
+    _mouseActive: 0
+    _hoverOnDecrease: 0
+    _hoverOnIncrease: 0
+    _inElementInputMode: 0
+    _selectionUpdated: 0
+    _focused: 0
+    _movingWindow: 0
+  _window: {fileID: 0}
 --- !u!1 &5142660823976200475
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,11 +1443,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    navigationDirection: 1
-    slideDirection: 0
-    allowCycle: 0
-    cancelOutAllowed: 0
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
+    allowCloseMenuWithCancelAction: 0
+    allowCloseOnClick: 0
     resetOnOpen: 0
+    allowMove: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1317,8 +1460,8 @@ MonoBehaviour:
       _width: 0
       _height: 0
       _titleStyle: 0
-      _outlineStyle: 4
-      _outlineDisplayStyle: 0
+      _outlineStyle: 1
+      _outlineDisplayStyle: 1
       _thickenStyle: 0
       _labelStyle: 0
       _transitionIn: 8
@@ -1326,15 +1469,15 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _windowLayer: 2
       _windowAlignment: 4
-      _windowDirection: 1
+      _windowDirection: 0
       _offsetSource: 0
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
       _spacing: -10
-  _instanceWindows: []
-  _instanceLayoutAlignment: []
+  _windowInstances: []
+  _layoutAlignmentInstances: []
   _initialized: 0
   _displayActive: 0
   _navigationActive: 0
@@ -1342,7 +1485,6 @@ MonoBehaviour:
   _linkFrame: -1
   _nextNavigationUpdate: Infinity
   _currentSelection: {x: 0, y: 0}
-  _windowElementLocationCached: 0
   _holdStart: Infinity
   _holdNavigationNext: Infinity
   _move: {x: 0, y: 0}
@@ -1354,6 +1496,7 @@ MonoBehaviour:
   _inElementInputMode: 0
   _selectionUpdated: 0
   _lastMenu: {fileID: 0}
+  _movingWindow: 0
 --- !u!1 &6348190625406673939
 GameObject:
   m_ObjectHideFlags: 0

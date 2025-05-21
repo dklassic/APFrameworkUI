@@ -428,7 +428,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             // if input mode is active
             else
             {
-                if (currentSelectable is SliderUI slider)
+                if (currentSelectable is ISlider slider)
                 {
                     (_hoverOnDecrease, _hoverOnIncrease) = slider.HoverOnArrow(_lastMousePosition);
                 }
@@ -997,38 +997,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
             window.AddScrollableText(elementName, action);
 
-        public ButtonUIWithContent AddButtonWithContent(string elementName, Action action = null)
-        {
-            return AddButtonWithContent(elementName, _menuDefaultStyling.windowSetup, action);
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, WindowSetup setup, Action action = null)
-        {
-            WindowUI window = NewWindow(elementName, setup);
-            ButtonUIWithContent button = window.AddButtonWithContent(elementName, action);
-            window.AutoResize();
-            return button;
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, LayoutAlignment layout,
-            Action action = null)
-        {
-            return AddButtonWithContent(elementName, layout, _menuDefaultStyling.windowSetup, action);
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, LayoutAlignment layout,
-            WindowSetup setup,
-            Action action = null)
-        {
-            WindowUI window = NewWindow(elementName, layout, setup);
-            ButtonUIWithContent button = window.AddButtonWithContent(elementName, action);
-            window.AutoResize();
-            return button;
-        }
-
-        public ButtonUIWithContent AddButtonWithContent(string elementName, WindowUI window, Action action = null) =>
-            window.AddButtonWithContent(elementName, action);
-
         public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
         {
             return AddSingleSelection(elementName, _menuDefaultStyling.windowSetup, action);
@@ -1177,78 +1145,45 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ToggleUIWithContent AddToggleWithContent(string elementName, WindowUI window,
             Action<bool> action = null) => window.AddToggleWithContent(elementName, action);
 
-        public SliderUI AddSlider(string elementName, Action<int> action = null)
+        public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
         {
             return AddSlider(elementName, _menuDefaultStyling.windowSetup, action);
         }
 
-        public SliderUI AddSlider(string elementName, WindowSetup setup, Action<int> action = null)
+        public SliderUI<T> AddSlider<T>(string elementName, WindowSetup setup, Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            SliderUI slider = window.AddSlider(elementName, action);
+            SliderUI<T> slider = window.AddSlider(elementName, action);
             window.AutoResize();
             return slider;
         }
 
-        public SliderUI AddSlider(string elementName, LayoutAlignment layout, Action<int> action = null)
+        public SliderUI<T> AddSlider<T>(string elementName, LayoutAlignment layout, Action<T> action = null)
         {
             return AddSlider(elementName, layout, _menuDefaultStyling.windowSetup, action);
         }
 
-        public SliderUI AddSlider(string elementName, LayoutAlignment layout, WindowSetup setup,
-            Action<int> action = null)
-        {
-            WindowUI window = NewWindow(elementName, layout, setup);
-            SliderUI slider = window.AddSlider(elementName, action);
-            window.AutoResize();
-            return slider;
-        }
-
-        public SliderUI AddSlider(string elementName, WindowUI window, Action<int> action = null) =>
-            window.AddSlider(elementName, action);
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, Action<T> action = null)
-        {
-            return AddSliderWithChoice<T>(elementName, _menuDefaultStyling.windowSetup, action);
-        }
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, WindowSetup setup,
-            Action<T> action = null)
-        {
-            WindowUI window = NewWindow(elementName, setup);
-            SliderUIChoice<T> slider = window.AddSliderWithChoice<T>(elementName, action);
-            window.AutoResize();
-            return slider;
-        }
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, LayoutAlignment layout,
-            Action<T> action = null)
-        {
-            return AddSliderWithChoice<T>(elementName, layout, _menuDefaultStyling.windowSetup, action);
-        }
-
-        public SliderUIChoice<T> AddSliderWithChoice<T>(string elementName, LayoutAlignment layout, WindowSetup setup,
+        public SliderUI<T> AddSlider<T>(string elementName, LayoutAlignment layout, WindowSetup setup,
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            SliderUIChoice<T> slider = window.AddSliderWithChoice<T>(elementName, action);
+            SliderUI<T> slider = window.AddSlider(elementName, action);
             window.AutoResize();
             return slider;
         }
 
-        public SliderUIChoice<T>
-            AddSliderWithChoice<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSliderWithChoice(elementName, action);
+        public SliderUI<T> AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
+            window.AddSlider<T>(elementName, action);
 
         protected virtual bool BaseConfirmAction()
         {
             bool result = currentSelectable switch
             {
-                SliderUI slider => SliderAction(slider, !_inElementInputMode),
                 ToggleUI toggle => ToggleAction(toggle),
                 ButtonUIDoubleConfirm button => DoubleConfirmAction(button, true),
                 ButtonUICountable button => ButtonWithCountAction(button, true),
                 TextInputUI textInput => TextInputAction(textInput),
+                InputUI slider => InputAction(slider, !_inElementInputMode),
                 ISelectable selection => SingleSelectionAction(selection),
                 ScrollableTextUI scrollableText => ScrollableTextAction(scrollableText, !_inElementInputMode),
                 not null => ButtonAction(currentSelectable),
@@ -1461,7 +1396,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        protected virtual bool SliderAction(SliderUI slider, bool setInput)
+        protected virtual bool InputAction(InputUI slider, bool setInput)
         {
             if (setInput && !_inElementInputMode)
             {
@@ -1490,18 +1425,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return false;
             if (currentSelectable == null)
             {
-                if (_menuSetup.cancelOutAllowed)
+                if (_menuSetup.allowCloseMenuWithCancelAction)
                     return CancelOut();
                 return false;
             }
 
             bool result = currentSelectable switch
             {
-                SliderUI slider when _inElementInputMode => SliderAction(slider, false),
+                InputUI input when _inElementInputMode => InputAction(input, false),
                 ButtonUICountable button => ButtonWithCountAction(button, false),
                 ButtonUIDoubleConfirm { awaitConfirm: true } button => DoubleConfirmAction(button, false),
                 ScrollableTextUI scrollableText when _inElementInputMode => ScrollableTextAction(scrollableText, false),
-                _ when _menuSetup.cancelOutAllowed => CancelOut(),
+                _ when _menuSetup.allowCloseMenuWithCancelAction => CancelOut(),
                 _ => false
             };
             return result;
@@ -1588,8 +1523,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_inElementInputMode)
             {
                 _inElementInputMode = false;
-                if (currentSelectable is SliderUI slider)
-                    slider.SetInput(false);
+                if (currentSelectable is InputUI input)
+                    input.SetInput(false);
                 if (currentSelectable is ScrollableTextUI scrollableText)
                     scrollableText.SetScrolling(false);
             }

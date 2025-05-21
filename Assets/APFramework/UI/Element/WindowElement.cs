@@ -12,6 +12,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         [SerializeField] protected string _name;
         [SerializeField] string _tag;
         [SerializeField] protected string _labelCache;
+        [SerializeField] string _contentCache;
+        protected IStringLabel _content;
         [SerializeField] protected int _count;
         [SerializeField] protected bool _flexible;
         [SerializeField] protected bool _available = true;
@@ -26,9 +28,22 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
             get
             {
-                if (_labelCache == null)
+                if (_labelCache == null && _label != null)
                     _labelCache = _label.GetValue();
                 return _labelCache;
+            }
+        }
+
+        public string content
+        {
+            get
+            {
+                if (_contentCache == null && _content != null)
+                {
+                    _contentCache = _content.GetValue();
+                }
+
+                return _contentCache;
             }
         }
 
@@ -54,8 +69,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public virtual string formattedContent => label;
-        public string rawContent => label;
+        public virtual string formattedContent => string.IsNullOrEmpty(content) ? label : labelPrefix + content;
+        public string rawContent => string.IsNullOrEmpty(content) ? label : labelPrefix + content;
 
         public virtual int getMaxLength
         {
@@ -95,6 +110,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _tag = $"{parentWindow.windowTag}.{name}";
             SetLabel(new StringLabel(_name));
         }
+
         public void SetFirstCharacterIndex(int characterIndex)
         {
             _characterIndex[0] = characterIndex;
@@ -148,6 +164,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public virtual void ClearCachedValue()
         {
             _labelCache = null;
+            _contentCache = null;
         }
 
         public void SetLocalizedByTag()
