@@ -8,7 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public override string displayText => _available switch
         {
             true => formattedContent,
-            false => StyleUtility.StringColored(formattedContent, StyleUtility.Disabled)
+            false => StyleUtility.StringColored(formattedContent, StyleUtility.disabled)
         };
     }
 }

@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class StyleUtility
 {
-    public static Color Selected = new Color32(10, 239, 254, 255);
-    public static Color DisableSelected = new Color32(0, 90, 125, 255);
-    public static Color Disabled = new Color32(100, 100, 100, 255);
-    public static Color Negative = new Color32(247, 49, 86, 255);
+    public static Color selected = new Color32(10, 239, 254, 255);
+    public static Color disableSelected = new Color32(0, 90, 125, 255);
+    public static Color disabled = new Color32(100, 100, 100, 255);
+    public static Color negative = new Color32(247, 49, 86, 255);
 
     public static string StringColored(string text, Color color)
     {

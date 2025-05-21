@@ -48,7 +48,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                         return ZString.Concat(labelPrefix, StyleUtility.StringColoredRange(
                             _inputContent
                                 .Insert(Mathf.Min(_caretPosition, _inputContent.Length),
-                                    "█"), StyleUtility.Selected, selectionRange.x, selectionRange.y));
+                                    "█"), StyleUtility.selected, selectionRange.x, selectionRange.y));
                     }
 
                     if (_caretPosition >= 0)
@@ -56,9 +56,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                         return ZString.Concat(labelPrefix, _inputContent
                                 .Insert(Mathf.Min(_caretPosition, _inputContent.Length),
                                     StyleUtility.StringColored("█",
-                                        StyleUtility.Selected)),
+                                        StyleUtility.selected)),
                             StyleUtility.StringColored(predictionString,
-                                StyleUtility.Disabled));
+                                StyleUtility.disabled));
                     }
 
                     return labelPrefix + _inputContent;

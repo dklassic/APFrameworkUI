@@ -96,30 +96,30 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 {
                     builder.Clear();
                     if (_inFocus && !_inScroll)
-                        builder.Append(StyleUtility.StringColored(fullLine, StyleUtility.Selected));
+                        builder.Append(StyleUtility.StringColored(fullLine, StyleUtility.selected));
                     else
                         builder.Append(fullLine);
                     if (_inScroll)
                         builder.Append(StyleUtility.StringColored("▲",
-                            _count == 0 ? StyleUtility.DisableSelected : StyleUtility.Selected));
+                            _count == 0 ? StyleUtility.disableSelected : StyleUtility.selected));
                     else
-                        builder.Append(_count == 0 ? StyleUtility.StringColored("▲", StyleUtility.Disabled) : "▲");
+                        builder.Append(_count == 0 ? StyleUtility.StringColored("▲", StyleUtility.disabled) : "▲");
                     modifiedLines.Insert(0, builder.ToString());
                 }
                 {
                     builder.Clear();
                     if (_inFocus && !_inScroll)
-                        builder.Append(StyleUtility.StringColored(fullLine, StyleUtility.Selected));
+                        builder.Append(StyleUtility.StringColored(fullLine, StyleUtility.selected));
                     else
                         builder.Append(fullLine);
                     if (_inScroll)
                         builder.Append(StyleUtility.StringColored("▼",
                             _count + _contentHeight == totalHeight
-                                ? StyleUtility.DisableSelected
-                                : StyleUtility.Selected));
+                                ? StyleUtility.disableSelected
+                                : StyleUtility.selected));
                     else
                         builder.Append(_count + _contentHeight == totalHeight
-                            ? StyleUtility.StringColored("▼", StyleUtility.Disabled)
+                            ? StyleUtility.StringColored("▼", StyleUtility.disabled)
                             : "▼");
                     modifiedLines.Add(builder.ToString());
                 }

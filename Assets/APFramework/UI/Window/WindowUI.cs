@@ -407,11 +407,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                                                                windowSubscriptContent)));
                         if (_isFocused)
                             windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
-                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected));
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected));
                         else
                             windowStringBuilder.Append(_available
                                 ? windowSubscriptContent
-                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.Disabled));
+                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.disabled));
                         windowStringBuilder.Append(TextUtility.LineBreaker);
                     }
                     else if (windowSubscriptContent != string.Empty && i == _endFillCount - 1 + compensate &&
@@ -424,11 +424,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                                                                windowSubscriptContent)));
                         if (_isFocused)
                             windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
-                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected));
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected));
                         else
                             windowStringBuilder.Append(_available
                                 ? windowSubscriptContent
-                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.Disabled));
+                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.disabled));
                         windowStringBuilder.Append(TextUtility.LineBreaker);
                     }
                     else if (i == _endFillCount - 2 + compensate && !isFullFrame)
@@ -473,9 +473,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         false => _available
                             ? StyleUtility.StringBold(windowLabelContent.ToUpper())
                             : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                StyleUtility.Disabled),
+                                StyleUtility.disabled),
                         true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                            _available ? StyleUtility.Selected : StyleUtility.DisableSelected),
+                            _available ? StyleUtility.selected : StyleUtility.disableSelected),
                     },
                     false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
                 }, TextUtility.LineBreaker, TextUtility.LineBreaker);
@@ -488,9 +488,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             false => _available
                                 ? StyleUtility.StringBold(windowLabelContent.ToUpper())
                                 : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                    StyleUtility.Disabled),
+                                    StyleUtility.disabled),
                             true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected),
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected),
                         },
                         false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
                     }, TextUtility.LineBreaker);

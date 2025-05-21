@@ -213,12 +213,12 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             string optionString = currentChoice;
             if (_count == 0)
                 return StyleUtility.StringColored(ZString.Concat(" ", OptionFillString(optionString), "›"),
-                    StyleUtility.Selected);
+                    StyleUtility.selected);
             if (_count == _choiceList.Count - 1)
                 return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(optionString), " "),
-                    StyleUtility.Selected);
+                    StyleUtility.selected);
             return StyleUtility.StringColored(ZString.Concat("‹", OptionFillString(optionString), "›"),
-                StyleUtility.Selected);
+                StyleUtility.selected);
         }
 
         public override void ClearCachedValue()

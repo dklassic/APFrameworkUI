@@ -38,10 +38,10 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 if (_inFocus)
                     return StyleUtility.StringColored(TextUtility.StripRichTagsFromStr(formattedContent),
-                        _available ? StyleUtility.Selected : StyleUtility.DisableSelected);
+                        _available ? StyleUtility.selected : StyleUtility.disableSelected);
                 return _available
                     ? formattedContent
-                    : StyleUtility.StringColored(formattedContent, StyleUtility.Disabled);
+                    : StyleUtility.StringColored(formattedContent, StyleUtility.disabled);
             }
         }
 

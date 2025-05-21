@@ -25,7 +25,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         {
                             WindowOutlineDisplayStyle.Always => _available switch
                             {
-                                false => StyleUtility.StringColored(_outlineText.ToUpper(), StyleUtility.Disabled),
+                                false => StyleUtility.StringColored(_outlineText.ToUpper(), StyleUtility.disabled),
                                 true => _outlineText.ToUpper(),
                             },
                             WindowOutlineDisplayStyle.WhenSelected => string.Empty,
@@ -35,7 +35,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         {
                             true => _outlineText.ToUpper(),
                             false => StyleUtility.StringColored(_outlineText.ToUpper(),
-                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected)
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected)
                         }
                     };
                 }
