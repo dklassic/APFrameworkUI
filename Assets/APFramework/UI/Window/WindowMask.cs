@@ -14,9 +14,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             DamageGlitchVFX,
         }
 
-        [SerializeField]  WindowTransition _windowTransitionIn = WindowTransition.Full;
-        [SerializeField]  WindowTransition _windowTransitionOut = WindowTransition.FromLeftLagged;
-        [SerializeField]  FadeType _currentFadeType = FadeType.FadeIn;
+        [SerializeField] WindowTransition _windowTransitionIn = WindowTransition.Full;
+        [SerializeField] WindowTransition _windowTransitionOut = WindowTransition.FromLeftLagged;
+        [SerializeField] FadeType _currentFadeType = FadeType.FadeIn;
         [SerializeField] TextMeshProUGUI _mask;
         public TextMeshProUGUI mask => _mask;
         string _maskText = TextUtility.FADE_IN;
@@ -24,12 +24,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
         int[,] _maskIndex;
         string _maskString = TextUtility.FADE_IN;
         int _fillLine = 0;
-        [SerializeField]  int _widthCount = 0;
-        [SerializeField]  int _heightCount = 0;
-        [SerializeField]  float _nextUpdate = Mathf.Infinity;
-        [SerializeField]  int _endStep = 0;
-        [SerializeField]  int _currentStep = -1;
-        [SerializeField]  bool _initialized = false;
+        [SerializeField] int _widthCount = 0;
+        [SerializeField] int _heightCount = 0;
+        [SerializeField] float _nextUpdate = Mathf.Infinity;
+        [SerializeField] int _endStep = 0;
+        [SerializeField] int _currentStep = -1;
+        [SerializeField] bool _initialized = false;
         public bool needUpdate => _nextUpdate < Mathf.Infinity;
 
         public void Initialize()
@@ -297,7 +297,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _endStep * _maskAnimationStep;
         }
 
-        string LineFill(char pattern, int count) => TextUtility.Repeat(pattern, count) + TextUtility.LineBreaker;
+        string LineFill(char pattern, int count) =>
+            ZString.Concat(TextUtility.Repeat(pattern, count), TextUtility.LineBreaker);
 
         public void SetActive(bool active)
         {
@@ -313,9 +314,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        public void SetColor(ColorCode code)
+        public void SetColor(Color color)
         {
-            mask.color = StyleUtility.ColorSetting(code);
+            mask.color = color;
         }
 
 

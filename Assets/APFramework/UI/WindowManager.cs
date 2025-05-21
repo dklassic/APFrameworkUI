@@ -27,8 +27,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] List<LayoutAlignment> _layoutAlignments = new();
         [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
         [SerializeField] RenderMode _overlayMode = RenderMode.ScreenSpaceOverlay;
-        Dictionary<WindowLayer, Canvas> _layers = new();
-        Dictionary<WindowLayer, Canvas> _backgroundLayers = new();
+        Dictionary<MenuLayer, Canvas> _layers = new();
+        Dictionary<MenuLayer, Canvas> _backgroundLayers = new();
         IMenuInputTarget _activeMenuTarget;
         IInputProvider _inputProvider;
         Vector2Int _lastResolution = Vector2Int.zero;
@@ -52,12 +52,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _contextMenuProvider.SetupMenu(choices, actions, position, onClose);
         }
 
-        public void GetTextInput(ITextInputTarget sourceUI, TextInputUI text)
+        public void GetTextInput(IMenuInputTarget sourceUI, TextInputUI text)
         {
             _textInputProvider.GetTextInput(sourceUI, text);
         }
 
-        public void GetSingleSelectionInput(ISelectionInputTarget sourceUI, List<string> choices,
+        public void GetSingleSelectionInput(IMenuInputTarget sourceUI, List<string> choices,
             int currentChoice)
         {
             _selectionProvider.GetSingleSelection(sourceUI, choices, currentChoice);
@@ -189,7 +189,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        public Canvas InstantiateBackgroundLayer(WindowLayer layer)
+        public Canvas InstantiateBackgroundLayer(MenuLayer layer)
         {
             if (!_backgroundLayers.TryGetValue(layer, out Canvas existingLayer))
             {
@@ -205,7 +205,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return existingLayer;
         }
 
-        public Canvas InstantiateLayer(WindowLayer layer)
+        public Canvas InstantiateLayer(MenuLayer layer)
         {
             if (!_layers.TryGetValue(layer, out Canvas existingLayer))
             {
@@ -223,7 +223,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public LayoutAlignment InstantiateLayout(LayoutSetup layoutSetup, string layoutName = "")
         {
-            Transform targetLayer = InstantiateLayer(layoutSetup.windowLayer).transform;
+            Transform targetLayer = InstantiateLayer(layoutSetup.MenuLayer).transform;
             GameObject newLayout = Instantiate(_layoutTemplate, targetLayer);
             LayoutAlignment layoutAlignment = newLayout.AddComponent<LayoutAlignment>();
             _layoutAlignments.Add(layoutAlignment);
@@ -342,14 +342,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void GetConfirm(string title, string message, string confirm,
             string cancel = null, Action onConfirm = null, Action onCancel = null,
-            ConfirmDefaultChoice defaultChoice = ConfirmDefaultChoice.None)
+            ConfirmationDefaultChoice defaultChoice = ConfirmationDefaultChoice.None)
         {
             _confirmationProvider.GetConfirm(title, message, confirm, cancel, onConfirm, onCancel,
                 defaultChoice);
         }
 
         public void GetConfirm(string title, string message, string confirm,
-            Action onConfirm = null, ConfirmDefaultChoice defaultChoice = ConfirmDefaultChoice.None)
+            Action onConfirm = null, ConfirmationDefaultChoice defaultChoice = ConfirmationDefaultChoice.None)
         {
             _confirmationProvider.GetConfirm(title, message, confirm, null, onConfirm, null, defaultChoice);
         }
@@ -480,6 +480,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (_activeMenuTarget != null)
                 _activeMenuTarget.OnKeyboardEscape();
+        }
+
+        void IMenuInputTarget.SetSelection(int i)
+        {
+        }
+
+        void IMenuInputTarget.SetTextInput(string inputFieldText)
+        {
         }
 
         public T GetMenu<T>()

@@ -72,7 +72,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public override string formattedContent => labelPrefix + currentChoice;
+        public override string formattedContent => ZString.Concat(labelPrefix, currentChoice);
 
         public int maxContentLength
         {

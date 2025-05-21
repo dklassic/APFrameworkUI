@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Text;
 using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
@@ -33,7 +34,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : "N/A";
         public override int getMaxLength => TextUtility.WidthSensitiveLength(formattedContent) + 2;
-        public override string formattedContent => labelPrefix + currentChoice;
+        public override string formattedContent => ZString.Concat(labelPrefix, currentChoice);
 
         public override int count
         {
@@ -124,6 +125,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 AddChoice(choice[i], value[i]);
             }
+
             return this;
         }
 
@@ -134,6 +136,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 AddChoice(item.ToString(), item);
             }
+
             return this;
         }
 

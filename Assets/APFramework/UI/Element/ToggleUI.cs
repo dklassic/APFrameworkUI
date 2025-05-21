@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Text;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
@@ -20,7 +21,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public override string formattedContent => (_toggledOn ? "■ " : "□ ") + base.formattedContent;
+        public override string formattedContent => ZString.Concat((_toggledOn ? "■ " : "□ "), base.formattedContent);
 
         public ToggleUI(string label, WindowUI parent) : base(label, parent)
         {

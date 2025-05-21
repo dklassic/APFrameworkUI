@@ -1,6 +1,6 @@
 namespace ChosenConcept.APFramework.Interface.Framework
 {
-    public enum UISystemCloseOnClickBehavior
+    public enum MenuCloseOnClickBehavior
     {
         Disable,
         OutOfFocus,

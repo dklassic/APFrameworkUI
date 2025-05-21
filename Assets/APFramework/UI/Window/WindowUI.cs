@@ -340,7 +340,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     AutoResize();
                 }
 
-                for (int i = 0; i < _elements.Count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     string[] texts = _elements[i].GetSplitDisplayText(_noCut ? 0 : contentWidth);
                     for (int k = 0; k < texts.Length; k++)
@@ -464,9 +464,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
         string TitleBuild()
         {
             if (!hasTitle)
-                return TextUtility.LineBreaker + TextUtility.LineBreaker;
+                return ZString.Concat(TextUtility.LineBreaker, TextUtility.LineBreaker);
             if (hasTitleBar)
-                return TextUtility.TitleOpener + (_elements.Count == 1) switch
+                return ZString.Concat(TextUtility.TitleOpener, (_elements.Count == 1) switch
                 {
                     true => _isFocused switch
                     {
@@ -478,29 +478,29 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             _available ? StyleUtility.Selected : StyleUtility.DisableSelected),
                     },
                     false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
-                } + TextUtility.LineBreaker + TextUtility.LineBreaker;
+                }, TextUtility.LineBreaker, TextUtility.LineBreaker);
             if (hasEmbeddedTitle)
-                return " " +
-                       (_elements.Count == 1) switch
-                       {
-                           true => _isFocused switch
-                           {
-                               false => _available
-                                   ? StyleUtility.StringBold(windowLabelContent.ToUpper())
-                                   : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                       StyleUtility.Disabled),
-                               true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                   _available ? StyleUtility.Selected : StyleUtility.DisableSelected),
-                           },
-                           false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
-                       } + TextUtility.LineBreaker;
+                return ZString.Concat(" ",
+                    (_elements.Count == 1) switch
+                    {
+                        true => _isFocused switch
+                        {
+                            false => _available
+                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
+                                : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                    StyleUtility.Disabled),
+                            true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                _available ? StyleUtility.Selected : StyleUtility.DisableSelected),
+                        },
+                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
+                    }, TextUtility.LineBreaker);
             return TextUtility.LineBreaker;
         }
 
         public void Initialize(string elementName, string parent, WindowSetup windowSetup)
         {
             _windowName = elementName;
-            _windowTag = $"{parent}.{elementName}";
+            _windowTag = ZString.Format("{0}.{1}", parent, elementName);
             _windowLabel = new StringLabel(_windowName);
             _setup = windowSetup;
             _drawText.fontSize = _setup.fontSize;
@@ -883,9 +883,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_maskReady) _windowMask.TriggerEffect(transitionSetup);
         }
 
-        internal void SetMaskColor(ColorCode code)
+        internal void SetMaskColor(Color color)
         {
-            _windowMask.SetColor(code);
+            _windowMask.SetColor(color);
         }
 
         public void SetInput(bool inInput)

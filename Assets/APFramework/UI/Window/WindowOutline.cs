@@ -42,15 +42,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        [SerializeField]  bool _singleWindowOverride = false;
-        [SerializeField]  bool _inFocus = false;
-        [SerializeField]  bool _available = true;
-        [SerializeField]  bool _inInput = false;
-        [SerializeField]  bool _active = false;
-        [SerializeField]  bool _hasOutline = false;
+        [SerializeField] bool _singleWindowOverride = false;
+        [SerializeField] bool _inFocus = false;
+        [SerializeField] bool _available = true;
+        [SerializeField] bool _inInput = false;
+        [SerializeField] bool _active = false;
+        [SerializeField] bool _hasOutline = false;
         Coroutine _coroutine = null;
-        [SerializeField]  Vector2Int _size;
-        [SerializeField]  WindowOutlineDisplayStyle _displayStyle;
+        [SerializeField] Vector2Int _size;
+        [SerializeField] WindowOutlineDisplayStyle _displayStyle;
         public string targetText => ZString.Format("Allocating {0}x{1}", _size.x, _size.y);
 
         public void SetOpacity(float alpha)
@@ -79,13 +79,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 WindowOutlineStyle.CornerOnly => LineFill(CornerSets(0, thicken, setup.labelStyle), widthCount),
                 WindowOutlineStyle.LeftLine => LineFill(LeftLineSets(thicken, setup.labelStyle), widthCount),
                 WindowOutlineStyle.RightLine => LineFill(RightLineSets(thicken, setup.labelStyle), widthCount),
-                _ => TextUtility.Repeat(' ', widthCount) + TextUtility.LineBreaker
+                _ => ZString.Concat(TextUtility.Repeat(' ', widthCount), TextUtility.LineBreaker)
             };
             if (setup.titleStyle == WindowTitleStyle.EmbeddedTitle &&
                 setup.outlineStyle != WindowOutlineStyle.LeftLine && setup.labelStyle == WindowLabelStyle.None)
             {
-                // filler = filler.Substring(0, 1) + TextUtility.Repeat(' ', titleOverride - 1) + filler.Substring(titleOverride);
-                filler = TextUtility.Repeat(' ', titleOverride) + filler.Substring(titleOverride);
+                filler = ZString.Concat(TextUtility.Repeat(' ', titleOverride), filler.Substring(titleOverride));
             }
 
             if (setup.titleStyle != WindowTitleStyle.TitleBar)

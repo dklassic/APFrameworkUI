@@ -8,8 +8,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool allowCycleWithinWindow;
         public bool allowCycleBetweenWindows;
         public bool allowCloseMenuWithCancelAction;
-        public UISystemCloseOnClickBehavior allowCloseOnClick;
-        public UISystemResetOnOpenBehavior resetOnOpen;
+        public MenuCloseOnClickBehavior allowCloseOnClick;
+        public MenuResetOnOpenBehavior resetOnOpen;
         public bool allowDraggingWithMouse;
         public bool allowNavigationOnOpen;
         public float menuOpenInputDelay;
@@ -24,8 +24,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             allowCycleWithinWindow = false,
             allowCycleBetweenWindows = false,
             allowCloseMenuWithCancelAction = false,
-            allowCloseOnClick = UISystemCloseOnClickBehavior.Disable,
-            resetOnOpen = UISystemResetOnOpenBehavior.ClearSelection,
+            allowCloseOnClick = MenuCloseOnClickBehavior.Disable,
+            resetOnOpen = MenuResetOnOpenBehavior.ClearSelection,
             allowNavigationOnOpen = true,
             allowDraggingWithMouse = false,
             menuOpenInputDelay = .2f,

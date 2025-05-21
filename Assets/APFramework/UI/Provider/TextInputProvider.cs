@@ -8,11 +8,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
     public class TextInputProvider : MonoBehaviour, IMenuInputTarget
     {
         [SerializeField] TMP_InputField _inputField;
-        ITextInputTarget _target;
+        IMenuInputTarget _target;
         TextInputUI _textInputUI;
         string _originalText = string.Empty;
 
-        public void GetTextInput(ITextInputTarget sourceUI, TextInputUI text)
+        public void GetTextInput(IMenuInputTarget sourceUI, TextInputUI text)
         {
             _target = sourceUI;
             GetTextInput(text);
@@ -156,6 +156,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void IMenuInputTarget.OnKeyboardEscape()
         {
             CompleteInput();
+        }
+
+        void IMenuInputTarget.SetSelection(int i)
+        {
+        }
+
+        void IMenuInputTarget.SetTextInput(string inputFieldText)
+        {
         }
     }
 }

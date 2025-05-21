@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace ChosenConcept.APFramework.Interface.Framework
 {
     [Serializable]
-    public class SimpleMenu : IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
+    public class SimpleMenu : IMenuInputTarget
     {
         [Header("Debug View")] [SerializeField]
         string _menuName;
@@ -35,8 +35,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         Action _menuCloseAction;
 
         public bool canBeClosedByOutOfFocusClick =>
-            _menuSetup.allowCloseOnClick is UISystemCloseOnClickBehavior.Both
-                or UISystemCloseOnClickBehavior.OutOfFocus;
+            _menuSetup.allowCloseOnClick is MenuCloseOnClickBehavior.Both
+                or MenuCloseOnClickBehavior.OutOfFocus;
 
         public bool movingWindow => _movingWindow;
         bool windowPositionCached => _windowInstance.positionCached;
@@ -711,7 +711,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             LinkInput();
         }
 
-        void ISelectionInputTarget.SetSelection(int count)
+        void IMenuInputTarget.SetSelection(int count)
         {
             if (currentSelectable is ISelectable button)
             {
@@ -748,8 +748,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _movingWindow = true;
                 _windowInstance.Move(Vector2.zero);
             }
-            else if (_menuSetup.allowCloseOnClick is UISystemCloseOnClickBehavior.Both
-                         or UISystemCloseOnClickBehavior.InFocus && _currentSelection == -1)
+            else if (_menuSetup.allowCloseOnClick is MenuCloseOnClickBehavior.Both
+                         or MenuCloseOnClickBehavior.InFocus && _currentSelection == -1)
             {
                 CloseMenu();
             }
@@ -962,13 +962,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ResetHold();
             switch (_menuSetup.resetOnOpen)
             {
-                case UISystemResetOnOpenBehavior.ResetSelection:
+                case MenuResetOnOpenBehavior.ResetSelection:
                     ResetSelection();
                     break;
-                case UISystemResetOnOpenBehavior.ClearSelection:
+                case MenuResetOnOpenBehavior.ClearSelection:
                     ClearSelection();
                     break;
-                case UISystemResetOnOpenBehavior.Disable:
+                case MenuResetOnOpenBehavior.Disable:
                     break;
             }
 

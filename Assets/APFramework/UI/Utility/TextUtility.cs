@@ -19,9 +19,6 @@ public static class TextUtility
     public const string FADE_OUT_IN = "█▓▒░  ░▒▓█";
     public const char UNDERSCORE = '_';
 
-    public const string ASCII_CHARACTERS =
-        "\"\'!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ ‐‑–—―‗‘’‚‛“”„†‡•․…‰′″‹›‼‾⁄€™≡─┌┐└┘├┬┴┼═║╔╗╚╝╠╣╦╩╬▀▄█░▒▓■□ ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω";
-
     [BurstCompile]
     public static bool IsFullWidth(char c)
     {
@@ -69,17 +66,11 @@ public static class TextUtility
     }
 
     [BurstCompile]
-    public static bool HasUnderScore(string text)
-    {
-        return text.Contains(UNDERSCORE);
-    }
-
-    [BurstCompile]
     public static string Repeat(char c, int count)
     {
         if (count <= 0)
             return string.Empty;
-        using (var internalStringBuilder = ZString.CreateStringBuilder())
+        using (Utf16ValueStringBuilder internalStringBuilder = ZString.CreateStringBuilder())
         {
             for (int i = 0; i < count; i++)
             {
@@ -99,7 +90,7 @@ public static class TextUtility
     {
         try
         {
-            using (var internalStringBuilder = ZString.CreateStringBuilder())
+            using (Utf16ValueStringBuilder internalStringBuilder = ZString.CreateStringBuilder())
             {
                 bool tag = false;
                 for (int index = 0; index < richStr.Length; index++)
@@ -125,9 +116,7 @@ public static class TextUtility
                     }
                 }
 
-                // -----------------------------------
                 string strippedStr = internalStringBuilder.ToString();
-                //Context.Log(strippedStr);
                 return strippedStr;
             }
         }
@@ -205,7 +194,7 @@ public static class TextUtility
         string pattern = @"(<[^>]+>)|([^<]+)";
 
         List<string> result = new List<string>();
-        Regex regex = new Regex(pattern);
+        Regex regex = new(pattern);
 
         // Find matches in the input string
         var matches = regex.Matches(input);

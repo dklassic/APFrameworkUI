@@ -6,7 +6,7 @@ using ChosenConcept.APFramework.Interface.Framework.Element;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
-    public class CompositeMenuMono : MonoBehaviour, IMenuInputTarget, ITextInputTarget, ISelectionInputTarget
+    public class CompositeMenuMono : MonoBehaviour, IMenuInputTarget
     {
         [SerializeField] protected MenuSetup _menuSetup = MenuSetup.defaultSetup;
         [SerializeField] protected MenuStyling _menuDefaultStyling = MenuStyling.defaultStyling;
@@ -1106,7 +1106,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return result;
         }
 
-        void ITextInputTarget.SetTextInput(string text)
+        void IMenuInputTarget.SetTextInput(string text)
         {
             if (currentSelectable is TextInputUI textInput)
             {
@@ -1118,7 +1118,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             LinkInput();
         }
 
-        void ISelectionInputTarget.SetSelection(int count)
+        void IMenuInputTarget.SetSelection(int count)
         {
             if (currentSelectable is ISelectable target)
             {
@@ -1387,13 +1387,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ResetHold();
             switch (_menuSetup.resetOnOpen)
             {
-                case UISystemResetOnOpenBehavior.ResetSelection:
+                case MenuResetOnOpenBehavior.ResetSelection:
                     ResetSelection();
                     break;
-                case UISystemResetOnOpenBehavior.ClearSelection:
+                case MenuResetOnOpenBehavior.ClearSelection:
                     ClearSelection();
                     break;
-                case UISystemResetOnOpenBehavior.Disable:
+                case MenuResetOnOpenBehavior.Disable:
                     break;
             }
 

@@ -32,7 +32,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public string inputContent => _inputContent;
         protected bool hasSelection => _selectionRange.x != _selectionRange.y;
 
-        public override string formattedContent => labelPrefix + _inputContent;
+        public override string formattedContent => ZString.Concat(labelPrefix, _inputContent);
 
         public override string displayText
         {

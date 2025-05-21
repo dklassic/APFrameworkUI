@@ -7,7 +7,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     public class SelectionProvider : CompositeMenuMono
     {
         LayoutAlignment _layout;
-        ISelectionInputTarget _target;
+        IMenuInputTarget _target;
 
         protected override void InitializeUI()
         {
@@ -28,7 +28,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ClearWindowLocation();
         }
 
-        public void GetSingleSelection(ISelectionInputTarget target, List<string> choices, int currentChoice)
+        public void GetSingleSelection(IMenuInputTarget target, List<string> choices, int currentChoice)
         {
             UpdateChoices(choices);
             // take away the input from the sourceUI

@@ -15,7 +15,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void GetConfirm(string title, string message, string confirm,
             string cancel, Action onConfirm,
-            Action onCancel, ConfirmDefaultChoice defaultChoice)
+            Action onCancel, ConfirmationDefaultChoice defaultChoice)
         {
             ClearWindows(true);
             WindowSetup messageSetup = WindowSetup.defaultSetup;
@@ -46,9 +46,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             OpenMenu(true);
             _currentSelection = defaultChoice switch
             {
-                ConfirmDefaultChoice.Confirm => new Vector2Int(1, 0),
-                ConfirmDefaultChoice.Cancel => new Vector2Int(2, 0),
-                ConfirmDefaultChoice.None => new Vector2Int(-1, -1),
+                ConfirmationDefaultChoice.Confirm => new Vector2Int(1, 0),
+                ConfirmationDefaultChoice.Cancel => new Vector2Int(2, 0),
+                ConfirmationDefaultChoice.None => new Vector2Int(-1, -1),
                 _ => throw new ArgumentOutOfRangeException(nameof(defaultChoice), defaultChoice, null)
             };
             currentSelectable?.SetFocus(true);

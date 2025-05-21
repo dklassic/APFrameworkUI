@@ -1,6 +1,6 @@
 namespace ChosenConcept.APFramework.Interface.Framework
 {
-    public enum UISystemResetOnOpenBehavior
+    public enum MenuResetOnOpenBehavior
     {
         Disable,
         ResetSelection,

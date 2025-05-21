@@ -12,5 +12,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void OnMouseConfirmReleased();
         void OnMouseCancel();
         void OnKeyboardEscape();
+        void SetSelection(int i);
+        void SetTextInput(string inputFieldText);
     }
 }

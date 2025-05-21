@@ -6,14 +6,14 @@ namespace ChosenConcept.APFramework.Interface
     [System.Serializable]
     public struct LayoutSetup
     {
-        [SerializeField] WindowLayer _windowLayer;
+        [SerializeField] MenuLayer _menuLayer;
         [SerializeField] WindowAlignment _windowAlignment;
         [SerializeField] WindowDirection _windowDirection;
         [SerializeField] OffsetSource _offsetSource;
         [SerializeField] OffsetType _offsetType;
         [SerializeField] Vector4 _offset;
         [SerializeField] int _spacing;
-        public WindowLayer windowLayer => _windowLayer;
+        public MenuLayer MenuLayer => _menuLayer;
         public WindowAlignment windowAlignment => _windowAlignment;
         public WindowDirection windowDirection => _windowDirection;
         public OffsetSource offsetSource => _offsetSource;
@@ -22,7 +22,7 @@ namespace ChosenConcept.APFramework.Interface
         public int spacing => _spacing;
         public static LayoutSetup defaultLayout => new()
         {
-            _windowLayer = WindowLayer.LayerOne,
+            _menuLayer = MenuLayer.LayerOne,
             _windowAlignment = WindowAlignment.MiddleCenter,
             _windowDirection = WindowDirection.Horizontal,
             _offsetSource = OffsetSource.Fullscreen,

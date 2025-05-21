@@ -1,7 +1,7 @@
 
 namespace ChosenConcept.APFramework.Interface
 {
-    public enum WindowLayer
+    public enum MenuLayer
     {
         LayerOne = 0,
         LayerTwo = 1,

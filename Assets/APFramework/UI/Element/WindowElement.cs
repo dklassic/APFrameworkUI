@@ -32,6 +32,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             base.SetLabel(label);
             return (T)this;
         }
+
         public new T ShowLabel(bool show)
         {
             base.ShowLabel(show);
@@ -174,7 +175,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
             _name = name;
             _parentWindow = parent;
-            _tag = $"{parentWindow.windowTag}.{name}";
+            _tag = ZString.Format("{0}.{1}", parentWindow.windowTag, name);
             SetLabel(new StringLabel(_name));
         }
 

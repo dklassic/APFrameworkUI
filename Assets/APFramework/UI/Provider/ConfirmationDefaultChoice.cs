@@ -1,6 +1,6 @@
 namespace ChosenConcept.APFramework.Interface.Framework
 {
-    public enum ConfirmDefaultChoice
+    public enum ConfirmationDefaultChoice
     {
         None,
         Confirm,
