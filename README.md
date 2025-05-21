@@ -23,16 +23,16 @@ APFramework's UI system is a very code based system, it is best used when you wa
 
 There are two styles of APFramework usage:
 
-- CompositeMenu
+- CompositeMenuMono
 - SimpleMenu
 
 Beware that since each relies on different navigation logic, best not to mix them together, unless one of them is not interactable.
 
-## CompositeMenu
+## CompositeMenuMono
 
-`CompositeMenu` is a self-contained class that manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenu`, it is expected that all windows will be activated and deactivated together. When working with `CompositeMenu`, you can attempt to inherit the class to create custom navigation logic yourself.
+`CompositeMenuMono` is a self-contained class that inherits `MonoBehaviour`, which manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenuMono`, it is expected that all windows will be activated and deactivated together. When working with `CompositeMenuMono`, you should inherit the class and override several parts of it to initialize the menu, meanwhile this is much eacsier to work with if you want some custom navigation between windows.
 
-Alternatively, you can use `CompositeMenuMono`, which provides exposed property on inspector to setup, while also allows getting the menu instance through the class name.
+In the meantime, you can also retrieve the menu 
 
 ## SimpleMenu
 
@@ -100,11 +100,9 @@ Access through `WindowManager.instance.OpenContextMenu`, which can show a contex
 - Rework element instantiation to use IStringLabel better
 - Setup line break better when dealing with labeled elements
 - Fix Compsite menu multi window focus issue
-- Add a better way of setting up moveable window
 - Add the ability to reorder windows within the same layout
 - Consider builder pattern
 - Restructure Menu element adder (Auto resize is maybe not needed anymore)
-- Implement CompositeMenuMono using CompositeMenu for logic reusing
 
 # Fonts Included
 
