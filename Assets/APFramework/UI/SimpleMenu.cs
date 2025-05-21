@@ -781,7 +781,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void IMenuInputTarget.OnMouseConfirmPressed()
         {
             MouseConfirmSelection();
-            if (_menuSetup.allowMove && !_movingWindow && _currentSelection == -1 &&
+            if (_menuSetup.allowDraggingWithMouse && !_movingWindow && _currentSelection == -1 &&
                 _windowInstance.ContainsPosition(WindowManager.instance.inputProvider.mousePosition))
             {
                 _movingWindow = true;

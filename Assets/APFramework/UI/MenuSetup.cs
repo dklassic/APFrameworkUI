@@ -10,7 +10,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool allowCloseMenuWithCancelAction;
         public UISystemCloseOnClickBehavior allowCloseOnClick;
         public UISystemResetOnOpenBehavior resetOnOpen;
-        public bool allowMove;
+        public bool allowDraggingWithMouse;
         public bool allowNavigationOnOpen;
         public float menuOpenInputDelay;
         public bool singlePressOnly;
@@ -27,7 +27,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             allowCloseOnClick = UISystemCloseOnClickBehavior.Disable,
             resetOnOpen = UISystemResetOnOpenBehavior.ClearSelection,
             allowNavigationOnOpen = true,
-            allowMove = false,
+            allowDraggingWithMouse = false,
             menuOpenInputDelay = .2f,
             singlePressOnly = false,
             holdNavigationDelay = 0.5f,
