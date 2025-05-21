@@ -24,7 +24,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             _active = true;
             _textInputUI = text;
-            _originalText = _textInputUI.rawContent;
+            _originalText = _textInputUI.inputContent;
             // take away the input from the sourceUI
             WindowManager.instance.LinkInputTarget(null);
 

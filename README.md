@@ -32,7 +32,7 @@ Beware that since each relies on different navigation logic, best not to mix the
 
 `CompositeMenuMono` is a self-contained class that inherits `MonoBehaviour`, which manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenuMono`, it is expected that all windows will be activated and deactivated together. When working with `CompositeMenuMono`, you should inherit the class and override several parts of it to initialize the menu, meanwhile this is much eacsier to work with if you want some custom navigation between windows.
 
-In the meantime, you can also retrieve the menu 
+In the meantime, you can also retrieve the menu via the `WindowManager.intance.GetSystem<T>`, which is really useful for quickly referencing between menus without hassle.
 
 ## SimpleMenu
 
@@ -67,12 +67,11 @@ Currently window elements implemented are all based on my own needs, which are:
 
 - Text (Non-selectable text display)
 - Button (Selectable and can trigger action when pressed)
-- ButtonWithCount (increase upon confirm and decrease upon cancel)
-- DoubleConfirmButton (Takes a second confirm to trigger action assigned)
-- Slider (Integer choice only)
-- SliderWithChoice (String based choice that takes generic type value)
+- QuickSelection (Cycles between chioces upon confrim and optionally cancel inputs)
+- SingleSelection (Shows up a dedicated option screen for choosing)
+- Slider (Capable of taking artibtrary types and triggering callbacks)
 - Toggle
-- TextInput
+- TextInput (Also with predition and autocomplete available)
 - ScrollableText (To be able to display given text within designated height with logic to scroll)
 
 ## Window
@@ -97,12 +96,11 @@ Access through `WindowManager.instance.OpenContextMenu`, which can show a contex
 - Add icon to pin window
 - Add icon to close window
 - Add ability to resize window with mouse
-- Rework element instantiation to use IStringLabel better
-- Setup line break better when dealing with labeled elements
-- Fix Compsite menu multi window focus issue
+- Add ordering to menus
+- Setup line break better when dealing with lengthy labeled elements
+- Enhance Compsite menu multi window focus order
 - Add the ability to reorder windows within the same layout
-- Restructure Menu element adder (Auto resize is maybe not needed anymore)
-- Fix layout element size calculation
+- Fix layout element size calculation as it is still rather loose to my liking
 
 # Fonts Included
 
