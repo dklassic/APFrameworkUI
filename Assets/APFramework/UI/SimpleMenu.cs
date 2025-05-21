@@ -41,7 +41,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool movingWindow => _movingWindow;
         bool windowPositionCached => _windowInstance.positionCached;
 
-        public ButtonUI currentSelectable
+        public WindowElement currentSelectable
         {
             get
             {
@@ -57,6 +57,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public WindowUI windowInstance => _windowInstance;
         public bool focused => _focused;
         public bool mouseActive => _mouseActive;
+        public bool inElementInputMode => _inElementInputMode;
 
         public SimpleMenu(string name)
         {
@@ -72,6 +73,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _menuSetup = menuSetup;
             _menuStyling = MenuStyling.defaultStyling;
         }
+
         public SimpleMenu(string name, MenuSetup menuSetup, MenuStyling menuStyling)
         {
             _menuName = name;
@@ -104,7 +106,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public bool ExistsSelectable(int i) => _windowInstance.interactables.Count > i && i >= 0;
 
-        public ButtonUI GetSelectable(int i) =>
+        public WindowElement GetSelectable(int i) =>
             i >= 0 && i < _windowInstance.interactables.Count ? _windowInstance.interactables[i] : null;
 
         public void UpdateMenu()
@@ -360,7 +362,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void ResetSelection()
         {
             ResetInput();
-            foreach (ButtonUI element in _windowInstance.interactables)
+            foreach (WindowElement element in _windowInstance.interactables)
             {
                 element.SetFocus(false);
             }
@@ -377,7 +379,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         // Used to set all windows in unselected state
         public void ClearSelection()
         {
-            foreach (ButtonUI element in _windowInstance.interactables)
+            foreach (WindowElement element in _windowInstance.interactables)
             {
                 element.SetFocus(false);
             }
@@ -438,7 +440,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 UpdateSelectionByMovement(_move.normalized);
                 // Ignore when mouse scroll to prevent scrolling out of a window
-                if (!_selectionUpdated && !mouseScrollOverride)
+                if (!_inElementInputMode && !_selectionUpdated && !mouseScrollOverride)
                 {
                     WindowManager.instance.CheckClosestDirectionalMatch(this,
                         currentSelectable.cachedPosition.Item1, _move.normalized, _menuSetup.allowCycleBetweenWindows);
@@ -575,24 +577,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             currentSelectable?.SetFocus(true);
         }
 
-        public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, Action action = null)
-        {
-            return AddDoubleConfirmButton(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, WindowSetup setup,
-            Action action = null)
-        {
-            if (_windowInstance == null)
-                NewWindow(elementName);
-            ButtonUIDoubleConfirm button = AddDoubleConfirmButton(elementName, _windowInstance, action);
-            _windowInstance.AutoResize();
-            return button;
-        }
-
-        public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, WindowUI window,
-            Action action = null) => window.AddDoubleConfirmButton(elementName, action);
-
         public ButtonUI AddButton(string elementName, Action action = null)
         {
             return AddButton(elementName, _menuStyling.windowSetup, action);
@@ -663,10 +647,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextInputUI AddTextInput(string elementName, WindowUI window, Action<string> action = null) =>
             window.AddTextInput(elementName, action);
 
-        public TextInputUIWithPrediction AddTextInputNoLabelWithPrediction(string elementName,
-            WindowUI window,
-            Action<string> action = null) => window.AddTextInputNoLabelWithPrediction(elementName, action);
-
         public ToggleUI AddToggle(string elementName, float font = 30f, Action<bool> action = null)
         {
             return AddToggle(elementName, _menuStyling.windowSetup, font, action);
@@ -684,24 +664,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ToggleUI AddToggle(string elementName, WindowUI window, Action<bool> action = null) =>
             window.AddToggle(elementName, action);
-
-        public ToggleUIWithContent AddToggleWithContent(string elementName, Action<bool> action = null)
-        {
-            return AddToggleWithContent(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public ToggleUIWithContent AddToggleWithContent(string elementName, WindowSetup setup,
-            Action<bool> action = null)
-        {
-            if (_windowInstance == null)
-                NewWindow(elementName);
-            ToggleUIWithContent toggle = _windowInstance.AddToggleWithContent(elementName, action);
-            _windowInstance.AutoResize();
-            return toggle;
-        }
-
-        public ToggleUIWithContent AddToggleWithContent(string elementName, WindowUI window,
-            Action<bool> action = null) => window.AddToggleWithContent(elementName, action);
 
         public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
         {
@@ -727,13 +689,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             bool result = currentSelectable switch
             {
                 ToggleUI toggle => ToggleAction(toggle),
-                ButtonUIDoubleConfirm button => DoubleConfirmAction(button, true),
-                ButtonUICountable button => ButtonWithCountAction(button, true),
+                IQuickSelect button => QuickSelectionAction(button, true),
                 TextInputUI textInput => TextInputAction(textInput),
                 ISelectable selection => SingleSelectionAction(selection),
-                InputUI input => InputAction(input, !_inElementInputMode),
+                ISlider input => InputAction(input, !_inElementInputMode),
                 ScrollableTextUI scrollableText => ScrollableTextAction(scrollableText, !_inElementInputMode),
-                not null => ButtonAction(currentSelectable),
+                ButtonUI button => ButtonAction(button),
                 _ => false,
             };
             return result;
@@ -886,26 +847,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool ButtonWithCountAction(ButtonUICountable button, bool increment)
+        bool QuickSelectionAction(IQuickSelect button, bool increment)
         {
             if (increment)
-                button.count++;
+                button.SetNextChoice();
             else
-                button.count--;
-            return true;
-        }
-
-        bool DoubleConfirmAction(ButtonUIDoubleConfirm button, bool confirm)
-        {
-            if (confirm)
-            {
-                button.TriggerAction();
-            }
-            else
-            {
-                button.CancelAwait();
-            }
-
+                button.SetPreviousChoice();
             return true;
         }
 
@@ -944,15 +891,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool InputAction(InputUI inputElement, bool setInput)
+        bool InputAction(ISlider inputElement, bool setInput)
         {
             if (setInput && !_inElementInputMode)
             {
-                if (inputElement.SetInput(true))
-                {
-                    ClearWindowLocation();
-                    _inElementInputMode = true;
-                }
+                inputElement.SetInput(true);
+                ClearWindowLocation();
+                _inElementInputMode = true;
             }
             else if (!setInput && _inElementInputMode)
             {
@@ -979,9 +924,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             bool result = currentSelectable switch
             {
-                InputUI slider when _inElementInputMode => InputAction(slider, false),
-                ButtonUICountable button => ButtonWithCountAction(button, false),
-                ButtonUIDoubleConfirm { awaitConfirm: true } button => DoubleConfirmAction(button, false),
+                ISlider slider when _inElementInputMode => InputAction(slider, false),
+                IQuickSelect button => QuickSelectionAction(button, false),
                 ScrollableTextUI scrollableText when _inElementInputMode => ScrollableTextAction(scrollableText, false),
                 _ when _menuSetup.allowCloseMenuWithCancelAction => CancelOut(),
                 _ => false
@@ -1045,8 +989,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_inElementInputMode)
             {
                 _inElementInputMode = false;
-                if (currentSelectable is InputUI input)
-                    input.SetInput(false);
+                if (currentSelectable is ISlider slider)
+                    slider.SetInput(false);
                 if (currentSelectable is ScrollableTextUI scrollableText)
                     scrollableText.SetScrolling(false);
             }

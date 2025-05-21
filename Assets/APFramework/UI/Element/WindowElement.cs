@@ -1,9 +1,56 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Text;
 using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
+    public class WindowElement<T> : WindowElement where T : WindowElement<T>
+    {
+        public WindowElement(string name, WindowUI parent) : base(name, parent)
+        {
+        }
+
+        public T SetAvailable(bool availability)
+        {
+            if (availability != _available)
+            {
+                _available = availability;
+                _parentWindow.InvokeUpdate();
+            }
+
+            return (T)this;
+        }
+
+        public T SetLabel(string label)
+        {
+            return SetLabel(new StringLabel(label));
+        }
+
+        public new T SetLabel(IStringLabel label)
+        {
+            base.SetLabel(label);
+            return (T)this;
+        }
+        public new T ShowLabel(bool show)
+        {
+            base.ShowLabel(show);
+            return (T)this;
+        }
+
+        public T SetContent(string content)
+        {
+            return SetContent(new StringLabel(content));
+        }
+
+        public T SetContent(IStringLabel content)
+        {
+            ClearCachedValue();
+            _content = content;
+            return (T)this;
+        }
+    }
+
     [Serializable]
     public class WindowElement
     {
@@ -21,6 +68,10 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         [SerializeField] Vector2 _cachedPositionEnd = Vector2.zero;
         [SerializeField] Vector2Int _characterIndex = new(-1, -1);
         [SerializeField] protected WindowUI _parentWindow;
+        Action _focusAction = null;
+        protected bool _inFocus;
+        public bool inFocus => _inFocus;
+
         public string name => _name;
         public string tag => _tag;
 
@@ -64,13 +115,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             get => _count;
             set
             {
+                if (_count == value)
+                    return;
                 _count = value;
                 _parentWindow.InvokeUpdate();
             }
         }
 
-        public virtual string formattedContent => string.IsNullOrEmpty(content) ? label : labelPrefix + content;
-        public string rawContent => string.IsNullOrEmpty(content) ? label : labelPrefix + content;
+        public virtual string formattedContent =>
+            string.IsNullOrEmpty(content) ? label : ZString.Concat(labelPrefix, content);
+
+        public string rawContent => string.IsNullOrEmpty(content) ? label : ZString.Concat(labelPrefix, content);
 
         public virtual int getMaxLength
         {
@@ -94,7 +149,19 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         }
 
         // For the element to determine how it is displayed by window aka with rich text
-        public virtual string displayText => formattedContent;
+        public virtual string displayText
+        {
+            get
+            {
+                if (_inFocus && !_parentWindow.isSingleButtonWindow)
+                    return StyleUtility.StringColored(TextUtility.StripRichTagsFromStr(formattedContent),
+                        _available ? StyleUtility.Selected : StyleUtility.DisableSelected);
+                return _available
+                    ? formattedContent
+                    : StyleUtility.StringColored(formattedContent, StyleUtility.Disabled);
+            }
+        }
+
         public bool flexible => _flexible;
 
         public bool available => _available;
@@ -106,10 +173,25 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public WindowElement(string name, WindowUI parent)
         {
             _name = name;
-            SetParentWindow(parent);
+            _parentWindow = parent;
             _tag = $"{parentWindow.windowTag}.{name}";
             SetLabel(new StringLabel(_name));
         }
+
+        public void SetLabel(IStringLabel label)
+        {
+            ClearCachedValue();
+            _label = label;
+            _parentWindow?.InvokeUpdate();
+        }
+
+        public void SetContent(IStringLabel content)
+        {
+            ClearCachedValue();
+            _content = content;
+            _parentWindow?.InvokeUpdate();
+        }
+
 
         public void SetFirstCharacterIndex(int characterIndex)
         {
@@ -133,35 +215,28 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _cachedPositionEnd = position.endPosition;
         }
 
-        public virtual void Activate() => _ = 0;
-        public virtual void Deactivate() => _ = 0;
-
-        public void SetLabel(string label)
+        public void ClearFocus()
         {
-            ClearCachedValue();
-            _label = new StringLabel(label);
-            _parentWindow?.InvokeUpdate();
+            if (!_inFocus)
+                return;
+            _inFocus = false;
+            _parentWindow.InvokeUpdate();
         }
 
-        public void SetLabel(IStringLabel label)
+        public virtual void SetFocus(bool setFocus)
         {
-            ClearCachedValue();
-            _label = label;
-            _parentWindow?.InvokeUpdate();
+            if (_inFocus == setFocus)
+                return;
+            _inFocus = setFocus;
+            _parentWindow.InvokeUpdate();
+
+            if (setFocus)
+                _focusAction?.Invoke();
         }
 
-        public void SetParentWindow(WindowUI window) => _parentWindow = window;
         public void Remove() => _parentWindow?.RemoveElement(this);
         public void TriggerGlitch() => _parentWindow?.TriggerGlitch();
         public void AutoResize() => _parentWindow?.AutoResize();
-
-        public virtual void SetAvailable(bool availability)
-        {
-            if(availability == _available)
-                return;
-            _available = availability;
-            parentWindow.InvokeUpdate();
-        }
 
         public virtual void ClearCachedValue()
         {

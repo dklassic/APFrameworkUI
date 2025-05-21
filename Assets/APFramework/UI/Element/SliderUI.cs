@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class SliderUI<T> : InputUI, ISlider
+    public class SliderUI<T> : WindowElement<SliderUI<T>>, ISlider
     {
+        bool _inInput;
         List<string> _choiceListContentCache = new();
         List<IStringLabel> _choiceList = new();
         List<T> _choiceValueList = new();
@@ -100,34 +101,28 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
         }
 
-        public SliderUI(string label, WindowUI parent, List<IStringLabel> choice, List<T> value) : base(label,
-            parent)
+        public SliderUI<T> SetAction(Action<T> action)
         {
-            SetChoice(choice, value);
+            _action = action;
+            return this;
         }
 
-        public SliderUI(string label, WindowUI parent, List<string> choice, List<T> value) : base(label, parent)
-        {
-            SetChoice(choice, value);
-        }
-
-        public void SetAction(Action<T> action) => _action = action;
-
-        public void SetActiveValue(T value)
+        public SliderUI<T> SetActiveValue(T value)
         {
             int index = _choiceValueList.IndexOf(value);
             if (index < 0)
             {
-                return;
+                return this;
             }
 
             if (_count == index)
-                return;
+                return this;
             _count = index;
             _parentWindow?.InvokeUpdate();
+            return this;
         }
 
-        public override void TriggerAction()
+        public void TriggerAction()
         {
             if (_action == null)
                 return;
@@ -140,25 +135,26 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceList.Clear();
         }
 
-        public void SetChoice(List<IStringLabel> choice, List<T> value)
+        public SliderUI<T> SetChoice(List<IStringLabel> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
                 Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
-                return;
+                return this;
             }
 
             ClearChoice();
             _choiceList.AddRange(choice);
             _choiceValueList.AddRange(value);
+            return this;
         }
 
-        public void SetChoice(List<string> choice, List<T> value)
+        public SliderUI<T> SetChoice(List<string> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
                 Debug.LogError($"Mismatch amount of {choice.Count} and {value.Count}");
-                return;
+                return this;
             }
 
             ClearChoice();
@@ -166,22 +162,27 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 AddChoice(choice[i], value[i]);
             }
+
+            return this;
         }
 
-        public void SetChoiceByValue(IEnumerable<T> value)
+        public SliderUI<T> SetChoiceByValue(IEnumerable<T> value)
         {
             ClearChoice();
             foreach (T choice in value)
             {
                 AddChoice(choice.ToString(), choice);
             }
+
+            return this;
         }
 
-        public void AddChoice(string choice, T value)
+        public SliderUI<T> AddChoice(string choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(new StringLabel(choice));
             _choiceValueList.Add(value);
+            return this;
         }
 
         public void RemoveChoiceAt(int index)
@@ -235,6 +236,14 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         void ISlider.SetCachedArrowPosition((Vector2, Vector2) position) => _cachedArrowPosition = position;
 
+        void ISlider.SetInput(bool inInput)
+        {
+            if (_inInput == inInput)
+                return;
+            _inInput = inInput;
+            parentWindow?.InvokeUpdate();
+        }
+
         public override void ClearCachedPosition()
         {
             base.ClearCachedPosition();
@@ -260,13 +269,5 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
             return (hoverOnDecrease, hoverOnIncrease);
         }
-    }
-
-    public interface ISlider
-    {
-        (bool hoverOnDecrease, bool hoverOnIncrease) HoverOnArrow(Vector2 lastMousePosition);
-        int firstSliderArrowIndex { get; }
-        int lastSliderArrowIndex { get; }
-        void SetCachedArrowPosition((Vector2, Vector2) arrowPosition);
     }
 }

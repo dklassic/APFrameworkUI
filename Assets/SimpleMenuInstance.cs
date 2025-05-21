@@ -20,9 +20,10 @@ public class SimpleMenuInstance : MonoBehaviour
             setup.allowCloseMenuWithCancelAction = true;
             SimpleMenu menu = new(i.ToString(), MenuSetup.defaultSetup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
-            menu.AddText("Close all menu to quit");
-            SliderUI<int> slider = menu.AddSlider<int>("slider");
-            slider.SetChoiceByValue(new[] { 0, 1, 2, 3 });
+            menu.AddText("Close all menu to quit").SetLabel("Test");
+            menu.AddSlider<int>("slider")
+                .SetChoiceByValue(new[] { 0, 1, 2, 3 })
+                .SetAction(x => Debug.Log(x));
             menu.AddButton("close", () => menu.CloseMenu());
             WindowManager.instance.RegisterMenu(menu);
             i++;

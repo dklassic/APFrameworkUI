@@ -36,11 +36,12 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public override void Reset() => count = 0;
 
-        public void SetContentHeight(int contentHeight)
+        public ScrollableTextUI SetContentHeight(int contentHeight)
         {
             if (contentHeight <= 1)
-                return;
+                return this;
             _contentHeight = contentHeight;
+            return this;
         }
 
         public void SetScrolling(bool inScroll)

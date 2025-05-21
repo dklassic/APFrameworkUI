@@ -134,7 +134,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_simpleMenus.Count == 0 ||
                 _simpleMenus.Any(x =>
                     x.focused && x.windowInstance.canNavigate && x.IsMouseInWindow(_lastMousePosition) ||
-                    x.movingWindow))
+                    x.movingWindow || x.inElementInputMode))
                 return;
             foreach (SimpleMenu menu in _simpleMenus)
             {

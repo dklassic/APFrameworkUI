@@ -2,7 +2,7 @@ using System;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class ToggleUI : ButtonUI
+    public class ToggleUI : WindowElement<ToggleUI>
     {
         protected bool _toggledOn;
         Action<bool> _action;
@@ -20,12 +20,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public override string formattedContent => (_toggledOn ? "■ " : "□ ") + label;
+        public override string formattedContent => (_toggledOn ? "■ " : "□ ") + base.formattedContent;
 
         public ToggleUI(string label, WindowUI parent) : base(label, parent)
         {
         }
-        public void SetAction(Action<bool> action) => _action = action;
+
+        public ToggleUI SetAction(Action<bool> action)
+        {
+            _action = action;
+            return this;
+        }
 
 
         public virtual void SetToggle(bool on)
@@ -43,7 +48,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _parentWindow.InvokeUpdate();
         }
 
-        public override void TriggerAction()
+        public void TriggerAction()
         {
             if (_action == null)
                 return;

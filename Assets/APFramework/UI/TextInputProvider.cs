@@ -115,7 +115,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void TriggerAutoComplete()
         {
-            if (_textInputUI is TextInputUIWithPrediction prediction && prediction.TriggerAutoComplete())
+            if (_textInputUI.TriggerAutoComplete())
             {
                 _inputField.text = _textInputUI.inputContent;
                 _inputField.MoveTextEnd(false);

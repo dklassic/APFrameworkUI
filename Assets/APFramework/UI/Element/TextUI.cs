@@ -1,6 +1,6 @@
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class TextUI : WindowElement
+    public class TextUI : WindowElement<TextUI>
     {
         public TextUI(string name, WindowUI parent) : base(name, parent)
         {

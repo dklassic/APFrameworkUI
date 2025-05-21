@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class SingleSelectionUI<T> : WindowElement<SingleSelectionUI<T>>, ISelectable
+    public class QuickSelectionUI<T> : WindowElement<QuickSelectionUI<T>>, IQuickSelect
     {
+        bool _canSetPrevious;
         Action<T> _action;
-        protected List<string> _choiceListContentCache = new();
-        protected List<IStringLabel> _choiceList = new();
-        protected List<T> _choiceValueList = new();
+        List<string> _choiceListContentCache = new();
+        List<IStringLabel> _choiceList = new();
+        List<T> _choiceValueList = new();
 
         public List<string> choiceListContent
         {
@@ -47,19 +48,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        List<string> ISelectable.values => choiceListContent;
-        int ISelectable.activeCount => count;
-
-        public SingleSelectionUI(string label, WindowUI parent) : base(label, parent)
+        public QuickSelectionUI(string label, WindowUI parent) : base(label, parent)
         {
         }
 
-        void ISelectable.SetCount(int count)
-        {
-            SetCount(count);
-        }
-
-        public SingleSelectionUI<T> SetActiveValue(T value)
+        public QuickSelectionUI<T> SetActiveValue(T value)
         {
             int index = _choiceValueList.IndexOf(value);
             if (index < 0)
@@ -74,13 +67,18 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetCount(int count)
+        public void SetCount(int count)
         {
             this.count = count;
+        }
+
+        public QuickSelectionUI<T> SetCanPrevious(bool canPrevious)
+        {
+            _canSetPrevious = canPrevious;
             return this;
         }
 
-        public SingleSelectionUI<T> SetAction(Action<T> action)
+        public QuickSelectionUI<T> SetAction(Action<T> action)
         {
             _action = action;
             return this;
@@ -99,7 +97,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceValueList.Clear();
         }
 
-        public SingleSelectionUI<T> SetChoice(List<IStringLabel> choice, List<T> value)
+        public QuickSelectionUI<T> SetChoice(List<IStringLabel> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
@@ -113,7 +111,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetChoice(List<string> choice, List<T> value)
+        public QuickSelectionUI<T> SetChoice(List<string> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
@@ -126,22 +124,20 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             {
                 AddChoice(choice[i], value[i]);
             }
-
             return this;
         }
 
-        public SingleSelectionUI<T> SetChoiceByValue(List<T> value)
+        public QuickSelectionUI<T> SetChoiceByValue(List<T> value)
         {
             ClearChoice();
             foreach (T item in value)
             {
                 AddChoice(item.ToString(), item);
             }
-
             return this;
         }
 
-        public SingleSelectionUI<T> AddChoice(string choice, T value)
+        public QuickSelectionUI<T> AddChoice(string choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(new StringLabel(choice));
@@ -149,7 +145,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> AddChoice(IStringLabel choice, T value)
+        public QuickSelectionUI<T> AddChoice(IStringLabel choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(choice);
@@ -179,5 +175,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             base.ClearCachedValue();
             _choiceListContentCache.Clear();
         }
+
+        void IQuickSelect.SetNextChoice()
+        {
+            SetCount((_count + 1) % _choiceList.Count);
+        }
+
+        void IQuickSelect.SetPreviousChoice()
+        {
+            SetCount((_count - 1) % _choiceList.Count);
+        }
+
+        bool IQuickSelect.canSetPrevious => _canSetPrevious;
     }
 }

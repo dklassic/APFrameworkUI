@@ -101,7 +101,6 @@ Access through `WindowManager.instance.OpenContextMenu`, which can show a contex
 - Setup line break better when dealing with labeled elements
 - Fix Compsite menu multi window focus issue
 - Add the ability to reorder windows within the same layout
-- Consider builder pattern
 - Restructure Menu element adder (Auto resize is maybe not needed anymore)
 - Fix layout element size calculation
 

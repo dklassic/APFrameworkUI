@@ -50,18 +50,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _preciseSizeSync = false;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
-        List<ButtonUI> _interactables = new();
+        List<WindowElement> _interactables = new();
 
         public bool isFocused => _isFocused;
         public bool positionCached => _positionCached;
-        public List<ButtonUI> interactables => _interactables;
+        public List<WindowElement> interactables => _interactables;
         public bool isActive => _active;
         public (Vector2, Vector2) cachedPosition => (_cachedPositionStart, _cachedPositionEnd);
         public Vector2 cachedCenter => (_cachedPositionStart + _cachedPositionEnd) / 2f;
         public bool canNavigate => _active && _interactables.Any();
         string windowName => _windowName;
         public string windowTag => _windowTag;
-        public bool isSingleButtonWindow => _elements.Count == 1 && _elements[0] is ButtonUI;
+        public bool isSingleButtonWindow => _elements.Count == 1 && _elements[0] is not TextUI;
 
         public string windowLabelContent
         {
@@ -143,7 +143,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void ClearElementsFocus()
         {
-            foreach (ButtonUI element in _interactables)
+            foreach (WindowElement element in _interactables)
             {
                 element.ClearFocus();
             }
@@ -185,9 +185,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             foreach (WindowElement element in _elements)
             {
-                if (element is ButtonUIDoubleConfirm doubleConfirm)
+                if (element is ButtonUI button)
                 {
-                    doubleConfirm.CancelAwait();
+                    button.CancelAwait();
                 }
             }
         }
@@ -322,7 +322,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             if (!_sizeFixed)
             {
+                int x = _setup.width;
+                int y = _setup.height;
                 AutoResize(_extraWidth);
+                if (x != 0 && y != 0 && (x != _setup.width || y != _setup.height))
+                    _positionCached = false;
             }
 
             int count = _elements.Count;
@@ -710,15 +714,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void AddElement(WindowElement element)
         {
             _elements.Add(element);
-            if (element is ButtonUI uI)
-                _interactables.Add(uI);
+            if (element is not TextUI)
+                _interactables.Add(element);
         }
 
         public void RemoveElement(WindowElement element)
         {
             _elements.Remove(element);
-            if (element is ButtonUI uI)
-                _interactables.Remove(uI);
+            if (_interactables.Contains(element))
+                _interactables.Remove(element);
         }
 
         public TextUI AddText(string elementName)
@@ -744,25 +748,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return button;
         }
 
-        public ButtonUIDoubleConfirm AddDoubleConfirmButton(string elementName, Action action = null)
-        {
-            ButtonUIDoubleConfirm button = new(elementName, this);
-            button.SetAction(action);
-            AddElement(button);
-            return button;
-        }
-
         public ToggleUI AddToggle(string elementName, Action<bool> action = null)
         {
             ToggleUI toggle = new(elementName, this);
-            toggle.SetAction(action);
-            AddElement(toggle);
-            return toggle;
-        }
-
-        public ToggleUIWithContent AddToggleWithContent(string elementName, Action<bool> action = null)
-        {
-            ToggleUIWithContent toggle = new(elementName, this);
             toggle.SetAction(action);
             AddElement(toggle);
             return toggle;
@@ -776,13 +764,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return slider;
         }
 
-        public ButtonUICountable AddButtonWithCount(string elementName, Action<int> action = null)
+        public QuickSelectionUI<T> AddQuickSelectionUI<T>(string elementName, Action<T> action = null)
         {
-            ButtonUICountable button = new(elementName, this);
-            button.SetAction(action);
-            _elements.Add(button);
-            _interactables.Add(button);
-            return button;
+            QuickSelectionUI<T> selection = new(elementName, this);
+            selection.SetAction(action);
+            AddElement(selection);
+            return selection;
         }
 
         public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
@@ -796,15 +783,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextInputUI AddTextInput(string elementName, Action<string> action = null)
         {
             TextInputUI textInput = new(elementName, this);
-            textInput.SetAction(action);
-            AddElement(textInput);
-            return textInput;
-        }
-
-        public TextInputUIWithPrediction AddTextInputNoLabelWithPrediction(string elementName,
-            Action<string> action = null)
-        {
-            TextInputUIWithPrediction textInput = new(elementName, this);
             textInput.SetAction(action);
             AddElement(textInput);
             return textInput;
