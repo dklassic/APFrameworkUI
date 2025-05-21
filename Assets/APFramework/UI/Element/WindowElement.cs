@@ -157,6 +157,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public virtual void SetAvailable(bool availability)
         {
+            if(availability == _available)
+                return;
             _available = availability;
             parentWindow.InvokeUpdate();
         }

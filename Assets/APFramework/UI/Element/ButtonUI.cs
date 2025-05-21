@@ -29,6 +29,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public void ClearFocus()
         {
+            if (!_inFocus)
+                return;
             _inFocus = false;
             _parentWindow.InvokeUpdate();
         }
@@ -55,6 +57,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public override void SetAvailable(bool availability)
         {
+            if(availability == _available)
+                return;
             _available = availability;
             _parentWindow.InvokeUpdate();
         }

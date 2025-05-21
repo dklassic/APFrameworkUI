@@ -40,6 +40,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             set
             {
                 _count = Mathf.Clamp(value, 0, _choiceList.Count);
+                if (_count != value)
+                    return;
                 _parentWindow?.InvokeUpdate();
                 TriggerAction();
             }
@@ -65,12 +67,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 return;
             }
 
+            if (index == count)
+                return;
+            count = index;
             _parentWindow?.InvokeUpdate();
         }
 
         public void SetActiveCount(int count)
         {
             _count = Mathf.Clamp(count, 0, _choiceList.Count);
+            if (_count != count)
+                return;
             _parentWindow?.InvokeUpdate();
         }
 

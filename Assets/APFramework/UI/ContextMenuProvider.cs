@@ -8,6 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     public class ContextMenuProvider : MonoBehaviour
     {
         [SerializeField] MenuSetup _menuSetup;
+        [SerializeField] MenuStyling _menuStyling;
         [SerializeField] bool _contextMenuInstantiated = false;
         [SerializeField] SimpleMenu _contextMenu;
         [SerializeField] WindowUI _window;
@@ -17,7 +18,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (!_contextMenuInstantiated)
             {
                 _contextMenuInstantiated = true;
-                _contextMenu = new SimpleMenu("ContextMenuProvider", _menuSetup);
+                _contextMenu = new SimpleMenu("ContextMenuProvider", _menuSetup, _menuStyling);
                 _window = _contextMenu.NewWindow("ContextMenu");
                 WindowManager.instance.RegisterMenu(_contextMenu);
             }
@@ -35,10 +36,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 _window.AddButton(choices[i], actions[i]);
             }
-            _window.AutoResize();
-
-            _window.GetComponent<RectTransform>().sizeDelta =
-                new Vector2(_window.layout.minWidth, _window.layout.minHeight);
             _contextMenu.SetMenuCloseAction(onClose);
             _contextMenu.OpenMenu(true);
             _window.MoveTo(position);

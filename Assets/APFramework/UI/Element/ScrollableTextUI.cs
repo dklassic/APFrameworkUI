@@ -23,6 +23,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 int totalHeight = GetSplitDisplayTextTotalHeight(_cachedContentWidth);
                 if (_count + _contentHeight >= totalHeight)
                     _count = totalHeight - _contentHeight;
+                if (_count != value)
+                    return;
                 _parentWindow.InvokeUpdate();
             }
         }
@@ -43,6 +45,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public void SetScrolling(bool inScroll)
         {
+            if (inScroll == _inScroll)
+                return;
             _inScroll = inScroll;
             _parentWindow.InvokeUpdate();
         }
@@ -143,6 +147,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     hoverOnIncrease = true;
                 }
             }
+
             return (hoverOnDecrease, hoverOnIncrease);
         }
     }

@@ -458,6 +458,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 menu.CloseMenu();
             }
+
             if (_activeMenuTarget != null)
                 _activeMenuTarget.OnMouseConfirmPressed();
         }

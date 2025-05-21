@@ -51,6 +51,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public void SetConfirm(bool confirm)
         {
+            if (_awaitConfirm == confirm)
+                return;
             _awaitConfirm = confirm;
             parentWindow.InvokeUpdate();
         }

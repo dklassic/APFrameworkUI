@@ -72,6 +72,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _menuSetup = menuSetup;
             _menuStyling = MenuStyling.defaultStyling;
         }
+        public SimpleMenu(string name, MenuSetup menuSetup, MenuStyling menuStyling)
+        {
+            _menuName = name;
+            _menuSetup = menuSetup;
+            _menuStyling = menuStyling;
+        }
 
         public SimpleMenu(string name, MenuSetup menuSetup, WindowSetup windowSetup, LayoutSetup layoutSetup)
         {

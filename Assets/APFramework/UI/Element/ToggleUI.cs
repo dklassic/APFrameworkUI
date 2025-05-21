@@ -30,6 +30,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public virtual void SetToggle(bool on)
         {
+            if (_toggledOn == on)
+                return;
             _toggledOn = on;
             _parentWindow.InvokeUpdate();
         }

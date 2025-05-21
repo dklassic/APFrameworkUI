@@ -8,7 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         }
         public virtual bool SetInput(bool value)
         {
-            if (!_available)
+            if (!_available || _inInput == value)
                 return false;
             _inInput = value;
             _parentWindow.SetInput(value);

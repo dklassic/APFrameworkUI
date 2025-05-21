@@ -12,7 +12,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
     public class WindowUI : MonoBehaviour
     {
         [Header("Components")] [SerializeField]
-        TextMeshProUGUI _drawText = null;
+        private RectTransform _transform;
+
+        [SerializeField] TextMeshProUGUI _drawText = null;
 
         [SerializeField] WindowOutline _outlineBuilder = null;
         [SerializeField] WindowMask _windowMask = null;
@@ -28,7 +30,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] WindowSetup _setup;
         [SerializeField] LayoutAlignment _layoutAlignment;
         [SerializeField] int _endFillCount = 5;
-        [SerializeField] float _fontSize = 10f;
         [SerializeField] bool _maskReady = false;
         [SerializeField] bool _outlineReady = false;
         [SerializeField] bool _noCut = false;
@@ -492,7 +493,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _windowTag = $"{parent}.{elementName}";
             _windowLabel = new StringLabel(_windowName);
             _setup = windowSetup;
-            SetFont(windowSetup.fontSize);
+            _drawText.fontSize = _setup.fontSize;
+            _outlineBuilder.outline.fontSize = _setup.fontSize;
+            _windowMask.mask.fontSize = _setup.fontSize;
             SetActive(false);
             if (windowSetup.width != 0 && windowSetup.height != 0)
                 Resize(windowSetup.width, windowSetup.height);
@@ -513,21 +516,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void SetLayout(int widthCount, int heightCount)
         {
-            // layout.minWidth = fontSize * .62f * widthCount * (hasOutline ? 1.1f : 1f);
-            _layout.minWidth = _fontSize * Mathf.Max(0.65f * widthCount, 7);
-
-            // layout.minHeight = fontSize * .67f * heightCount * 1.6f;
-            _layout.minHeight = _fontSize * 1.05f * heightCount;
-
+            _layout.minWidth = setup.fontSize * Mathf.Max(0.65f * widthCount, 7);
+            _layout.minHeight = setup.fontSize * 1.05f * heightCount;
             _layoutAlignment.UpdateLayout();
-        }
-
-        public void SetFont(float fontSize)
-        {
-            _fontSize = fontSize;
-            _drawText.fontSize = fontSize;
-            _outlineBuilder.outline.fontSize = fontSize;
-            _windowMask.mask.fontSize = fontSize;
+            _transform.sizeDelta = new Vector2(_layout.minWidth, _layout.minHeight);
         }
 
         /// <summary>
@@ -898,6 +890,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void SetInput(bool inInput)
         {
+            if (_inInput == inInput)
+                return;
             _inInput = inInput;
             _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
             _isDirty = true;
@@ -905,6 +899,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         internal void SetFocus(bool inFocus)
         {
+            if (inFocus == _isFocused)
+                return;
             _isFocused = inFocus;
             _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
             _isDirty = true;
@@ -912,6 +908,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         internal void SetAvailable(bool available)
         {
+            if (_available == available)
+                return;
             _available = available;
             _outlineBuilder.SetFocusAndAvailable(isSingleButtonWindow, _isFocused, _available, _inInput);
             _isDirty = true;

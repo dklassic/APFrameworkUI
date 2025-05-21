@@ -17,6 +17,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             set
             {
                 _count = Mathf.Clamp(value, _min, _max);
+                if (_count != value)
+                    return;
                 _action?.Invoke(_count);
                 _parentWindow.InvokeUpdate();
             }
