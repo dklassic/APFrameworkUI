@@ -8,7 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
     public class QuickSelectionUI<T> : WindowElement<QuickSelectionUI<T>>, IQuickSelect
     {
-        bool _canSetPrevious;
+        bool _canCycleBackward;
         Action<T> _action;
         List<string> _choiceListContentCache = new();
         List<IStringLabel> _choiceList = new();
@@ -73,9 +73,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             this.count = count;
         }
 
-        public QuickSelectionUI<T> SetCanPrevious(bool canPrevious)
+        public QuickSelectionUI<T> SetCanCycleBackward(bool canPrevious)
         {
-            _canSetPrevious = canPrevious;
+            _canCycleBackward = canPrevious;
             return this;
         }
 
@@ -179,16 +179,16 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceListContentCache.Clear();
         }
 
-        void IQuickSelect.SetNextChoice()
+        void IQuickSelect.CycleForward()
         {
             SetCount((_count + 1) % _choiceList.Count);
         }
 
-        void IQuickSelect.SetPreviousChoice()
+        void IQuickSelect.CycleBackward()
         {
             SetCount((_count - 1) % _choiceList.Count);
         }
 
-        bool IQuickSelect.canSetPrevious => _canSetPrevious;
+        bool IQuickSelect.canCycleBackward => _canCycleBackward;
     }
 }

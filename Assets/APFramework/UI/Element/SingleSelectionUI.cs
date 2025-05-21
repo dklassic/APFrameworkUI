@@ -131,7 +131,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetChoiceByValue(List<T> value)
+        public SingleSelectionUI<T> SetChoiceByValue(IEnumerable<T> value)
         {
             ClearChoice();
             foreach (T item in value)

@@ -14,21 +14,30 @@ public class ElementsShowcase : CompositeMenuMono
         Ultra
     }
 
+    public enum Choices
+    {
+        HereAreSomeChoices,
+        ThatYouCanPasThrough,
+        WithAGenericType
+    }
+
+
     protected override void InitializeUI()
     {
         WindowUI systemWindow = NewWindow("Elements Showcase", WindowSetup.defaultSetup);
         AddToggle("This is a Toggle", systemWindow);
         AddButton("This is a Button", systemWindow);
-        AddQuickSelectionUI<int>("This is a Button that increases per confirm and decreases per cancel", systemWindow)
-            .SetChoiceByValue(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        AddQuickSelectionUI<int>("QuickSelection allows cycling through values with confirm or cancel presses.",
+                systemWindow)
+            .SetChoiceByValue(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })
+            .SetCanCycleBackward(true);
         AddGap(systemWindow);
 
         AddSlider<int>("This is a simple Slider using numeric value", systemWindow)
             .SetChoiceByValue(new List<int> { 1, 2, 3 })
             .SetActiveValue(1);
-        List<Quality> result = Enum.GetValues(typeof(Quality)).Cast<Quality>().ToList();
         AddSlider<Quality>("This is a Slider that takes a Enum as value", systemWindow)
-            .SetChoiceByValue(result)
+            .SetChoiceByValue(Enum.GetValues(typeof(Quality)).Cast<Quality>())
             .SetActiveValue(Quality.High);
 
         AddGap(systemWindow);
@@ -43,11 +52,11 @@ public class ElementsShowcase : CompositeMenuMono
             .SetInputContent("Also with pre-entered text!");
         AddGap(systemWindow);
         AddSingleSelection<Choices>("This is a single selection element", systemWindow)
-            .SetChoiceByValue(Enum.GetValues(typeof(Choices)).Cast<Choices>().ToList());
+            .SetChoiceByValue(Enum.GetValues(typeof(Choices)).Cast<Choices>());
         AddGap(systemWindow);
         AddText("You can hide labels for some elements:", systemWindow);
         AddSingleSelection<Choices>("This is a single selection element", systemWindow)
-            .SetChoiceByValue(Enum.GetValues(typeof(Choices)).Cast<Choices>().ToList())
+            .SetChoiceByValue(Enum.GetValues(typeof(Choices)).Cast<Choices>())
             .ShowLabel(false);
 
         AddGap(systemWindow);
@@ -55,15 +64,9 @@ public class ElementsShowcase : CompositeMenuMono
             .SetAvailable(false);
         AddGap(systemWindow);
         AddText("Here is a Button that takes double confirm to trigger:", systemWindow);
-        AddButton("Double confirm to return", systemWindow, () => CloseMenu(true)).SetConfirmText("Confirm");
+        AddButton("Double confirm to return", systemWindow, () => CloseMenu(true))
+            .SetConfirmText("Confirm");
 
         systemWindow.Resize(50);
-    }
-
-    public enum Choices
-    {
-        HereAreSomeChoices,
-        ThatYouCanPasThrough,
-        WithAGenericType
     }
 }

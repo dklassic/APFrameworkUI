@@ -192,10 +192,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceValueList.RemoveAt(index);
         }
 
-        public void AddChoiceByValue(T choice)
+        public SliderUI<T> AddChoiceByValue(T choice)
         {
             _choiceList.Add(new StringLabel(choice.ToString()));
             _choiceValueList.Add(choice);
+            return this;
         }
 
         public void RemoveValue(T value)

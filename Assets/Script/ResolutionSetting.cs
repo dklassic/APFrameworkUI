@@ -6,25 +6,20 @@ using UnityEngine;
 
 public class ResolutionSetting : CompositeMenuMono
 {
-    WindowUI systemWindow;
-
     protected override void InitializeUI()
     {
-        systemWindow ??= NewWindow("Resolution", WindowSetup.defaultSetup);
+        WindowUI systemWindow = NewWindow("Resolution", WindowSetup.defaultSetup);
         AddText("When ever resolution changes, need to clear cache of window location.", systemWindow);
         List<(int, int)> activeResolutionList = ResolutionUtility.AvailableResolutions();
-        SingleSelectionUI<(int, int)> resolutionChoice =
-            AddSingleSelection<(int, int)>("Resolution", systemWindow, UpdateResolution);
-        resolutionChoice.SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(),
-            activeResolutionList);
-        resolutionChoice.SetActiveValue((Screen.width, Screen.height));
+        AddSingleSelection<(int, int)>("Resolution", systemWindow, UpdateResolution)
+            .SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(), activeResolutionList)
+            .SetActiveValue((Screen.width, Screen.height));
         AddGap(systemWindow);
         AddText("Both camera and overlay mode of canvas are supported.", systemWindow);
-        SliderUI<RenderMode> uiMode =
-            AddSlider<RenderMode>("CanvasMode", systemWindow, ChangeCanvasMode);
-        uiMode.AddChoiceByValue(RenderMode.ScreenSpaceOverlay);
-        uiMode.AddChoiceByValue(RenderMode.ScreenSpaceCamera);
-        uiMode.SetActiveValue(WindowManager.instance.overlayMode);
+        AddSlider<RenderMode>("CanvasMode", systemWindow, ChangeCanvasMode)
+            .AddChoiceByValue(RenderMode.ScreenSpaceOverlay)
+            .AddChoiceByValue(RenderMode.ScreenSpaceCamera)
+            .SetActiveValue(WindowManager.instance.overlayMode);
         systemWindow.Resize(50);
     }
 

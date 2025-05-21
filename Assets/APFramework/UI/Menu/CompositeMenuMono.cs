@@ -99,6 +99,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _initialized = true;
         }
 
+        protected virtual void InitializeUI() => _ = 0;
+
         public virtual void UpdateMenu()
         {
             if (!_displayActive)
@@ -196,16 +198,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// <summary>
         /// A simple method to spawn single text UI element window
         /// </summary>
-        protected TextUI AddText(string elementName, int length = 0)
+        protected TextUI AddText(string elementName)
         {
             WindowUI window = NewWindow(elementName, _menuDefaultStyling.windowSetup);
-            TextUI text;
-            if (length == 0)
-                text = window.AddText(elementName);
-            else
-                text = window.AddText(TextUtility.PlaceHolder(length));
-            window.AutoResize();
-            return text;
+            return window.AddText(elementName);
         }
 
         /// <summary>
@@ -217,34 +213,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
             text.SetLabel("　");
         }
 
-        protected TextUI AddText(string elementName, WindowUI window, int length = 0)
+        protected TextUI AddText(string elementName, WindowUI window)
         {
-            TextUI text;
-            if (length == 0)
-                text = window.AddText(elementName);
-            else
-                text = window.AddText(TextUtility.PlaceHolder(length));
-            return text;
+            return window.AddText(elementName);
         }
 
-        protected TextUI AddText(string elementName, LayoutAlignment layout, int length = 0)
+        protected TextUI AddText(string elementName, LayoutAlignment layout)
         {
-            return AddText(elementName, layout, _menuDefaultStyling.windowSetup, length);
+            return AddText(elementName, layout, _menuDefaultStyling.windowSetup);
         }
 
-        protected TextUI AddText(string elementName, LayoutAlignment layout, WindowSetup setup, int length = 0)
+        protected TextUI AddText(string elementName, LayoutAlignment layout, WindowSetup setup)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            TextUI text;
-            if (length == 0)
-                text = window.AddText(elementName);
-            else
-                text = window.AddText(TextUtility.PlaceHolder(length));
-            window.AutoResize();
-            return text;
+            return window.AddText(elementName);
         }
-
-        protected virtual void InitializeUI() => _ = 0;
 
         protected virtual void RemoveElement(WindowElement element)
         {
@@ -328,14 +311,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 window.InvokeUpdate();
                 window.RefreshSize();
-            }
-        }
-
-        public virtual void ContextLanguageChange()
-        {
-            foreach (WindowUI window in _windowInstances)
-            {
-                window.ContextLanguageChange();
             }
         }
 
@@ -517,6 +492,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
                 GetSelectable(_currentSelection).SetFocus(true);
         }
+
         protected virtual void SetCurrentSelection(Vector2Int currentSelection)
         {
             if (_windowInstances.Count > _currentSelection.x &&
@@ -891,9 +867,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ButtonUI AddButton(string elementName, WindowSetup setup, Action action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            ButtonUI button = window.AddButton(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddButton(elementName, action);
         }
 
         public ButtonUI AddButton(string elementName, LayoutAlignment layout, Action action = null)
@@ -905,9 +879,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            ButtonUI button = window.AddButton(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddButton(elementName, action);
         }
 
         public ButtonUI AddButton(string elementName, WindowUI window, Action action = null) =>
@@ -922,9 +894,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            QuickSelectionUI<T> button = window.AddQuickSelectionUI(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddQuickSelectionUI(elementName, action);
         }
 
         public QuickSelectionUI<T> AddQuickSelectionUI<T>(string elementName, LayoutAlignment layout,
@@ -937,9 +907,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            QuickSelectionUI<T> button = window.AddQuickSelectionUI(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddQuickSelectionUI(elementName, action);
         }
 
         public QuickSelectionUI<T> AddQuickSelectionUI<T>(string elementName, WindowUI window,
@@ -954,9 +922,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public ScrollableTextUI AddScrollableText(string elementName, WindowSetup setup, Action action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            ScrollableTextUI button = window.AddScrollableText(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddScrollableText(elementName, action);
         }
 
         public ScrollableTextUI AddScrollableText(string elementName, LayoutAlignment layout, Action action = null)
@@ -968,9 +934,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            ScrollableTextUI button = window.AddScrollableText(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddScrollableText(elementName, action);
         }
 
         public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
@@ -985,9 +949,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            SingleSelectionUI<T> button = window.AddSingleSelection<T>(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddSingleSelection(elementName, action);
         }
 
         public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, LayoutAlignment layout,
@@ -1000,14 +962,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            SingleSelectionUI<T> button = window.AddSingleSelection<T>(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddSingleSelection(elementName, action);
         }
 
         public SingleSelectionUI<T>
             AddSingleSelection<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSingleSelection<T>(elementName, action);
+            window.AddSingleSelection(elementName, action);
 
         protected TextInputUI AddTextInput(string elementName, Action<string> action = null)
         {
@@ -1017,9 +977,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public TextInputUI AddTextInput(string elementName, WindowSetup setup, Action<string> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            TextInputUI button = window.AddTextInput(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddTextInput(elementName, action);
         }
 
         public TextInputUI AddTextInput(string elementName, LayoutAlignment layout, Action<string> action = null)
@@ -1031,26 +989,22 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<string> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            TextInputUI button = window.AddTextInput(elementName, action);
-            window.AutoResize();
-            return button;
+            return window.AddTextInput(elementName, action);
         }
 
         public TextInputUI AddTextInput(string elementName, WindowUI window, Action<string> action = null) =>
             window.AddTextInput(elementName, action);
 
-        public ToggleUI AddToggle(string elementName, float font = 30f, Action<bool> action = null)
+        public ToggleUI AddToggle(string elementName, Action<bool> action = null)
         {
-            return AddToggle(elementName, _menuDefaultStyling.windowSetup, font, action);
+            return AddToggle(elementName, _menuDefaultStyling.windowSetup, action);
         }
 
-        public ToggleUI AddToggle(string elementName, WindowSetup setup, float font = 30f,
+        public ToggleUI AddToggle(string elementName, WindowSetup setup,
             Action<bool> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            ToggleUI toggle = window.AddToggle(elementName, action);
-            window.AutoResize();
-            return toggle;
+            return window.AddToggle(elementName, action);
         }
 
         public ToggleUI AddToggle(string elementName, LayoutAlignment layout, Action<bool> action = null)
@@ -1062,9 +1016,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<bool> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            ToggleUI toggle = window.AddToggle(elementName, action);
-            window.AutoResize();
-            return toggle;
+            return window.AddToggle(elementName, action);
         }
 
         public ToggleUI AddToggle(string elementName, WindowUI window, Action<bool> action = null) =>
@@ -1078,9 +1030,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public SliderUI<T> AddSlider<T>(string elementName, WindowSetup setup, Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
-            SliderUI<T> slider = window.AddSlider(elementName, action);
-            window.AutoResize();
-            return slider;
+            return window.AddSlider(elementName, action);
         }
 
         public SliderUI<T> AddSlider<T>(string elementName, LayoutAlignment layout, Action<T> action = null)
@@ -1092,13 +1042,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
-            SliderUI<T> slider = window.AddSlider(elementName, action);
-            window.AutoResize();
-            return slider;
+            return window.AddSlider(elementName, action);
         }
 
         public SliderUI<T> AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSlider<T>(elementName, action);
+            window.AddSlider(elementName, action);
 
         protected virtual bool BaseConfirmAction()
         {
@@ -1134,6 +1082,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 target.SetCount(count);
             }
+
             LinkInput();
         }
 
@@ -1264,9 +1213,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
         protected virtual bool QuickSelectionAction(IQuickSelect button, bool increment)
         {
             if (increment)
-                button.SetNextChoice();
+                button.CycleForward();
             else
-                button.SetPreviousChoice();
+                button.CycleBackward();
             return true;
         }
 
@@ -1341,7 +1290,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             bool result = currentSelectable switch
             {
                 ISlider slider when _inElementInputMode => SliderAction(slider, false),
-                IQuickSelect button when button.canSetPrevious => QuickSelectionAction(button, false),
+                IQuickSelect button when button.canCycleBackward => QuickSelectionAction(button, false),
                 ScrollableTextUI scrollableText when _inElementInputMode => ScrollableTextAction(scrollableText, false),
                 _ when _menuSetup.allowCloseMenuWithCancelAction => CancelOut(),
                 _ => false

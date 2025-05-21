@@ -154,11 +154,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             SetFocus(false);
         }
 
-        public void ContextLanguageChange()
-        {
-            ClearCachedValue();
-        }
-
         private void ClearCachedValue()
         {
             _windowLabelContent = null;

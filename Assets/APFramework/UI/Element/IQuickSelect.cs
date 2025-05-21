@@ -2,8 +2,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
 {
     public interface IQuickSelect
     {
-        void SetNextChoice();
-        void SetPreviousChoice();
-        bool canSetPrevious { get; }
+        void CycleForward();
+        void CycleBackward();
+        bool canCycleBackward { get; }
     }
 }

@@ -223,13 +223,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             foreach (CompositeMenuMono ui in _compositeMenuMonos)
             {
-                ui.ContextLanguageChange();
                 ui.RefreshWindows();
             }
 
             foreach (SimpleMenu menu in _simpleMenus)
             {
-                menu.ContextLanguageChange();
                 menu.Refresh();
             }
         }

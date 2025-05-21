@@ -182,17 +182,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// <summary>
         /// A simple method to spawn single text UI element window
         /// </summary>
-        public TextUI AddText(string elementName, int length = 0)
+        public TextUI AddText(string elementName)
         {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            TextUI text;
-            if (length == 0)
-                text = _windowInstance.AddText(elementName);
-            else
-                text = _windowInstance.AddText(TextUtility.PlaceHolder(length));
-            _windowInstance.AutoResize();
-            return text;
+            return _windowInstance.AddText(elementName);
         }
 
         /// <summary>
@@ -248,11 +242,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _windowInstance.RefreshSize();
         }
 
-        public void ContextLanguageChange()
-        {
-            _windowInstance.ContextLanguageChange();
-        }
-
         public void TriggerResolutionChange()
         {
             _layoutAlignmentInstance.ContextResolutionChange();
@@ -293,7 +282,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         SetFocused(false);
                         return;
                     }
-                    
+
                     SetFocused(true);
                     for (int i = 0; i < _windowInstance.interactables.Count; i++)
                     {
@@ -577,51 +566,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public ButtonUI AddButton(string elementName, Action action = null)
         {
-            return AddButton(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public ButtonUI AddButton(string elementName, WindowSetup setup, Action action = null)
-        {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            ButtonUI button = _windowInstance.AddButton(elementName, action);
-            _windowInstance.AutoResize();
-            return button;
+            return _windowInstance.AddButton(elementName, action);
         }
 
         public ButtonUI AddButton(string elementName, WindowUI window, Action action = null) =>
             window.AddButton(elementName, action);
-
+        
         public ScrollableTextUI AddScrollableText(string elementName, Action action = null)
-        {
-            return AddScrollableText(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public ScrollableTextUI AddScrollableText(string elementName, WindowSetup setup, Action action = null)
         {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            ScrollableTextUI button = _windowInstance.AddScrollableText(elementName, action);
-            _windowInstance.AutoResize();
-            return button;
+            return _windowInstance.AddScrollableText(elementName, action);
         }
 
         public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
             window.AddScrollableText(elementName, action);
-
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
-        {
-            return AddSingleSelection(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, WindowSetup setup,
+        
+        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName,
             Action<T> action = null)
         {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            SingleSelectionUI<T> button = _windowInstance.AddSingleSelection(elementName, action);
-            _windowInstance.AutoResize();
-            return button;
+            return _windowInstance.AddSingleSelection(elementName, action);
         }
 
         public SingleSelectionUI<T>
@@ -630,56 +598,34 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public TextInputUI AddTextInput(string elementName, Action<string> action = null)
         {
-            return AddTextInput(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public TextInputUI AddTextInput(string elementName, WindowSetup setup, Action<string> action = null)
-        {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            TextInputUI button = _windowInstance.AddTextInput(elementName, action);
-            _windowInstance.AutoResize();
-            return button;
+            return _windowInstance.AddTextInput(elementName, action);
         }
 
         public TextInputUI AddTextInput(string elementName, WindowUI window, Action<string> action = null) =>
             window.AddTextInput(elementName, action);
 
-        public ToggleUI AddToggle(string elementName, float font = 30f, Action<bool> action = null)
-        {
-            return AddToggle(elementName, _menuStyling.windowSetup, font, action);
-        }
-
-        public ToggleUI AddToggle(string elementName, WindowSetup setup, float font = 30f,
+        public ToggleUI AddToggle(string elementName,
             Action<bool> action = null)
         {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            ToggleUI toggle = _windowInstance.AddToggle(elementName, action);
-            _windowInstance.AutoResize();
-            return toggle;
+            return _windowInstance.AddToggle(elementName, action);
         }
 
         public ToggleUI AddToggle(string elementName, WindowUI window, Action<bool> action = null) =>
             window.AddToggle(elementName, action);
 
-        public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
-        {
-            return AddSlider(elementName, _menuStyling.windowSetup, action);
-        }
-
-        public SliderUI<T> AddSlider<T>(string elementName, WindowSetup setup,
+        public SliderUI<T> AddSlider<T>(string elementName,
             Action<T> action = null)
         {
             if (_windowInstance == null)
                 NewWindow(elementName);
-            SliderUI<T> slider = _windowInstance.AddSlider(elementName, action);
-            _windowInstance.AutoResize();
-            return slider;
+            return _windowInstance.AddSlider(elementName, action);
         }
 
-        public SliderUI<T>
-            AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
+        public SliderUI<T> AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
             window.AddSlider(elementName, action);
 
         bool BaseConfirmAction()
@@ -715,6 +661,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 button.SetCount(count);
             }
+
             LinkInput();
         }
 
@@ -849,9 +796,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
         bool QuickSelectionAction(IQuickSelect button, bool increment)
         {
             if (increment)
-                button.SetNextChoice();
+                button.CycleForward();
             else
-                button.SetPreviousChoice();
+                button.CycleBackward();
             return true;
         }
 
