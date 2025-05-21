@@ -785,6 +785,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void SetActive(bool v, bool showMaskAnimation = true, bool syncGameObject = true)
         {
+            if (v && _setup.width == 0 || _setup.height == 0)
+            {
+                AutoResize();
+            }
+
             if (hasOutline && !_outlineReady || !_maskReady)
                 return;
             if (_active == v)
