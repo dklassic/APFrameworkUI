@@ -7,6 +7,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
     public class ConfirmationProvider : CompositeMenuMono
     {
         LayoutAlignment _layout;
+        ConfirmationDefaultChoice _defaultChoice;
+        bool _hasCancel;
+        public bool active => _displayActive;
 
         protected override void InitializeUI()
         {
@@ -27,15 +30,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
             messageWindow.Resize(50);
             ButtonUI confirmButton = AddButton("Confirm", _layout, () =>
             {
+                WindowManager.instance.EndConfirm();
                 CloseMenu(true);
                 onConfirm.Invoke();
             });
             confirmButton.SetLabel(confirm);
             confirmButton.AutoResize();
-            if (cancel != null)
+            _hasCancel = cancel != null;
+            if (_hasCancel)
             {
                 ButtonUI cancelButton = AddButton("Cancel", _layout, () =>
                 {
+                    WindowManager.instance.EndConfirm();
                     CloseMenu(true);
                     onCancel.Invoke();
                 });
@@ -44,14 +50,24 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             OpenMenu(true);
-            _currentSelection = defaultChoice switch
+            _defaultChoice = defaultChoice;
+            _currentSelection = _defaultChoice switch
             {
                 ConfirmationDefaultChoice.Confirm => new Vector2Int(1, 0),
                 ConfirmationDefaultChoice.Cancel => new Vector2Int(2, 0),
                 ConfirmationDefaultChoice.None => new Vector2Int(-1, -1),
-                _ => throw new ArgumentOutOfRangeException(nameof(defaultChoice), defaultChoice, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(_defaultChoice), _defaultChoice, null)
             };
             currentSelectable?.SetFocus(true);
+        }
+
+        protected override bool CancelOut()
+        {
+            if (!_hasCancel)
+                return true;
+            _currentSelection = new Vector2Int(2, 0);
+            currentSelectable?.SetFocus(true);
+            return true;
         }
     }
 }

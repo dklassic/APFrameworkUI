@@ -277,13 +277,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 {
                     if (!IsMouseInWindow(_lastMousePosition))
                     {
-                        _windowInstance.interactables[0].SetFocus(false);
-                        ClearSelection();
+                        SetFocused(false);
                         return;
                     }
 
                     _currentSelection = 0;
-                    _windowInstance.interactables[0].SetFocus(true);
+                    SetFocused(true);
                     _selectionUpdated = true;
                     _mouseActive = true;
                 }
@@ -291,12 +290,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 {
                     if (!IsMouseInWindow(_lastMousePosition))
                     {
-                        _windowInstance.SetFocus(false);
-                        ClearSelection();
+                        SetFocused(false);
                         return;
                     }
-
-                    _windowInstance.SetFocus(true);
+                    
+                    SetFocused(true);
                     for (int i = 0; i < _windowInstance.interactables.Count; i++)
                     {
                         if (!_windowInstance.InteractableContainsPosition(i, _lastMousePosition))
@@ -691,7 +689,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ToggleUI toggle => ToggleAction(toggle),
                 IQuickSelect button => QuickSelectionAction(button, true),
                 TextInputUI textInput => TextInputAction(textInput),
-                ISelectable selection => SingleSelectionAction(selection),
+                ISelectable selection => SelectionAction(selection),
                 ISlider input => InputAction(input, !_inElementInputMode),
                 ScrollableTextUI scrollableText => ScrollableTextAction(scrollableText, !_inElementInputMode),
                 ButtonUI button => ButtonAction(button),
@@ -717,6 +715,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 button.SetCount(count);
             }
+            LinkInput();
         }
 
         void IMenuInputTarget.OnMove(Vector2 vector2)
@@ -865,10 +864,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        bool SingleSelectionAction(ISelectable selection)
+        bool SelectionAction(ISelectable selection)
         {
-            CloseMenu();
-            WindowManager.instance.GetSingleSelectionInput(this,
+            UnlinkInput();
+            WindowManager.instance.GetSelectionInput(this,
                 selection.values, selection.activeCount);
             return true;
         }

@@ -21,6 +21,8 @@ public class SimpleMenuInstance : MonoBehaviour
             SimpleMenu menu = new(i.ToString(), MenuSetup.defaultSetup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
             menu.AddText("Close all menu to quit").SetLabel("Test");
+            menu.AddSingleSelection<int>("Test", obj => { })
+                .SetChoiceByValue(new List<int> { 1, 2, 3 });
             menu.AddSlider<int>("slider")
                 .SetChoiceByValue(new[] { 0, 1, 2, 3 })
                 .SetAction(x => Debug.Log(x));

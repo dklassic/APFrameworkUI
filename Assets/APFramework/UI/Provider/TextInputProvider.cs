@@ -11,6 +11,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         IMenuInputTarget _target;
         TextInputUI _textInputUI;
         string _originalText = string.Empty;
+        bool _active = false;
+        public bool active => _active;
 
         public void GetTextInput(IMenuInputTarget sourceUI, TextInputUI text)
         {
@@ -20,6 +22,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void GetTextInput(TextInputUI text)
         {
+            _active = true;
             _textInputUI = text;
             _originalText = _textInputUI.rawContent;
             // take away the input from the sourceUI
@@ -81,6 +84,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void CompleteInput()
         {
+            _active = false;
             _inputField.onValueChanged.RemoveAllListeners();
             _inputField.onSubmit.RemoveAllListeners();
             _inputField.onTextSelection.RemoveAllListeners();

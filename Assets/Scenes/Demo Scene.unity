@@ -155,7 +155,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 1
       _offsetSource: 0
@@ -254,7 +254,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -275,7 +275,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 0
       _offsetSource: 0
@@ -353,7 +353,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 2
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -374,7 +374,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 1
       _offsetSource: 0
@@ -454,7 +454,7 @@ MonoBehaviour:
       allowCloseMenuWithCancelAction: 0
       allowCloseOnClick: 0
       resetOnOpen: 0
-      allowMove: 0
+      allowDraggingWithMouse: 0
       allowNavigationOnOpen: 0
       menuOpenInputDelay: 0
       singlePressOnly: 0
@@ -475,7 +475,7 @@ MonoBehaviour:
         _fontSize: 0
         _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
       layoutSetup:
-        _windowLayer: 0
+        _menuLayer: 0
         _windowAlignment: 0
         _windowDirection: 0
         _offsetSource: 0
@@ -673,21 +673,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _layoutSetups:
-  - _windowLayer: 0
+  - _menuLayer: 0
     _windowAlignment: 0
     _windowDirection: 0
     _offsetSource: 0
     _offsetType: 0
     _offset: {x: 0, y: 0, z: 0, w: 0}
     _spacing: 0
-  - _windowLayer: 0
+  - _menuLayer: 0
     _windowAlignment: 4
     _windowDirection: 0
     _offsetSource: 0
     _offsetType: 0
     _offset: {x: 0, y: 0, z: 0, w: 0}
     _spacing: 0
-  - _windowLayer: 0
+  - _menuLayer: 0
     _windowAlignment: 5
     _windowDirection: 0
     _offsetSource: 0
@@ -745,7 +745,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -766,7 +766,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 1
       _offsetSource: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 0
     allowCloseOnClick: 0
     resetOnOpen: 2
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -880,7 +880,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 1
       _offsetSource: 0
@@ -974,22 +974,7 @@ PrefabInstance:
     - target: {fileID: 2104586365100447671, guid: 85dfd34d3cd3941edb24edd9b41859c7,
         type: 3}
       propertyPath: m_Name
-      value: WindowHandler
-      objectReference: {fileID: 0}
-    - target: {fileID: 2104586366433644346, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4128753936356321704, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuSetup.allowMove
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4128753936356321704, guid: 85dfd34d3cd3941edb24edd9b41859c7,
-        type: 3}
-      propertyPath: _menuSetup.allowCycleBetweenWindows
-      value: 0
+      value: WindowManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1046,7 +1031,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1067,7 +1052,7 @@ MonoBehaviour:
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
-      _windowLayer: 0
+      _menuLayer: 0
       _windowAlignment: 4
       _windowDirection: 1
       _offsetSource: 0

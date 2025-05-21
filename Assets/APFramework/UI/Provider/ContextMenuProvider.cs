@@ -13,6 +13,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _contextMenuInstantiated = false;
         [SerializeField] SimpleMenu _contextMenu;
         [SerializeField] WindowUI _window;
+        [SerializeField] bool _active;
+        public bool active => _active;
 
         public void Initialize()
         {
@@ -33,6 +35,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return;
             }
 
+            _active = true;
             _window.RevertAlignment();
             _window.ClearElements();
             _window.ClearCachedPosition();
@@ -41,10 +44,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _window.AddButton(choices[i], actions[i]);
             }
 
-            _contextMenu.SetMenuCloseAction(onClose);
+            _contextMenu.SetMenuCloseAction(() =>
+            {
+                _active = false;
+                WindowManager.instance.EndContextMenu();
+                onClose.Invoke();
+            });
             _contextMenu.OpenMenu(true);
             _window.MoveTo(position);
         }
+
         public void SetupMenu(List<string> choices, List<Action> actions, Action onClose)
         {
             if (!_contextMenuInstantiated)
@@ -56,6 +65,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 return;
             }
 
+            _active = true;
             _window.RevertAlignment();
             _window.ClearElements();
             _window.ClearCachedPosition();
@@ -64,8 +74,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _window.AddButton(choices[i], actions[i]);
             }
 
-            _contextMenu.SetMenuCloseAction(onClose);
+            _contextMenu.SetMenuCloseAction(() =>
+            {
+                _active = false;
+                WindowManager.instance.EndContextMenu();
+                onClose.Invoke();
+            });
             _contextMenu.OpenMenu(true);
+        }
+
+        public void UpdateMenu()
+        {
+            _contextMenu.UpdateMenu();
         }
     }
 }

@@ -33,6 +33,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
         IInputProvider _inputProvider;
         Vector2Int _lastResolution = Vector2Int.zero;
         public IInputProvider inputProvider => _inputProvider;
+        public RenderMode overlayMode => _overlayMode;
+
+        public bool providerActive => _selectionProvider.active || _textInputProvider.active ||
+                                      _confirmationProvider.active ||
+                                      _contextMenuProvider.active;
+
+
+        public void EnableGlobalVisibility(bool enable)
+        {
+            float opacity = enable ? 1f : 0.05f;
+            foreach (SimpleMenu simpleMenu in _simpleMenus)
+            {
+                if (!simpleMenu.isDisplayActive)
+                    continue;
+                simpleMenu.SetOpacity(opacity);
+            }
+
+            foreach (CompositeMenuMono compositeMenuMono in _compositeMenuMonos)
+            {
+                if (!compositeMenuMono.isDisplayActive)
+                    continue;
+                compositeMenuMono.SetOpacity(opacity);
+            }
+        }
 
         public void LinkInputTarget(IMenuInputTarget menuInputTarget)
         {
@@ -45,11 +69,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 LinkInputTarget(null);
         }
 
-        public RenderMode overlayMode => _overlayMode;
-
-        public void OpenContextMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose)
+        public void GetContextMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose)
         {
+            EnableGlobalVisibility(false);
             _contextMenuProvider.SetupMenu(choices, actions, position, onClose);
+        }
+
+        public void EndContextMenu()
+        {
+            EnableGlobalVisibility(true);
         }
 
         public void GetTextInput(IMenuInputTarget sourceUI, TextInputUI text)
@@ -57,10 +85,17 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _textInputProvider.GetTextInput(sourceUI, text);
         }
 
-        public void GetSingleSelectionInput(IMenuInputTarget sourceUI, List<string> choices,
+        public void GetSelectionInput(IMenuInputTarget sourceUI, List<string> choices,
             int currentChoice)
         {
-            _selectionProvider.GetSingleSelection(sourceUI, choices, currentChoice);
+            EnableGlobalVisibility(false);
+
+            _selectionProvider.GetSelection(sourceUI, choices, currentChoice);
+        }
+
+        public void EndSelectionInput()
+        {
+            EnableGlobalVisibility(true);
         }
 
         void TriggerResolutionChange()
@@ -97,6 +132,20 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 TriggerResolutionChange();
             }
 
+            foreach (WindowUI window in _windows)
+            {
+                window.ContextUpdate();
+            }
+
+            if (providerActive)
+            {
+                _confirmationProvider.UpdateMenu();
+                _contextMenuProvider.UpdateMenu();
+                _selectionProvider.UpdateMenu();
+                return;
+            }
+
+            // When any provider is active, disable interaction of menus
             foreach (CompositeMenuMono system in _compositeMenuMonos)
             {
                 if (!system.enabled)
@@ -105,14 +154,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             UpdateSimpleMenuMouseFocus();
+
             foreach (SimpleMenu system in _simpleMenus)
             {
                 system.UpdateMenu();
-            }
-
-            foreach (WindowUI window in _windows)
-            {
-                window.ContextUpdate();
             }
         }
 
@@ -344,6 +389,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             string cancel = null, Action onConfirm = null, Action onCancel = null,
             ConfirmationDefaultChoice defaultChoice = ConfirmationDefaultChoice.None)
         {
+            EnableGlobalVisibility(false);
+
             _confirmationProvider.GetConfirm(title, message, confirm, cancel, onConfirm, onCancel,
                 defaultChoice);
         }
@@ -351,7 +398,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void GetConfirm(string title, string message, string confirm,
             Action onConfirm = null, ConfirmationDefaultChoice defaultChoice = ConfirmationDefaultChoice.None)
         {
+            EnableGlobalVisibility(false);
+
             _confirmationProvider.GetConfirm(title, message, confirm, null, onConfirm, null, defaultChoice);
+        }
+
+        public void EndConfirm()
+        {
+            EnableGlobalVisibility(true);
         }
 
         public bool CheckClosestDirectionalMatch(SimpleMenu source, Vector2 currentPosition, Vector2 inputDirection,

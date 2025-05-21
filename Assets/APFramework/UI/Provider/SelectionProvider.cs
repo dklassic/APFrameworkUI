@@ -8,6 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         LayoutAlignment _layout;
         IMenuInputTarget _target;
+        public bool active => _displayActive;
 
         protected override void InitializeUI()
         {
@@ -28,7 +29,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             ClearWindowLocation();
         }
 
-        public void GetSingleSelection(IMenuInputTarget target, List<string> choices, int currentChoice)
+        public void GetSelection(IMenuInputTarget target, List<string> choices, int currentChoice)
         {
             UpdateChoices(choices);
             // take away the input from the sourceUI
@@ -41,6 +42,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void CompleteInput()
         {
+            WindowManager.instance.EndSelectionInput();
             CloseMenu(false);
             _target.SetSelection(_currentSelection[0]);
             _target = null;

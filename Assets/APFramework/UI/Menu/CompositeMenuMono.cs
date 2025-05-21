@@ -517,6 +517,16 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
                 GetSelectable(_currentSelection).SetFocus(true);
         }
+        protected virtual void SetCurrentSelection(Vector2Int currentSelection)
+        {
+            if (_windowInstances.Count > _currentSelection.x &&
+                _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
+                GetSelectable(_currentSelection).SetFocus(false);
+            _currentSelection = currentSelection;
+            if (_windowInstances.Count > _currentSelection.x &&
+                _windowInstances[_currentSelection.x].interactables.Count > _currentSelection.y)
+                GetSelectable(_currentSelection).SetFocus(true);
+        }
 
         public void SetNavigationActive(bool active)
         {
@@ -1098,7 +1108,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 IQuickSelect button => QuickSelectionAction(button, true),
                 TextInputUI textInput => TextInputAction(textInput),
                 ISlider slider => SliderAction(slider, !_inElementInputMode),
-                ISelectable selection => SingleSelectionAction(selection),
+                ISelectable selection => SelectionAction(selection),
                 ScrollableTextUI scrollableText => ScrollableTextAction(scrollableText, !_inElementInputMode),
                 ButtonUI button => ButtonAction(button),
                 _ => false,
@@ -1124,8 +1134,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 target.SetCount(count);
             }
-
-            OpenMenu(true);
+            LinkInput();
         }
 
         void IMenuInputTarget.OnMove(Vector2 vector2)
@@ -1261,10 +1270,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return true;
         }
 
-        protected virtual bool SingleSelectionAction(ISelectable selection)
+        protected virtual bool SelectionAction(ISelectable selection)
         {
-            CloseMenu(false);
-            WindowManager.instance.GetSingleSelectionInput(this,
+            UnlinkInput();
+            WindowManager.instance.GetSelectionInput(this,
                 selection.values, selection.activeCount);
             return true;
         }

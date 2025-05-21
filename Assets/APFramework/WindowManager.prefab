@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 2104586365100447669}
   - component: {fileID: 2104586365100447668}
   m_Layer: 3
-  m_Name: WindowHandler
+  m_Name: WindowManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -963,7 +963,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 0
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -982,9 +982,9 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
     layoutSetup:
-      _windowLayer: 2
+      _menuLayer: 2
       _windowAlignment: 4
       _windowDirection: 0
       _offsetSource: 0
@@ -1335,7 +1335,7 @@ MonoBehaviour:
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 1
     resetOnOpen: 2
-    allowMove: 1
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1354,9 +1354,9 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.22745098}
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
     layoutSetup:
-      _windowLayer: 2
+      _menuLayer: 2
       _windowAlignment: 4
       _windowDirection: 0
       _offsetSource: 0
@@ -1372,7 +1372,7 @@ MonoBehaviour:
       allowCloseMenuWithCancelAction: 0
       allowCloseOnClick: 0
       resetOnOpen: 0
-      allowMove: 0
+      allowDraggingWithMouse: 0
       allowNavigationOnOpen: 0
       menuOpenInputDelay: 0
       singlePressOnly: 0
@@ -1393,7 +1393,7 @@ MonoBehaviour:
         _fontSize: 0
         _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
       layoutSetup:
-        _windowLayer: 0
+        _menuLayer: 0
         _windowAlignment: 0
         _windowDirection: 0
         _offsetSource: 0
@@ -1420,6 +1420,7 @@ MonoBehaviour:
     _focused: 0
     _movingWindow: 0
   _window: {fileID: 0}
+  _active: 0
 --- !u!1 &5142660823976200475
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,10 +1468,10 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    allowCloseMenuWithCancelAction: 0
+    allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
-    allowMove: 0
+    allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0
@@ -1489,9 +1490,9 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
     layoutSetup:
-      _windowLayer: 2
+      _menuLayer: 2
       _windowAlignment: 4
       _windowDirection: 0
       _offsetSource: 0

@@ -49,7 +49,7 @@ public class ContextMenuExample : MonoBehaviour
                     actions.Add(() => Debug.Log("Clicked"));
                 }
 
-                WindowManager.instance.OpenContextMenu(choices, actions, mouse.position.ReadValue(),
+                WindowManager.instance.GetContextMenu(choices, actions, mouse.position.ReadValue(),
                     () => { _contextMenuOpen = false; });
             }
         }
