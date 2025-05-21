@@ -84,6 +84,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _inputProvider = new UnityInputProvider();
             _inputProvider.SetTarget(this);
             _inputProvider.EnableInput(true);
+            _contextMenuProvider.Initialize();
             SetOverlayMode(_overlayMode);
         }
 

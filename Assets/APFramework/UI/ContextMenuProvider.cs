@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using ChosenConcept.APFramework.Interface.Framework.Element;
 using UnityEngine;
@@ -13,32 +14,58 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] SimpleMenu _contextMenu;
         [SerializeField] WindowUI _window;
 
+        public void Initialize()
+        {
+            _contextMenu = new SimpleMenu("ContextMenuProvider", _menuSetup, _menuStyling);
+            _window = _contextMenu.NewWindow("ContextMenu");
+            WindowManager.instance.RegisterMenu(_contextMenu);
+            _contextMenuInstantiated = true;
+        }
+
         public void SetupMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose)
         {
             if (!_contextMenuInstantiated)
-            {
-                _contextMenuInstantiated = true;
-                _contextMenu = new SimpleMenu("ContextMenuProvider", _menuSetup, _menuStyling);
-                _window = _contextMenu.NewWindow("ContextMenu");
-                WindowManager.instance.RegisterMenu(_contextMenu);
-            }
+                return;
 
-            _window.RevertAlignment();
             if (choices.Count != actions.Count)
             {
                 Debug.LogError("Mismatch amount of choices and actions");
                 return;
             }
 
+            _window.RevertAlignment();
             _window.ClearElements();
             _window.ClearCachedPosition();
             for (int i = 0; i <= choices.Count - 1; i++)
             {
                 _window.AddButton(choices[i], actions[i]);
             }
+
             _contextMenu.SetMenuCloseAction(onClose);
             _contextMenu.OpenMenu(true);
             _window.MoveTo(position);
+        }
+        public void SetupMenu(List<string> choices, List<Action> actions, Action onClose)
+        {
+            if (!_contextMenuInstantiated)
+                return;
+
+            if (choices.Count != actions.Count)
+            {
+                Debug.LogError("Mismatch amount of choices and actions");
+                return;
+            }
+
+            _window.RevertAlignment();
+            _window.ClearElements();
+            _window.ClearCachedPosition();
+            for (int i = 0; i <= choices.Count - 1; i++)
+            {
+                _window.AddButton(choices[i], actions[i]);
+            }
+
+            _contextMenu.SetMenuCloseAction(onClose);
+            _contextMenu.OpenMenu(true);
         }
     }
 }

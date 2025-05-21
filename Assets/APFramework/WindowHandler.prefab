@@ -1350,8 +1350,8 @@ MonoBehaviour:
       _outlineDisplayStyle: 0
       _thickenStyle: 0
       _labelStyle: 0
-      _transitionIn: 0
-      _transitionOut: 0
+      _transitionIn: 8
+      _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
     layoutSetup:
