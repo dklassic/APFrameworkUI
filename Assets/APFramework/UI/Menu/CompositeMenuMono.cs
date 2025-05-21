@@ -1423,5 +1423,17 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             _menuCloseAction = action;
         }
+
+        public IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new List<string>();
+            tags.Add(menuTag);
+            foreach (WindowUI window in _windowInstances)
+            {
+                tags.AddRange(window.ExportLocalizationTag());
+            }
+
+            return tags;
+        }
     }
 }

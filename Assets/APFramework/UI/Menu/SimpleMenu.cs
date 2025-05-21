@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using ChosenConcept.APFramework.Interface.Framework.Element;
 using Object = UnityEngine.Object;
@@ -991,6 +992,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public void SetMenuCloseAction(Action action)
         {
             _menuCloseAction = action;
+        }
+
+        public IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new List<string>();
+            tags.Add(menuTag);
+            tags.AddRange(_windowInstance.ExportLocalizationTag());
+            return tags;
         }
     }
 }

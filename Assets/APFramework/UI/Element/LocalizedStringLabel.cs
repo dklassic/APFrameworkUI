@@ -7,7 +7,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
     public struct LocalizedStringLabel : IStringLabel
     {
         string _tag;
-
+        public string tag => _tag;
         public LocalizedStringLabel(string value)
         {
             _tag = value;

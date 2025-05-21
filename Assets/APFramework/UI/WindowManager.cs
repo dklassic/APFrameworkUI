@@ -554,5 +554,21 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             throw new Exception($"Menu {typeof(T)} not found");
         }
+
+        public string ExportLocalizationTag()
+        {
+            List<string> tags = new List<string>();
+            foreach (SimpleMenu simpleMenu in _simpleMenus)
+            {
+                tags.AddRange(simpleMenu.ExportLocalizationTag());
+            }
+
+            foreach (CompositeMenuMono system in _compositeMenuMonos)
+            {
+                tags.AddRange(system.ExportLocalizationTag());
+            }
+
+            return string.Join("\n", tags);
+        }
     }
 }

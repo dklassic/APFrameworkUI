@@ -938,5 +938,19 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             transform.SetParent(_layoutAlignment.transform);
         }
+
+        public IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new List<string>();
+            tags.Add(_windowTag);
+            foreach (WindowElement element in _elements)
+            {
+                if (element.rawLabel is LocalizedStringLabel label)
+                    tags.Add(label.tag);
+                if (element.rawContent is LocalizedStringLabel content)
+                    tags.Add(content.tag);
+            }
+            return tags;
+        }
     }
 }

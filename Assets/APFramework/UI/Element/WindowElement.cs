@@ -75,6 +75,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public string name => _name;
         public string tag => _tag;
+        public IStringLabel rawLabel => _label;
+        public IStringLabel rawContent => _content;
 
         public string label
         {
@@ -125,8 +127,6 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public virtual string formattedContent =>
             string.IsNullOrEmpty(content) ? label : ZString.Concat(labelPrefix, content);
-
-        public string rawContent => string.IsNullOrEmpty(content) ? label : ZString.Concat(labelPrefix, content);
 
         public virtual int getMaxLength
         {
