@@ -1359,7 +1359,7 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.09411765}
       _functionStringUpdateInterval: 0
     _layoutSetup:
       _menuLayer: 2
