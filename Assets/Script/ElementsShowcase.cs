@@ -66,7 +66,5 @@ public class ElementsShowcase : CompositeMenuMono
         systemWindow.AddText("Here is a Button that takes double confirm to trigger:");
         systemWindow.AddButton("Double confirm to return", () => CloseMenu(true))
             .SetConfirmText("Confirm");
-
-        systemWindow.Resize(50);
     }
 }

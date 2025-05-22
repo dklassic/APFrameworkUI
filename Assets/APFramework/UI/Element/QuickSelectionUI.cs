@@ -32,8 +32,28 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : "N/A";
-        public override int getMaxLength => TextUtility.WidthSensitiveLength(formattedContent) + 2;
+        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : TextUtility.NA;
+
+        public int maxContentLength
+        {
+            get
+            {
+                int maxLength = 0;
+                foreach (string choice in choiceListContent)
+                {
+                    int length = TextUtility.WidthSensitiveLength(choice);
+                    if (length > maxLength)
+                        maxLength = length;
+                }
+
+                if (maxLength == 0)
+                    return TextUtility.WidthSensitiveLength(TextUtility.NA);
+
+                return maxLength;
+            }
+        }
+
+        public override int getMaxLength => TextUtility.WidthSensitiveLength(labelPrefix) + maxContentLength + +2;
         public override string formattedContent => ZString.Concat(labelPrefix, currentChoice);
 
         public override int count

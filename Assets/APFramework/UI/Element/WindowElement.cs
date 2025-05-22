@@ -109,7 +109,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     return string.Empty;
                 if (_labelCache == null)
                     _labelCache = _label.GetValue();
-                return ZString.Concat(_labelCache, TextUtility.column);
+                return ZString.Concat(_labelCache, TextUtility.COLUMN);
             }
         }
 

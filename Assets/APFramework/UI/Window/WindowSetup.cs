@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
-    [System.Serializable]
+    [Serializable]
     public struct WindowSetup
     {
         [SerializeField] int _width;

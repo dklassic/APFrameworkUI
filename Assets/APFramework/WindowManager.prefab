@@ -1334,8 +1334,8 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 1
-    resetOnOpen: 2
-    allowDraggingWithMouse: 0
+    resetOnOpen: 1
+    allowDraggingWithMouse: 1
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
     singlePressOnly: 0

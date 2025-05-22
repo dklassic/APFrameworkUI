@@ -31,7 +31,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : "N/A";
+        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : TextUtility.NA;
         public override int getMaxLength => TextUtility.WidthSensitiveLength(formattedContent) + 2;
         public override string formattedContent => ZString.Concat(labelPrefix, currentChoice);
 

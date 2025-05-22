@@ -89,7 +89,11 @@ Access through `WindowManager.instance.GetConfirm`, which will show a menu with 
 
 ### Context Menu Provider
 
-Access through `WindowManager.instance.OpenContextMenu`, which can show a context menu with quick access to actions at a designated position. A callback is available for when the context menu closes.
+Access through `WindowManager.instance.GetContextMenu`, which can show a context menu with quick access to actions at a designated position.
+
+- A callback is available for when the context menu closes.
+- The context menu will be closed when mouse clicked out of window.
+- By default the context menu will close on execution of any button, this behavior can be changed.
 
 ## Futurework
 

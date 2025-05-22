@@ -352,7 +352,7 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
-    resetOnOpen: 2
+    resetOnOpen: 0
     allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
@@ -858,7 +858,7 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 0
     allowCloseOnClick: 0
-    resetOnOpen: 2
+    resetOnOpen: 0
     allowDraggingWithMouse: 0
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2
@@ -942,7 +942,7 @@ MonoBehaviour:
     allowCycleBetweenWindows: 0
     allowCloseMenuWithCancelAction: 0
     allowCloseOnClick: 0
-    resetOnOpen: 2
+    resetOnOpen: 0
     allowDraggingWithMouse: 1
     allowNavigationOnOpen: 1
     menuOpenInputDelay: 0.2

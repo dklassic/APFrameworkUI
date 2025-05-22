@@ -1,7 +1,7 @@
 using System;
 using Cysharp.Text;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
@@ -17,37 +17,34 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 if (String.IsNullOrEmpty(_outlineText))
                     return string.Empty;
-                else
+                return _inFocus switch
                 {
-                    return _inFocus switch
+                    false => _displayStyle switch
                     {
-                        false => _displayStyle switch
+                        WindowOutlineDisplayStyle.Always => _available switch
                         {
-                            WindowOutlineDisplayStyle.Always => _available switch
-                            {
-                                false => StyleUtility.StringColored(_outlineText.ToUpper(), StyleUtility.disabled),
-                                true => _outlineText.ToUpper(),
-                            },
-                            WindowOutlineDisplayStyle.WhenSelected => string.Empty,
-                            _ => throw new NotImplementedException()
-                        },
-                        true => (!_singleWindowOverride || _inInput) switch
-                        {
+                            false => StyleUtility.StringColored(_outlineText.ToUpper(), StyleUtility.disabled),
                             true => _outlineText.ToUpper(),
-                            false => StyleUtility.StringColored(_outlineText.ToUpper(),
-                                _available ? StyleUtility.selected : StyleUtility.disableSelected)
-                        }
-                    };
-                }
+                        },
+                        WindowOutlineDisplayStyle.WhenSelected => string.Empty,
+                        _ => throw new NotImplementedException()
+                    },
+                    true => (!_singleWindowOverride || _inInput) switch
+                    {
+                        true => _outlineText.ToUpper(),
+                        false => StyleUtility.StringColored(_outlineText.ToUpper(),
+                            _available ? StyleUtility.selected : StyleUtility.disableSelected)
+                    }
+                };
             }
         }
 
-        [SerializeField] bool _singleWindowOverride = false;
-        [SerializeField] bool _inFocus = false;
+        [SerializeField] bool _singleWindowOverride;
+        [SerializeField] bool _inFocus;
         [SerializeField] bool _available = true;
-        [SerializeField] bool _inInput = false;
-        [SerializeField] bool _active = false;
-        [SerializeField] bool _hasOutline = false;
+        [SerializeField] bool _inInput;
+        [SerializeField] bool _active;
+        [SerializeField] bool _hasOutline;
         Coroutine _coroutine = null;
         [SerializeField] Vector2Int _size;
         [SerializeField] WindowOutlineDisplayStyle _displayStyle;
@@ -459,13 +456,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 // coroutine = StartCoroutine(StartupSequence());
                 return 0f;
             }
-            else
-            {
-                if (_coroutine != null)
-                    StopCoroutine(_coroutine);
-                SetOutlineText(string.Empty);
-                return 0f;
-            }
+
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+            SetOutlineText(string.Empty);
+            return 0f;
         }
 
         void SetOutlineText(string text)

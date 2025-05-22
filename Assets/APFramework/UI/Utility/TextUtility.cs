@@ -8,10 +8,12 @@ using Cysharp.Text;
 
 public static class TextUtility
 {
-    public const string column = ": ";
-    public const char FULL_SIZE_SPACE = '　';
-    public static string LineBreaker = FULL_SIZE_SPACE + "\n";
-    public static string TitleOpener = LineBreaker + FULL_SIZE_SPACE;
+    public const string NA = "N/A";
+    public const string COLUMN = ": ";
+    public const char FULL_WIDTH_SPACE = '　';
+    public const char LINE_BREAK = '\n';
+    public static string LineBreaker = FULL_WIDTH_SPACE + "\n";
+    public static string TitleOpener = LineBreaker + FULL_WIDTH_SPACE;
     public const char BLOCK = '█';
     public const string FADE_IN = "█▓▒░ ";
     public const string FADE_OUT = " ░▒▓█";

@@ -42,7 +42,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             }
         }
 
-        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : "N/A";
+        public string currentChoice => choiceListContent.Count > 0 ? choiceListContent[_count] : TextUtility.NA;
 
         public List<string> choiceListContent
         {

@@ -24,7 +24,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _contextMenuInstantiated = true;
         }
 
-        public void SetupMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose)
+        public void SetupMenu(List<string> choices, List<Action> actions, Vector2 position, Action onClose,
+            bool closeOnExecution = true)
         {
             if (!_contextMenuInstantiated)
                 return;
@@ -41,7 +42,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _window.ClearCachedPosition();
             for (int i = 0; i <= choices.Count - 1; i++)
             {
-                _window.AddButton(choices[i], actions[i]);
+                Action action = actions[i];
+                _window.AddButton(choices[i], () =>
+                {
+                    action.Invoke();
+                    if (closeOnExecution)
+                        _contextMenu.CloseMenu();
+                });
             }
 
             _contextMenu.SetMenuCloseAction(() =>
@@ -51,36 +58,14 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 onClose.Invoke();
             });
             _contextMenu.OpenMenu(true);
+            if (Vector2.positiveInfinity == position)
+                return;
             _window.MoveTo(position);
         }
 
-        public void SetupMenu(List<string> choices, List<Action> actions, Action onClose)
+        public void SetupMenu(List<string> choices, List<Action> actions, Action onClose, bool closeOnExecution = true)
         {
-            if (!_contextMenuInstantiated)
-                return;
-
-            if (choices.Count != actions.Count)
-            {
-                Debug.LogError("Mismatch amount of choices and actions");
-                return;
-            }
-
-            _active = true;
-            _window.RevertAlignment();
-            _window.ClearElements();
-            _window.ClearCachedPosition();
-            for (int i = 0; i <= choices.Count - 1; i++)
-            {
-                _window.AddButton(choices[i], actions[i]);
-            }
-
-            _contextMenu.SetMenuCloseAction(() =>
-            {
-                _active = false;
-                WindowManager.instance.EndContextMenu();
-                onClose.Invoke();
-            });
-            _contextMenu.OpenMenu(true);
+            SetupMenu(choices, actions, Vector2.positiveInfinity, onClose, closeOnExecution);
         }
 
         public void UpdateMenu()

@@ -14,11 +14,11 @@ public class SimpleMenuInstance : MonoBehaviour
     void Start()
     {
         int i = 0;
-        foreach (var layout in _layoutSetups)
+        foreach (LayoutSetup layout in _layoutSetups)
         {
             MenuSetup setup = MenuSetup.defaultSetup;
             setup.allowCloseMenuWithCancelAction = true;
-            SimpleMenu menu = new(i.ToString(), MenuSetup.defaultSetup, WindowSetup.defaultSetup, layout);
+            SimpleMenu menu = new(i.ToString(), setup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
             menu.AddText("Close all menu to quit").SetLabel("Test");
             menu.AddSingleSelection<int>("Test", obj => { })

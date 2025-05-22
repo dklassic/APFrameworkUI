@@ -1,6 +1,6 @@
-using UnityEngine;
-using TMPro;
 using Cysharp.Text;
+using TMPro;
+using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
@@ -23,13 +23,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
         float _maskAnimationStep = 0.005f;
         int[,] _maskIndex;
         string _maskString = TextUtility.FADE_IN;
-        int _fillLine = 0;
-        [SerializeField] int _widthCount = 0;
-        [SerializeField] int _heightCount = 0;
+        int _fillLine;
+        [SerializeField] int _widthCount;
+        [SerializeField] int _heightCount;
         [SerializeField] float _nextUpdate = Mathf.Infinity;
-        [SerializeField] int _endStep = 0;
+        [SerializeField] int _endStep;
         [SerializeField] int _currentStep = -1;
-        [SerializeField] bool _initialized = false;
+        [SerializeField] bool _initialized;
         public bool needUpdate => _nextUpdate < Mathf.Infinity;
 
         public void Initialize()

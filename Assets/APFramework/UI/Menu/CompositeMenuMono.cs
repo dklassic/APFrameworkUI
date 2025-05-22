@@ -359,9 +359,22 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     if (!_windowInstances[i].ContainsPosition(_lastMousePosition))
                         continue;
                     int interactableCount = _windowInstances[i].interactables.Count;
-                    for (int j = 0; j < interactableCount; j++)
+                    if (interactableCount > 0)
                     {
-                        float distanceSqr = (_windowInstances[i].interactables[j].cachedCenter - _lastMousePosition)
+                        for (int j = 0; j < interactableCount; j++)
+                        {
+                            float distanceSqr = (_windowInstances[i].interactables[j].cachedCenter - _lastMousePosition)
+                                .sqrMagnitude;
+                            if (distanceSqr < minDistanceSqr)
+                            {
+                                minDistanceSqr = distanceSqr;
+                                windowIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        float distanceSqr = (_windowInstances[i].cachedCenter - _lastMousePosition)
                             .sqrMagnitude;
                         if (distanceSqr < minDistanceSqr)
                         {
@@ -1340,6 +1353,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             _mouseSelectionTargetExists = false;
             currentSelectable?.SetFocus(true);
+            currentWindow?.SetFocus(true);
             foreach (WindowUI window in _windowInstances)
             {
                 window.SetActive(true);

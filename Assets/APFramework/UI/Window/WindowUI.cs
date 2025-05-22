@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine;
+using System.Linq;
+using ChosenConcept.APFramework.Interface.Framework.Element;
 using Cysharp.Text;
 using TMPro;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace ChosenConcept.APFramework.Interface.Framework
 {
@@ -16,10 +16,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [Header("Components")] [SerializeField]
         private RectTransform _transform;
 
-        [SerializeField] TextMeshProUGUI _drawText = null;
+        [SerializeField] TextMeshProUGUI _drawText;
 
-        [SerializeField] WindowOutline _outlineBuilder = null;
-        [SerializeField] WindowMask _windowMask = null;
+        [SerializeField] WindowOutline _outlineBuilder;
+        [SerializeField] WindowMask _windowMask;
         [SerializeField] WindowBackground _background;
         [SerializeField] LayoutElement _layout;
 
@@ -28,26 +28,26 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         [SerializeField] string _windowTag;
         [SerializeField] string _windowLabelContent;
-        [SerializeField] string _windowSubscriptContent = null;
+        [SerializeField] string _windowSubscriptContent;
         [SerializeField] WindowSetup _setup;
         [SerializeField] LayoutAlignment _layoutAlignment;
         [SerializeField] int _endFillCount = 5;
-        [SerializeField] bool _maskReady = false;
-        [SerializeField] bool _outlineReady = false;
-        [SerializeField] bool _noCut = false;
-        [SerializeField] int _extraWidth = 0;
+        [SerializeField] bool _maskReady;
+        [SerializeField] bool _outlineReady;
+        [SerializeField] bool _noCut;
+        [SerializeField] int _extraWidth;
         [SerializeField] bool _isDirty = true;
         [SerializeField] List<WindowElement> _elements = new();
-        [SerializeField] bool _positionCached = false;
+        [SerializeField] bool _positionCached;
         [SerializeField] Vector2 _cachedPositionStart = Vector2.zero;
         [SerializeField] Vector2 _cachedPositionEnd = Vector2.zero;
-        [SerializeField] bool _active = false;
-        [SerializeField] bool _isFocused = false;
+        [SerializeField] bool _active;
+        [SerializeField] bool _isFocused;
         [SerializeField] bool _available = true;
-        [SerializeField] bool _inInput = false;
-        [SerializeField] bool _sizeFixed = false;
-        [SerializeField] bool _awaitDeactivate = false;
-        [SerializeField] bool _preciseSizeSync = false;
+        [SerializeField] bool _inInput;
+        [SerializeField] bool _sizeFixed;
+        [SerializeField] bool _awaitDeactivate;
+        [SerializeField] bool _preciseSizeSync;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
         List<WindowElement> _interactables = new();
@@ -337,7 +337,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
                 for (int i = 0; i < count; i++)
                 {
-                    string[] texts = _elements[i].GetSplitDisplayText(_noCut ? 0 : contentWidth);
+                    string[] texts = _elements[i] is ScrollableTextUI
+                        ? _elements[i].GetSplitDisplayText(contentWidth)
+                        : _elements[i].GetSplitDisplayText(_noCut ? 0 : contentWidth);
                     for (int k = 0; k < texts.Length; k++)
                     {
                         string text = texts[k];
@@ -345,7 +347,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                         {
                             if (_noCut)
                             {
-                                windowStringBuilder.Append(TextUtility.FULL_SIZE_SPACE);
+                                windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                                 if (k == 0)
                                     _elements[i].SetFirstCharacterIndex(
                                         TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
@@ -353,7 +355,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                 if (k == texts.Length - 1)
                                     _elements[i].SetLastCharacterIndex(
                                         TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
-                                windowStringBuilder.Append(TextUtility.LineBreaker);
+                                windowStringBuilder.Append(TextUtility.LINE_BREAK);
                             }
                             else
                             {
@@ -361,7 +363,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                     TextUtility.StringCutter(text, contentWidth);
                                 for (int j = 0; j < splitString.Count; j++)
                                 {
-                                    windowStringBuilder.Append(TextUtility.FULL_SIZE_SPACE);
+                                    windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                                     if (j == 0 && k == 0)
                                         _elements[i].SetFirstCharacterIndex(
                                             TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
@@ -369,13 +371,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                     if (j == splitString.Count - 1 && k == texts.Length - 1)
                                         _elements[i].SetLastCharacterIndex(
                                             TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
-                                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                                    windowStringBuilder.Append(TextUtility.LINE_BREAK);
                                 }
                             }
                         }
                         else
                         {
-                            windowStringBuilder.Append(TextUtility.FULL_SIZE_SPACE);
+                            windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                             if (k == 0)
                                 _elements[i].SetFirstCharacterIndex(
                                     TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
@@ -383,7 +385,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             if (k == texts.Length - 1)
                                 _elements[i].SetLastCharacterIndex(
                                     TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
-                            windowStringBuilder.Append(TextUtility.LineBreaker);
+                            windowStringBuilder.Append(TextUtility.LINE_BREAK);
                         }
                     }
                 }
@@ -395,7 +397,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 {
                     if (windowSubscriptContent != string.Empty && i == _endFillCount - 1 + compensate && !isFullFrame)
                     {
-                        windowStringBuilder.Append(TextUtility.FULL_SIZE_SPACE);
+                        windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                         windowStringBuilder.Append(TextUtility.PlaceHolder(contentWidth +
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(
@@ -412,7 +414,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     else if (windowSubscriptContent != string.Empty && i == _endFillCount - 1 + compensate &&
                              isFullFrame)
                     {
-                        windowStringBuilder.Append(TextUtility.FULL_SIZE_SPACE);
+                        windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                         windowStringBuilder.Append(TextUtility.PlaceHolder(contentWidth +
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(

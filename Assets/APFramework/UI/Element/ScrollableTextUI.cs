@@ -11,6 +11,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         int _cachedContentWidth = -1;
         public int contentHeight => _contentHeight;
         public override string displayText => formattedContent;
+        // ScrollableText will not presume itself having a max length
+        public override int getMaxLength => 0;
 
         public override int count
         {
