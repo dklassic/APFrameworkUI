@@ -1,38 +1,36 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using ChosenConcept.APFramework.Interface.Framework;
+using ChosenConcept.APFramework.Interface.Framework.Element;
 using UnityEngine;
 
-public class ResolutionSetting : GeneralUISystemWithNavigation
+public class ResolutionSetting : CompositeMenuMono
 {
-    WindowUI systemWindow;
-    List<(int, int)> activeResolutionList;
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
-        systemWindow ??= NewWindow("ui_system_resolution", DefaultSetup);
-        AddText("When ever resolution changes, need to clear cache of window location.", systemWindow);
-        activeResolutionList = ResolutionUtility.AvailableResolutions();
-        for (int i = 0; i < activeResolutionList.Count; i++)
-        {
-            (int width, int height) = activeResolutionList[i];
-            ToggleUIExclusive toggle = AddExclusiveToggle(width + "x" + height, systemWindow, _ => UpdateResolution());
-            if (width == Screen.width && height == Screen.height)
-                toggle.Set = true;
-        }
-        AddGap(systemWindow);
-        AddText("Both camera and overlay mode of canvas are supported.", systemWindow);
-        SliderUIChoice uiMode = AddSliderWithChoice("Canvas Mode", systemWindow, ChangeCanvasMode);
-        uiMode.AddChoice("Screen Space - Camera");
-        uiMode.AddChoice("Screen Space - Overlay");
+        WindowUI systemWindow = NewWindow("Resolution", WindowSetup.defaultSetup);
+        systemWindow.AddText("When ever resolution changes, need to clear cache of window location.");
+        List<(int, int)> activeResolutionList = ResolutionUtility.AvailableResolutions();
+        systemWindow.AddSingleSelection<(int, int)>("Resolution", UpdateResolution)
+            .SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(), activeResolutionList)
+            .SetActiveValue((Screen.width, Screen.height));
+        systemWindow.AddGap();
+        systemWindow.AddText("Both camera and overlay mode of canvas are supported.");
+        systemWindow.AddSlider<RenderMode>("CanvasMode", ChangeCanvasMode)
+            .AddChoiceByValue(RenderMode.ScreenSpaceOverlay)
+            .AddChoiceByValue(RenderMode.ScreenSpaceCamera)
+            .SetActiveValue(WindowManager.instance.overlayMode);
         systemWindow.Resize(50);
     }
-    void UpdateResolution()
+
+    void UpdateResolution((int, int) resolution)
     {
-        (int width, int height) = activeResolutionList[currentSelection[1]];
-        ResolutionUtility.SetResolution(width, height);
-        UIManager.Instance.ClearAllWindowLocation();
+        ResolutionUtility.SetResolution(resolution.Item1, resolution.Item2);
+        WindowManager.instance.ClearAllWindowLocation();
     }
-    void ChangeCanvasMode(int mode)
+
+    void ChangeCanvasMode(RenderMode mode)
     {
-        UIManager.Instance.SetOverlayMode(mode == 1);
+        WindowManager.instance.SetOverlayMode(mode);
     }
 }

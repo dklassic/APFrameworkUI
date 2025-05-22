@@ -1,27 +1,59 @@
-using System.Collections;
-using System.Collections.Generic;
+using ChosenConcept.APFramework.Interface.Framework;
+using UnityEngine;
 
-public class ExampleMenu : GeneralUISystemWithNavigation
+public class ExampleMenu : CompositeMenuMono
 {
-    IEnumerator Start()
+    protected override void InitializeMenu()
     {
-        while (!UIManager.Instance.DefaultUIStarted)
-            yield return null;
-        yield return CoroutineUtility.WaitRealtime(1f);
-        OpenMenu();
+        LayoutAlignment layout = InitNewLayout();
+        AddButton("All window elements available", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<ElementsShowcase>().OpenMenu(this, true);
+        });
+        AddButton("Update value via function", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<FunctionWindow>().OpenMenu(this, true);
+        });
+        AddButton("Multiple window example (Horizontal)", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<MultipleWindowHorizontal>().OpenMenu(this, true);
+        });
+        AddButton("Multiple window example (Vertical)", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<MultipleWindowVertical>().OpenMenu(this, true);
+        });
+        AddButton("中文顯示", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<ChineseDisplay>().OpenMenu(this, true);
+        });
+        AddButton("Setting", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<ResolutionSetting>().OpenMenu(this, true);
+        });
+        AddButton("Code Initialized SimpleMenus", layout, () =>
+        {
+            CloseMenu(false);
+            FindAnyObjectByType<SimpleMenuInstance>().OpenMenu();
+        });
+        AddButton("Context Menu Example", layout, () =>
+        {
+            CloseMenu(false);
+            FindAnyObjectByType<ContextMenuExample>().Open();
+        });
+        AddButton("Draggable Window Example", layout, () =>
+        {
+            CloseMenu(false);
+            FindAnyObjectByType<DraggableWindow>().OpenMenu(this);
+        });
+        AddButton("Quit", layout, Quit);
     }
 
-    protected override void InitializeUI()
-    {
-        WindowUI systemWindow = NewWindow("Example Menu", DefaultSetup);
-        AddButton("All window elements available", systemWindow, () => OpenSubMenu(0));
-        AddButton("Multiple window example", systemWindow, () => OpenSubMenu(1));
-        AddButton("中文顯示", systemWindow, () => OpenSubMenu(2));
-        AddButton("Setting", systemWindow, () => OpenSubMenu(3));
-        AddGap(systemWindow);
-        AddButton("Quit", systemWindow, Quit);
-        systemWindow.AutoResize();
-    }
     void Quit()
     {
 #if UNITY_EDITOR
