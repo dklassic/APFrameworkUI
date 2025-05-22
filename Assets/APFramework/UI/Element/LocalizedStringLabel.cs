@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Text;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
@@ -8,18 +9,20 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
     {
         string _tag;
         public string tag => _tag;
+
         public LocalizedStringLabel(string value)
         {
             _tag = value;
         }
+
         public LocalizedStringLabel(string value1, string value2)
         {
-            _tag = value1 + "." + value2;
+            _tag = ZString.Concat(value1, ".", value2);
         }
 
         public LocalizedStringLabel(string value1, string value2, string value3)
         {
-            _tag = value1 + "." + value2 + "." + value3;
+            _tag = ZString.Concat(value1, ".", value2, ".", value3);
         }
 
         string IStringLabel.GetValue()
@@ -28,6 +31,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 return string.Empty;
             return _tag;
         }
+
         public string GetLocalizationTag() => _tag;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class SingleSelectionUI<T> : WindowElement<SingleSelectionUI<T>>, ISelectable
+    public class SelectionUI<T> : WindowElement<SelectionUI<T>>, ISelectable
     {
         Action<T> _action;
         protected List<string> _choiceListContentCache = new();
@@ -51,7 +51,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         List<string> ISelectable.values => choiceListContent;
         int ISelectable.activeCount => count;
 
-        public SingleSelectionUI(string label, WindowUI parent) : base(label, parent)
+        public SelectionUI(string label, WindowUI parent) : base(label, parent)
         {
         }
 
@@ -60,7 +60,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             SetCount(count);
         }
 
-        public SingleSelectionUI<T> SetActiveValue(T value)
+        public SelectionUI<T> SetActiveValue(T value)
         {
             int index = _choiceValueList.IndexOf(value);
             if (index < 0)
@@ -75,13 +75,13 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetCount(int count)
+        public SelectionUI<T> SetCount(int count)
         {
             this.count = count;
             return this;
         }
 
-        public SingleSelectionUI<T> SetAction(Action<T> action)
+        public SelectionUI<T> SetAction(Action<T> action)
         {
             _action = action;
             return this;
@@ -100,7 +100,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceValueList.Clear();
         }
 
-        public SingleSelectionUI<T> SetChoice(List<IStringLabel> choice, List<T> value)
+        public SelectionUI<T> SetChoice(List<IStringLabel> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
@@ -114,7 +114,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetChoice(List<string> choice, List<T> value)
+        public SelectionUI<T> SetChoice(List<string> choice, List<T> value)
         {
             if (choice.Count != value.Count)
             {
@@ -131,7 +131,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> SetChoiceByValue(IEnumerable<T> value)
+        public SelectionUI<T> SetChoiceByValue(IEnumerable<T> value)
         {
             ClearChoice();
             foreach (T item in value)
@@ -142,7 +142,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> AddChoice(string choice, T value)
+        public SelectionUI<T> AddChoice(string choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(new StringLabel(choice));
@@ -150,7 +150,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return this;
         }
 
-        public SingleSelectionUI<T> AddChoice(IStringLabel choice, T value)
+        public SelectionUI<T> AddChoice(IStringLabel choice, T value)
         {
             _choiceListContentCache.Clear();
             _choiceList.Add(choice);

@@ -727,6 +727,12 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return text;
         }
 
+        public void AddGap()
+        {
+            AddText("Blank")
+                .SetLabel("　");
+        }
+
         public ButtonUI AddButton(string elementName, Action action = null)
         {
             ButtonUI button = new(elementName, this);
@@ -767,9 +773,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return selection;
         }
 
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
+        public SelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
         {
-            SingleSelectionUI<T> selection = new SingleSelectionUI<T>(elementName, this);
+            SelectionUI<T> selection = new SelectionUI<T>(elementName, this);
             selection.SetAction(action);
             AddElement(selection);
             return selection;
@@ -950,6 +956,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 if (element.rawContent is LocalizedStringLabel content)
                     tags.Add(content.tag);
             }
+
             return tags;
         }
     }

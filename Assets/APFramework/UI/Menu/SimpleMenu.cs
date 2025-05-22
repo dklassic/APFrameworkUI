@@ -190,13 +190,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddText(elementName);
         }
 
-        /// <summary>
-        /// A simple method to spawn text UI to pre-initialized Window
-        /// </summary>
         public void AddGap()
         {
-            TextUI text = AddText("Blank");
-            text.SetLabel("　");
+            AddText("Blank")
+                .SetLabel("　");
         }
 
         public void RemoveElement(WindowElement element)
@@ -572,9 +569,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddButton(elementName, action);
         }
 
-        public ButtonUI AddButton(string elementName, WindowUI window, Action action = null) =>
-            window.AddButton(elementName, action);
-        
         public ScrollableTextUI AddScrollableText(string elementName, Action action = null)
         {
             if (_windowInstance == null)
@@ -582,10 +576,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddScrollableText(elementName, action);
         }
 
-        public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
-            window.AddScrollableText(elementName, action);
-        
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName,
+        public SelectionUI<T> AddSingleSelection<T>(string elementName,
             Action<T> action = null)
         {
             if (_windowInstance == null)
@@ -593,7 +584,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddSingleSelection(elementName, action);
         }
 
-        public SingleSelectionUI<T>
+        public SelectionUI<T>
             AddSingleSelection<T>(string elementName, WindowUI window, Action<T> action = null) =>
             window.AddSingleSelection(elementName, action);
 
@@ -604,9 +595,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddTextInput(elementName, action);
         }
 
-        public TextInputUI AddTextInput(string elementName, WindowUI window, Action<string> action = null) =>
-            window.AddTextInput(elementName, action);
-
         public ToggleUI AddToggle(string elementName,
             Action<bool> action = null)
         {
@@ -615,9 +603,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return _windowInstance.AddToggle(elementName, action);
         }
 
-        public ToggleUI AddToggle(string elementName, WindowUI window, Action<bool> action = null) =>
-            window.AddToggle(elementName, action);
-
         public SliderUI<T> AddSlider<T>(string elementName,
             Action<T> action = null)
         {
@@ -625,9 +610,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 NewWindow(elementName);
             return _windowInstance.AddSlider(elementName, action);
         }
-
-        public SliderUI<T> AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSlider(elementName, action);
 
         bool BaseConfirmAction()
         {

@@ -37,7 +37,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             get
             {
                 if (_inInput)
-                    return labelPrefix + SliderText();
+                    return ZString.Concat(labelPrefix, SliderText());
                 return base.displayText;
             }
         }
@@ -231,8 +231,8 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public virtual string OptionFillString(string activeOption)
         {
             int totalLengthRequired = maxContentLength - TextUtility.WidthSensitiveLength(activeOption);
-            return TextUtility.Repeat(' ', totalLengthRequired - totalLengthRequired / 2) + activeOption +
-                   TextUtility.Repeat(' ', totalLengthRequired / 2);
+            return ZString.Concat(TextUtility.Repeat(' ', totalLengthRequired - totalLengthRequired / 2), activeOption,
+                TextUtility.Repeat(' ', totalLengthRequired / 2));
         }
 
         void ISlider.SetCachedArrowPosition((Vector2, Vector2) position) => _cachedArrowPosition = position;

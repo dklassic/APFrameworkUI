@@ -9,14 +9,14 @@ public class ResolutionSetting : CompositeMenuMono
     protected override void InitializeUI()
     {
         WindowUI systemWindow = NewWindow("Resolution", WindowSetup.defaultSetup);
-        AddText("When ever resolution changes, need to clear cache of window location.", systemWindow);
+        systemWindow.AddText("When ever resolution changes, need to clear cache of window location.");
         List<(int, int)> activeResolutionList = ResolutionUtility.AvailableResolutions();
-        AddSingleSelection<(int, int)>("Resolution", systemWindow, UpdateResolution)
+        systemWindow.AddSingleSelection<(int, int)>("Resolution", UpdateResolution)
             .SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(), activeResolutionList)
             .SetActiveValue((Screen.width, Screen.height));
-        AddGap(systemWindow);
-        AddText("Both camera and overlay mode of canvas are supported.", systemWindow);
-        AddSlider<RenderMode>("CanvasMode", systemWindow, ChangeCanvasMode)
+        systemWindow.AddGap();
+        systemWindow.AddText("Both camera and overlay mode of canvas are supported.");
+        systemWindow.AddSlider<RenderMode>("CanvasMode", ChangeCanvasMode)
             .AddChoiceByValue(RenderMode.ScreenSpaceOverlay)
             .AddChoiceByValue(RenderMode.ScreenSpaceCamera)
             .SetActiveValue(WindowManager.instance.overlayMode);

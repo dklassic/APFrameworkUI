@@ -5,45 +5,48 @@ public class ExampleMenu : CompositeMenuMono
 {
     protected override void InitializeUI()
     {
-        WindowUI systemWindow = NewWindow("Example Menu", WindowSetup.defaultSetup);
-        AddButton("All window elements available", systemWindow, () =>
+        LayoutAlignment layout = InitNewLayout();
+        AddButton("All window elements available", layout, () =>
         {
             CloseMenu(false);
             WindowManager.instance.GetMenu<ElementsShowcase>().OpenMenu(this, true);
         });
-        AddButton("Multiple window example (Horizontal)", systemWindow, () =>
+        AddButton("Multiple window example (Horizontal)", layout, () =>
         {
             CloseMenu(false);
             WindowManager.instance.GetMenu<MultipleWindowHorizontal>().OpenMenu(this, true);
         });
-        AddButton("Multiple window example (Vertical)", systemWindow, () =>
+        AddButton("Multiple window example (Vertical)", layout, () =>
         {
             CloseMenu(false);
             WindowManager.instance.GetMenu<MultipleWindowVertical>().OpenMenu(this, true);
         });
-        AddButton("中文顯示", systemWindow, () =>
+        AddButton("中文顯示", layout, () =>
         {
             CloseMenu(false);
             WindowManager.instance.GetMenu<ChineseDisplay>().OpenMenu(this, true);
         });
-        AddButton("Setting", systemWindow, () =>
+        AddButton("Setting", layout, () =>
         {
             CloseMenu(false);
             WindowManager.instance.GetMenu<ResolutionSetting>().OpenMenu(this, true);
         });
-        AddButton("Code Initialized SimpleMenus", systemWindow, () =>
+        AddButton("Code Initialized SimpleMenus", layout, () =>
         {
             CloseMenu(false);
             FindAnyObjectByType<SimpleMenuInstance>().OpenMenu();
         });
-        AddButton("Context Menu Example", systemWindow, () =>
+        AddButton("Context Menu Example", layout, () =>
         {
             CloseMenu(false);
             FindAnyObjectByType<ContextMenuExample>().Open();
         });
-        AddGap(systemWindow);
-        AddButton("Quit", systemWindow, Quit);
-        systemWindow.AutoResize();
+        AddButton("Draggable Window Example", layout, () =>
+        {
+            CloseMenu(false);
+            FindAnyObjectByType<DraggableWindow>().OpenMenu(this);
+        });
+        AddButton("Quit", layout, Quit);
     }
 
     void Quit()

@@ -26,7 +26,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             messageSetup.SetOutlineDisplayStyle(WindowOutlineDisplayStyle.Always);
             WindowUI messageWindow = NewWindow("Message", _layout, messageSetup);
             messageWindow.SetLabel(title);
-            AddText("Message", messageWindow).SetLabel(message);
+            messageWindow.AddText("Message").SetLabel(message);
             messageWindow.Resize(50);
             ButtonUI confirmButton = AddButton("Confirm", _layout, () =>
             {

@@ -177,6 +177,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// <summary>
         /// A simple method to spawn window
         /// </summary>
+        protected WindowUI NewWindow(string windowName)
+        {
+            LayoutAlignment layout = InitNewLayout();
+            WindowUI window =
+                WindowManager.instance.NewWindow(windowName, layout, _menuDefaultStyling.windowSetup, menuTag);
+            _windowInstances.Add(window);
+            return window;
+        }
+
+        /// <summary>
+        /// A simple method to spawn window
+        /// </summary>
         protected WindowUI NewWindow(string windowName, WindowSetup setup)
         {
             LayoutAlignment layout = InitNewLayout();
@@ -204,18 +216,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return window.AddText(elementName);
         }
 
-        /// <summary>
-        /// A simple method to spawn text UI to pre-initialized Window
-        /// </summary>
         protected void AddGap(WindowUI window)
         {
-            TextUI text = AddText("Blank", window);
-            text.SetLabel("　");
-        }
-
-        protected TextUI AddText(string elementName, WindowUI window)
-        {
-            return window.AddText(elementName);
+            window.AddGap();
         }
 
         protected TextUI AddText(string elementName, LayoutAlignment layout)
@@ -882,9 +885,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return window.AddButton(elementName, action);
         }
 
-        public ButtonUI AddButton(string elementName, WindowUI window, Action action = null) =>
-            window.AddButton(elementName, action);
-
         public QuickSelectionUI<T> AddQuickSelectionUI<T>(string elementName, Action<T> action = null)
         {
             return AddQuickSelectionUI(elementName, _menuDefaultStyling.windowSetup, action);
@@ -910,10 +910,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return window.AddQuickSelectionUI(elementName, action);
         }
 
-        public QuickSelectionUI<T> AddQuickSelectionUI<T>(string elementName, WindowUI window,
-            Action<T> action = null) =>
-            window.AddQuickSelectionUI(elementName, action);
-
         public ScrollableTextUI AddScrollableText(string elementName, Action action = null)
         {
             return AddScrollableText(elementName, _menuDefaultStyling.windowSetup, action);
@@ -937,37 +933,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return window.AddScrollableText(elementName, action);
         }
 
-        public ScrollableTextUI AddScrollableText(string elementName, WindowUI window, Action action = null) =>
-            window.AddScrollableText(elementName, action);
-
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
+        public SelectionUI<T> AddSingleSelection<T>(string elementName, Action<T> action = null)
         {
             return AddSingleSelection(elementName, _menuDefaultStyling.windowSetup, action);
         }
 
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, WindowSetup setup,
+        public SelectionUI<T> AddSingleSelection<T>(string elementName, WindowSetup setup,
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, setup);
             return window.AddSingleSelection(elementName, action);
         }
 
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, LayoutAlignment layout,
+        public SelectionUI<T> AddSingleSelection<T>(string elementName, LayoutAlignment layout,
             Action<T> action = null)
         {
             return AddSingleSelection(elementName, layout, _menuDefaultStyling.windowSetup, action);
         }
 
-        public SingleSelectionUI<T> AddSingleSelection<T>(string elementName, LayoutAlignment layout, WindowSetup setup,
+        public SelectionUI<T> AddSingleSelection<T>(string elementName, LayoutAlignment layout, WindowSetup setup,
             Action<T> action = null)
         {
             WindowUI window = NewWindow(elementName, layout, setup);
             return window.AddSingleSelection(elementName, action);
         }
-
-        public SingleSelectionUI<T>
-            AddSingleSelection<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSingleSelection(elementName, action);
 
         protected TextInputUI AddTextInput(string elementName, Action<string> action = null)
         {
@@ -991,9 +980,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             WindowUI window = NewWindow(elementName, layout, setup);
             return window.AddTextInput(elementName, action);
         }
-
-        public TextInputUI AddTextInput(string elementName, WindowUI window, Action<string> action = null) =>
-            window.AddTextInput(elementName, action);
 
         public ToggleUI AddToggle(string elementName, Action<bool> action = null)
         {
@@ -1019,9 +1005,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             return window.AddToggle(elementName, action);
         }
 
-        public ToggleUI AddToggle(string elementName, WindowUI window, Action<bool> action = null) =>
-            window.AddToggle(elementName, action);
-
         public SliderUI<T> AddSlider<T>(string elementName, Action<T> action = null)
         {
             return AddSlider(elementName, _menuDefaultStyling.windowSetup, action);
@@ -1044,9 +1027,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             WindowUI window = NewWindow(elementName, layout, setup);
             return window.AddSlider(elementName, action);
         }
-
-        public SliderUI<T> AddSlider<T>(string elementName, WindowUI window, Action<T> action = null) =>
-            window.AddSlider(elementName, action);
 
         protected virtual bool BaseConfirmAction()
         {
@@ -1109,7 +1089,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         void IMenuInputTarget.OnMouseConfirmPressed()
         {
             MouseConfirmSelection();
-            if (_menuSetup.allowDraggingWithMouse && _movingWindow && _currentSelection[0] >= 0 &&
+            if (_menuSetup.allowDraggingWithMouse && !_movingWindow && _currentSelection[0] >= 0 &&
                 _currentSelection[1] == -1 &&
                 currentWindow.ContainsPosition(WindowManager.instance.inputProvider.mousePosition))
             {

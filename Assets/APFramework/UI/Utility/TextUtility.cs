@@ -8,7 +8,7 @@ using Cysharp.Text;
 
 public static class TextUtility
 {
-    public const char column = ':';
+    public const string column = ": ";
     public const char FULL_SIZE_SPACE = '　';
     public static string LineBreaker = FULL_SIZE_SPACE + "\n";
     public static string TitleOpener = LineBreaker + FULL_SIZE_SPACE;

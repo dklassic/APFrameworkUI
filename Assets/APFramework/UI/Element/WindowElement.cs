@@ -109,7 +109,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                     return string.Empty;
                 if (_labelCache == null)
                     _labelCache = _label.GetValue();
-                return _labelCache + TextUtility.column;
+                return ZString.Concat(_labelCache, TextUtility.column);
             }
         }
 
@@ -169,6 +169,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public int firstCharacterIndex => _characterIndex[0];
         public int lastCharacterIndex => _characterIndex[1];
         public (Vector2, Vector2) cachedPosition => (_cachedPositionStart, _cachedPositionEnd);
+        public Vector2 cachedCenter => (_cachedPositionStart + _cachedPositionEnd) / 2f;
         public WindowUI parentWindow => _parentWindow;
 
         public WindowElement(string name, WindowUI parent)

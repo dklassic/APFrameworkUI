@@ -61,7 +61,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                                 StyleUtility.disabled));
                     }
 
-                    return labelPrefix + _inputContent;
+                    return ZString.Concat(labelPrefix, _inputContent);
                 }
 
                 return base.displayText;
