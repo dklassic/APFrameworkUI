@@ -40,7 +40,7 @@ In the meantime, you can also retrieve the menu via the `WindowManager.intance.G
 
 This is most useful to create quick utility menus everywhere.
 
-Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/next/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
+Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/main/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
 
 # Requirement
 
