@@ -17,7 +17,7 @@ public class SimpleMenuInstance : MonoBehaviour
         foreach (LayoutSetup layout in _layoutSetups)
         {
             MenuSetup setup = MenuSetup.defaultSetup;
-            setup.allowCloseMenuWithCancelAction = true;
+            setup.SetAllowCloseMenuWithCancelAction(true);
             SimpleMenu menu = new(i.ToString(), setup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
             menu.AddText("Close all menu to quit");

@@ -8,12 +8,27 @@ namespace ChosenConcept.APFramework.UI.Menu
     [System.Serializable]
     public struct MenuStyling
     {
-        [SerializeField] public WindowSetup windowSetup;
-        [SerializeField] public LayoutSetup layoutSetup;
+        [SerializeField] WindowSetup _windowSetup;
+        [SerializeField] LayoutSetup _layoutSetup;
+        public WindowSetup windowSetup => _windowSetup;
+        public LayoutSetup layoutSetup => _layoutSetup;
+
         public static MenuStyling defaultStyling => new()
         {
-            windowSetup = WindowSetup.defaultSetup,
-            layoutSetup = LayoutSetup.defaultLayout,
+            _windowSetup = WindowSetup.defaultSetup,
+            _layoutSetup = LayoutSetup.defaultLayout,
         };
+
+        public MenuStyling SetWindowSetup(WindowSetup windowSetup)
+        {
+            _windowSetup = windowSetup;
+            return this;
+        }
+
+        public MenuStyling SetLayoutSetup(LayoutSetup layoutSetup)
+        {
+            _layoutSetup = layoutSetup;
+            return this;
+        }
     }
 }

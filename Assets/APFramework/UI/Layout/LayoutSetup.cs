@@ -32,5 +32,46 @@ namespace ChosenConcept.APFramework.UI.Layout
             _offset = Vector4.zero,
             _spacing = -10
         };
+        public LayoutSetup SetLayer(MenuLayer layer)
+        {
+            _menuLayer = layer;
+            return this;
+        }
+
+        public LayoutSetup SetWindowAlignment(WindowAlignment alignment)
+        {
+            _windowAlignment = alignment;
+            return this;
+        }
+
+        public LayoutSetup SetWindowDirection(WindowDirection direction)
+        {
+            _windowDirection = direction;
+            return this;
+        }
+
+        public LayoutSetup SetOffsetType(OffsetType offsetType)
+        {
+            _offsetType = offsetType;
+            return this;
+        }
+
+        public LayoutSetup SetOffset(Vector4 offset)
+        {
+            _offset = offset;
+            return this;
+        }
+
+        public LayoutSetup SetSpacing(int spacing)
+        {
+            _spacing = spacing;
+            return this;
+        }
+
+        public LayoutSetup SetOffsetSource(OffsetSource offsetSource)
+        {
+            _offsetSource = offsetSource;
+            return this;
+        }
     }
 }

@@ -89,8 +89,8 @@ namespace ChosenConcept.APFramework.UI.Menu
             _menuName = name;
             _menuSetup = menuSetup;
             _menuStyling = MenuStyling.defaultStyling;
-            _menuStyling.windowSetup = windowSetup;
-            _menuStyling.layoutSetup = layoutSetup;
+            _menuStyling.SetWindowSetup(windowSetup);
+            _menuStyling.SetLayoutSetup(layoutSetup);
         }
 
         public SimpleMenu(string name, MenuSetup menuSetup, WindowSetup windowSetup, LayoutAlignment layoutAlignment)
@@ -98,7 +98,7 @@ namespace ChosenConcept.APFramework.UI.Menu
             _menuName = name;
             _menuSetup = menuSetup;
             _menuStyling = MenuStyling.defaultStyling;
-            _menuStyling.windowSetup = windowSetup;
+            _menuStyling.SetWindowSetup(windowSetup);
             _layoutAlignmentInstance = layoutAlignment;
         }
 
