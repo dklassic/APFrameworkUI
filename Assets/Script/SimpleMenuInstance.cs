@@ -20,7 +20,7 @@ public class SimpleMenuInstance : MonoBehaviour
             setup.allowCloseMenuWithCancelAction = true;
             SimpleMenu menu = new(i.ToString(), setup, WindowSetup.defaultSetup, layout);
             _simpleMenus.Add(menu);
-            menu.AddText("Close all menu to quit").SetLabel("Test");
+            menu.AddText("Close all menu to quit");
             menu.AddSingleSelection<int>("Test", obj => { })
                 .SetChoiceByValue(new List<int> { 1, 2, 3 });
             menu.AddSlider<int>("slider")
