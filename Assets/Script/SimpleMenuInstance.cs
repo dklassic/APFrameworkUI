@@ -36,7 +36,16 @@ public class SimpleMenuInstance : MonoBehaviour
     {
         if (!_active)
             return;
-        if (!_simpleMenus.Any(x => x.isDisplayActive))
+        bool any = false;
+        foreach (SimpleMenu x in _simpleMenus)
+        {
+            if (x.isDisplayActive)
+            {
+                any = true;
+                break;
+            }
+        }
+        if (!any)
         {
             _active = false;
             WindowManager.instance.GetMenu<ExampleMenu>().OpenMenu(true);

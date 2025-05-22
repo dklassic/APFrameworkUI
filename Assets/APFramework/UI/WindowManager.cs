@@ -176,10 +176,18 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_lastMousePosition == _inputProvider.mousePosition)
                 return;
             _lastMousePosition = _inputProvider.mousePosition;
+            bool any = false;
+            foreach (SimpleMenu x in _simpleMenus)
+            {
+                if (x.focused && x.windowInstance.canNavigate && x.IsMouseInWindow(_lastMousePosition) ||
+                    x.movingWindow || x.inElementInputMode)
+                {
+                    any = true;
+                    break;
+                }
+            }
             if (_simpleMenus.Count == 0 ||
-                _simpleMenus.Any(x =>
-                    x.focused && x.windowInstance.canNavigate && x.IsMouseInWindow(_lastMousePosition) ||
-                    x.movingWindow || x.inElementInputMode))
+                any)
                 return;
             foreach (SimpleMenu menu in _simpleMenus)
             {

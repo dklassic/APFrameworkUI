@@ -63,8 +63,26 @@ public static class TextUtility
     [BurstCompile]
     public static bool IsSingleControlCode(string text)
     {
-        return text.StartsWith("<") && text.EndsWith(">") && text.Count(c => c == '<') == 1 &&
-               text.Count(c => c == '>') == 1;
+        int upper = 0;
+        int lower = 0;
+        foreach (var c in text)
+        {
+            if (c == '<')
+            {
+                upper++;
+                if (upper > 1)
+                    break;
+            }
+            else if (c == '>')
+            {
+                lower++;
+                if (lower > 1)
+                    break;
+            }
+        }
+
+        return text.StartsWith("<") && text.EndsWith(">") && upper == 1 &&
+               lower == 1;
     }
 
     [BurstCompile]
@@ -172,21 +190,91 @@ public static class TextUtility
         }
     }
 
+    public static int RichTagsStrippedLength(Utf16ValueStringBuilder builder)
+    {
+        ReadOnlySpan<char> builderString = builder.AsSpan();
+        try
+        {
+            int count = 0;
+            bool tag = false;
+            for (int index = 0; index < builder.Length; index++)
+            {
+                char c = builderString[index];
+                if (tag)
+                {
+                    if (c == '>')
+                    {
+                        tag = false;
+                    }
+                }
+                else
+                {
+                    if (c == '<')
+                    {
+                        tag = true;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+        catch (Exception e)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[Common]**ERR @ StripRichTagsFromStr: " + e);
+#endif
+            return 0;
+        }
+    }
+
     [BurstCompile]
+    // This count with control code stripped
     public static int WidthSensitiveLength(string text)
     {
         if (IsSingleControlCode(text))
             return 0;
         if (string.IsNullOrEmpty(text))
             return 0;
-        int count = 0;
-        string parsedText = StripRichTagsFromStr(text);
-        for (int i = 0; i < parsedText.Length; i++)
+        try
         {
-            count += CalcCharLength(parsedText[i]);
-        }
+            int count = 0;
+            bool tag = false;
+            for (int index = 0; index < text.Length; index++)
+            {
+                char c = text[index];
+                if (tag)
+                {
+                    if (c == '>')
+                    {
+                        tag = false;
+                    }
+                }
+                else
+                {
+                    if (c == '<')
+                    {
+                        tag = true;
+                    }
+                    else
+                    {
+                        count += CalcCharLength(text[index]);
+                    }
+                }
+            }
 
-        return count;
+            return count;
+        }
+        catch (Exception e)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[Common]**ERR @ StripRichTagsFromStr: " + e);
+#endif
+            return 0;
+        }
     }
 
     [BurstCompile]
@@ -199,7 +287,7 @@ public static class TextUtility
         Regex regex = new(pattern);
 
         // Find matches in the input string
-        var matches = regex.Matches(input);
+        MatchCollection matches = regex.Matches(input);
         foreach (Match match in matches)
         {
             if (match.Groups[1].Success) // Match for control codes
@@ -217,9 +305,6 @@ public static class TextUtility
 
     /// <summary>
     /// This method will return properly sliced string considering length limit
-    /// When the text is all ASCII, it will split the text by space and try to fit the text into the limit.
-    /// When the text is not all ASCII, it will split the text by space and try to fit the text into the limit.
-    /// Extra care is needed as linebreak symbols will also count as "not ascii"
     /// <param name="text">The text to be sliced</param>
     /// <param name="limit">The limit of the text</param>
     /// </summary>
@@ -274,7 +359,6 @@ public static class TextUtility
                     accumulatedLength = 0;
                 }
 
-                // if (internalStringBuilder.Length > 0)
                 if (internalStringBuilder.Length > 0 && lastCharacter != string.Empty &&
                     !IsSingleControlCode(candidate) &&
                     !IsSingleControlCode(lastWord) &&
@@ -298,5 +382,78 @@ public static class TextUtility
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// This method will return properly sliced string considering length limit
+    /// <param name="text">The text to be sliced</param>
+    /// <param name="limit">The limit of the text</param>
+    /// </summary>
+    [BurstCompile]
+    public static int StringCutterLineCount(string text, int limit)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 1;
+        List<string> initialSplit = SplitStringByControlCode(text);
+        List<string> finalSplit = new();
+        foreach (string s in initialSplit)
+        {
+            string[] words = s.Split(' ');
+            finalSplit.AddRange(words);
+        }
+
+        List<string> candidates = new();
+        foreach (string word in finalSplit)
+        {
+            if (word == string.Empty)
+                continue;
+            if (AllHalfWidth(word))
+            {
+                candidates.Add(word);
+            }
+            else
+            {
+                foreach (char character in word)
+                {
+                    candidates.Add(character.ToString());
+                }
+            }
+        }
+
+        string lastCharacter = string.Empty;
+        string lastWord = string.Empty;
+        int accumulatedLength = 0;
+        int lineCount = 0;
+
+        foreach (string candidate in candidates)
+        {
+            if (accumulatedLength + WidthSensitiveLength(candidate) + 1 > limit)
+            {
+                lastCharacter = string.Empty;
+                lastWord = string.Empty;
+                accumulatedLength = 0;
+                lineCount++;
+            }
+
+            if (accumulatedLength > 0 && lastCharacter != string.Empty &&
+                !IsSingleControlCode(candidate) &&
+                !IsSingleControlCode(lastWord) &&
+                (AllHalfWidth(lastCharacter) || AllHalfWidth(candidate)))
+            {
+                accumulatedLength++;
+            }
+
+            lastCharacter = candidate != string.Empty ? candidate.Substring(candidate.Length - 1) : string.Empty;
+            lastWord = candidate;
+            accumulatedLength += WidthSensitiveLength(candidate);
+        }
+
+        if (accumulatedLength > 0)
+        {
+            lineCount++;
+        }
+
+
+        return lineCount;
     }
 }

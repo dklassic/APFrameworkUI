@@ -8,25 +8,25 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
     {
         bool _needConfirm;
         bool _awaitConfirm;
-        string _confirmTextContent;
+        string _confirmTextCache;
         IStringLabel _confirmText;
         Action _action;
         Action _onAwaitAction;
 
         public override string formattedContent => _awaitConfirm
             ? ZString.Concat("> ",
-                _confirmText.GetValue() == string.Empty ? base.formattedContent : confirmTextContent)
+                _confirmText.GetValue() == string.Empty ? base.formattedContent : ConfirmTextCache)
             : base.formattedContent;
 
         public bool awaitConfirm => _awaitConfirm;
 
-        public string confirmTextContent
+        public string ConfirmTextCache
         {
             get
             {
-                if (_confirmTextContent == null)
-                    _confirmTextContent = _confirmText.GetValue();
-                return _confirmTextContent;
+                if (_confirmTextCache == null)
+                    _confirmTextCache = _confirmText.GetValue();
+                return _confirmTextCache;
             }
         }
 
@@ -60,6 +60,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             if (_awaitConfirm == confirm)
                 return;
             _awaitConfirm = confirm;
+            parentWindow.UpdateElementPosition(this);
             parentWindow.InvokeUpdate();
         }
 
@@ -89,7 +90,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public override void SetFocus(bool v)
         {
-            if (!v)
+            if (!v && _needConfirm)
                 CancelAwait();
             base.SetFocus(v);
         }
@@ -103,17 +104,16 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 _awaitConfirm = true;
                 _onAwaitAction?.Invoke();
                 _parentWindow.InvokeUpdate();
-                // only if the content becomes longer we resize the position
+                // only if the content becomes longer we will resize the position
                 // so that when the text shrinks, the confirm click can still happen in place
                 if (TextUtility.WidthSensitiveLength(base.formattedContent) <
-                    TextUtility.WidthSensitiveLength(confirmTextContent))
+                    TextUtility.WidthSensitiveLength(ConfirmTextCache))
                     _parentWindow.UpdateElementPosition(this);
                 return;
             }
 
             CancelAwait();
             _action.Invoke();
-            _parentWindow.UpdateElementPosition(this);
         }
 
         public new ButtonUI SetAvailable(bool availability)

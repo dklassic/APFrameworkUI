@@ -50,6 +50,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _content = content;
             return (T)this;
         }
+
         public T SetContent(Func<string> content)
         {
             return SetContent(new FunctionStringLabel(content));
@@ -136,20 +137,26 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
             get
             {
-                string[] lines = GetSplitDisplayText(0);
-                int maxLength = -1;
-                foreach (string line in lines)
+                string display = displayText;
+                if (display.Contains('\n'))
                 {
-                    int length = TextUtility.WidthSensitiveLength(line);
-                    if (length > maxLength)
+                    string[] lines = GetSplitText(display, 0);
+                    int maxLength = -1;
+                    foreach (string line in lines)
                     {
-                        maxLength = length;
+                        int length = TextUtility.WidthSensitiveLength(line);
+                        if (length > maxLength)
+                        {
+                            maxLength = length;
+                        }
                     }
+
+                    if (maxLength == -1)
+                        return 0;
+                    return maxLength + 1;
                 }
 
-                if (maxLength == -1)
-                    return 0;
-                return maxLength + 1;
+                return TextUtility.WidthSensitiveLength(display);
             }
         }
 
@@ -180,7 +187,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
             _name = name;
             _parentWindow = parent;
-            _tag = ZString.Format("{0}.{1}", parentWindow.windowTag, name);
+            _tag = ZString.Concat(parentWindow.windowTag, ".", name);
             SetLabel(new StringLabel(_name));
         }
 
@@ -188,6 +195,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         {
             ClearCache();
             _label = label;
+            _parentWindow?.InvokeUpdate();
+        }
+        public void SetLabelCache(string label)
+        {
+            _labelCache = label;
             _parentWindow?.InvokeUpdate();
         }
 
@@ -198,6 +210,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _parentWindow?.InvokeUpdate();
         }
 
+        public void SetContentCache(string content)
+        {
+            _contentCache = content;
+            _parentWindow?.InvokeUpdate();
+        }
 
         public void SetFirstCharacterIndex(int characterIndex)
         {
@@ -249,10 +266,12 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _labelCache = null;
             _contentCache = null;
         }
+
         public virtual void ClearLabelCache()
         {
             _labelCache = null;
         }
+
         public virtual void ClearContentCache()
         {
             _contentCache = null;
@@ -263,9 +282,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             SetLabel(new LocalizedStringLabel(_tag));
         }
 
-        public virtual string[] GetSplitDisplayText(int contentWidth)
+        public virtual string[] GetSplitText(string text, int contentWidth)
         {
-            string[] lines = displayText.Split('\n');
+            string[] lines = text.Split('\n');
             // when given width is 0, return directly
             if (contentWidth == 0)
                 return lines;
@@ -286,6 +305,12 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             return modifiedLines.ToArray();
         }
 
+        public virtual string[] GetSplitDisplayText(int contentWidth)
+        {
+            return GetSplitText(displayText, contentWidth);
+        }
+
+
         public int GetSplitDisplayTextTotalHeight(int contentWidth)
         {
             string[] lines = displayText.Split('\n');
@@ -298,7 +323,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 string line = lines[i];
                 if (TextUtility.WidthSensitiveLength(line) > contentWidth)
                 {
-                    counter += TextUtility.StringCutter(line, contentWidth).Count;
+                    counter += TextUtility.StringCutterLineCount(line, contentWidth);
                 }
                 else
                 {

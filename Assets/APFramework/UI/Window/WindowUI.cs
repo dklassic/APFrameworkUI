@@ -58,7 +58,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool isActive => _active;
         public (Vector2, Vector2) cachedPosition => (_cachedPositionStart, _cachedPositionEnd);
         public Vector2 cachedCenter => (_cachedPositionStart + _cachedPositionEnd) / 2f;
-        public bool canNavigate => _active && _interactables.Any();
+        public bool canNavigate => _active && _interactables.Count > 0;
         string windowName => _windowName;
         public string windowTag => _windowTag;
         public bool isSingleButtonWindow => _elements.Count == 1 && _elements[0] is not TextUI;
@@ -161,19 +161,22 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _elements.ForEach(x => x.ClearCache());
         }
 
-        void ClearFunctionStringLabel()
+        void CheckFunctionStringLabelDirty()
         {
             foreach (WindowElement element in _elements)
             {
-                if (element.rawContent is FunctionStringLabel)
+                if (element.rawContent is FunctionStringLabel content)
                 {
-                    element.ClearContentCache();
-                    InvokeUpdate();
+                    string result = ((IStringLabel)content).GetValue();
+                    if (result != element.content)
+                        element.SetContentCache(result);
                 }
-                if (element.rawLabel is FunctionStringLabel)
+
+                if (element.rawLabel is FunctionStringLabel label)
                 {
-                    element.ClearLabelCache();
-                    InvokeUpdate();
+                    string result = ((IStringLabel)label).GetValue();
+                    if (result != element.label)
+                        element.SetLabelCache(result);
                 }
             }
         }
@@ -190,8 +193,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             if (_active && _nextFunctionStringUpdate < Time.unscaledTime)
             {
                 _nextFunctionStringUpdate = Time.unscaledTime + _setup.functionStringUpdateInterval;
-                ClearFunctionStringLabel();
+                CheckFunctionStringLabelDirty();
             }
+
             if (!_active && !_awaitDeactivate)
                 return;
             _windowMask.ContextUpdate();
@@ -348,9 +352,57 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             int count = _elements.Count;
+            int characterCount = 0;
             using (Utf16ValueStringBuilder windowStringBuilder = ZString.CreateStringBuilder())
             {
-                windowStringBuilder.Append(TitleBuild());
+                // Build window title
+                if (!hasTitle)
+                {
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                }
+                else if (hasTitleBar)
+                {
+                    windowStringBuilder.Append(TextUtility.TitleOpener);
+                    windowStringBuilder.Append((_elements.Count == 1) switch
+                    {
+                        true => _isFocused switch
+                        {
+                            false => _available
+                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
+                                : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                    StyleUtility.disabled),
+                            true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected),
+                        },
+                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
+                    });
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                }
+                else if (hasEmbeddedTitle)
+                {
+                    windowStringBuilder.Append(" ");
+                    windowStringBuilder.Append((_elements.Count == 1) switch
+                    {
+                        true => _isFocused switch
+                        {
+                            false => _available
+                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
+                                : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                    StyleUtility.disabled),
+                            true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
+                                _available ? StyleUtility.selected : StyleUtility.disableSelected),
+                        },
+                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
+                    });
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                }
+                else
+                {
+                    windowStringBuilder.Append(TextUtility.LineBreaker);
+                }
+
                 if (count == 0)
                 {
                     TextUI text = AddText("DummyBlankText");
@@ -373,11 +425,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                                 windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                                 if (j == 0 && k == 0)
                                     _elements[i].SetFirstCharacterIndex(
-                                        TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
+                                        TextUtility.RichTagsStrippedLength(windowStringBuilder));
                                 windowStringBuilder.Append(splitString[j]);
                                 if (j == splitString.Count - 1 && k == texts.Length - 1)
                                     _elements[i].SetLastCharacterIndex(
-                                        TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
+                                        TextUtility.RichTagsStrippedLength(windowStringBuilder) - 1);
                                 windowStringBuilder.Append(TextUtility.LINE_BREAK);
                             }
                         }
@@ -386,11 +438,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                             if (k == 0)
                                 _elements[i].SetFirstCharacterIndex(
-                                    TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
+                                    TextUtility.RichTagsStrippedLength(windowStringBuilder));
                             windowStringBuilder.Append(text);
                             if (k == texts.Length - 1)
                                 _elements[i].SetLastCharacterIndex(
-                                    TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
+                                    TextUtility.RichTagsStrippedLength(windowStringBuilder) - 1);
                             windowStringBuilder.Append(TextUtility.LINE_BREAK);
                         }
                     }
@@ -464,46 +516,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _interactables.Clear();
         }
 
-        string TitleBuild()
-        {
-            if (!hasTitle)
-                return ZString.Concat(TextUtility.LineBreaker, TextUtility.LineBreaker);
-            if (hasTitleBar)
-                return ZString.Concat(TextUtility.TitleOpener, (_elements.Count == 1) switch
-                {
-                    true => _isFocused switch
-                    {
-                        false => _available
-                            ? StyleUtility.StringBold(windowLabelContent.ToUpper())
-                            : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                StyleUtility.disabled),
-                        true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                            _available ? StyleUtility.selected : StyleUtility.disableSelected),
-                    },
-                    false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
-                }, TextUtility.LineBreaker, TextUtility.LineBreaker);
-            if (hasEmbeddedTitle)
-                return ZString.Concat(" ",
-                    (_elements.Count == 1) switch
-                    {
-                        true => _isFocused switch
-                        {
-                            false => _available
-                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
-                                : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                    StyleUtility.disabled),
-                            true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
-                                _available ? StyleUtility.selected : StyleUtility.disableSelected),
-                        },
-                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
-                    }, TextUtility.LineBreaker);
-            return TextUtility.LineBreaker;
-        }
-
         public void Initialize(string elementName, string parent, WindowSetup windowSetup)
         {
             _windowName = elementName;
-            _windowTag = ZString.Format("{0}.{1}", parent, elementName);
+            _windowTag = ZString.Concat(parent, ".", elementName);
             _windowLabel = new StringLabel(_windowName);
             _setup = windowSetup;
             _drawText.fontSize = _setup.fontSize;
@@ -545,6 +561,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _extraWidth = extraWidth;
             int targetHeight = GetAutoResizeHeight();
             int targetWidth = GetAutoResizeWidth(extraWidth);
+            if (_setup.width == targetWidth && _setup.height == targetHeight)
+                return;
             _endFillCount = GetEndFillCount();
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
@@ -592,8 +610,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int minimumHeight = 0;
             for (int i = 0; i < count; i++)
             {
-                int splits = _elements[i].displayText.Split("\n").Length;
-                minimumHeight += splits;
+                string text = _elements[i].displayText;
+                if (!text.Contains('\n'))
+                    minimumHeight += 1;
+                else
+                    minimumHeight += text.Split('\n').Length;
             }
 
             if (hasTitleBar)
@@ -620,7 +641,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int count = _elements.Count;
             for (int i = 0; i < count; i++)
             {
-                minimumHeight += _elements[i].GetSplitDisplayText(width).Length;
+                minimumHeight += _elements[i].GetSplitDisplayTextTotalHeight(width);
             }
 
             _endFillCount = 2;
@@ -630,6 +651,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _endFillCount = 1;
             int targetWidth = width + 4;
             int targetHeight = minimumHeight + 2;
+            if (_setup.width == targetWidth && _setup.height == targetHeight)
+                return;
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
@@ -658,6 +681,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _endFillCount = 1;
             int targetWidth = width + 4;
             int targetHeight = height + 2;
+            if (_setup.width == targetWidth && _setup.height == targetHeight)
+                return;
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
@@ -793,7 +818,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void SetActive(bool v, bool showMaskAnimation = true, bool syncGameObject = true)
         {
-            if (v && _setup.width == 0 || _setup.height == 0)
+            if (v && (_setup.width == 0 || _setup.height == 0))
             {
                 AutoResize();
             }
@@ -824,6 +849,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 _awaitDeactivate = true;
                 ResetAllWindowElement();
                 _background.SetActive(false);
+                // Cancel out the next update
+                _isDirty = false;
                 _drawText.SetText(string.Empty);
             }
         }

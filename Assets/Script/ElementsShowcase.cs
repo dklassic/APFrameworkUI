@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ChosenConcept.APFramework.Interface.Framework;
-using ChosenConcept.APFramework.Interface.Framework.Element;
 using UnityEngine;
 
 public class ElementsShowcase : CompositeMenuMono
@@ -26,8 +25,6 @@ public class ElementsShowcase : CompositeMenuMono
     protected override void InitializeUI()
     {
         WindowUI systemWindow = NewWindow("Elements Showcase", WindowSetup.defaultSetup);
-        systemWindow.AddText("Time.time")
-            .SetContent(() => Time.time.ToString("F2"));
         systemWindow.AddToggle("This is a Toggle");
         systemWindow.AddButton("This is a Button");
         systemWindow

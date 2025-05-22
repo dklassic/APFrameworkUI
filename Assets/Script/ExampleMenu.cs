@@ -11,6 +11,11 @@ public class ExampleMenu : CompositeMenuMono
             CloseMenu(false);
             WindowManager.instance.GetMenu<ElementsShowcase>().OpenMenu(this, true);
         });
+        AddButton("Update value via function", layout, () =>
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<FunctionWindow>().OpenMenu(this, true);
+        });
         AddButton("Multiple window example (Horizontal)", layout, () =>
         {
             CloseMenu(false);

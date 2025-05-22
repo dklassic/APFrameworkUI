@@ -55,11 +55,11 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         }
 
         //▲▼＜＞
-        public override string[] GetSplitDisplayText(int contentWidth)
+        public override string[] GetSplitText(string text, int contentWidth)
         {
             // Leave headroom for the scroll indicator
             _cachedContentWidth = contentWidth;
-            string[] lines = displayText.Split('\n');
+            string[] lines = text.Split('\n');
             List<string> modifiedLines = new();
             int currentLineCounter = 0;
             int totalHeight = GetSplitDisplayTextTotalHeight(_cachedContentWidth);

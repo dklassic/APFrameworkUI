@@ -36,7 +36,20 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] protected bool _movingWindow;
 
         Action _menuCloseAction;
-        bool windowPositionCached => _windowInstances.All(x => x.positionCached);
+
+        bool windowPositionCached
+        {
+            get
+            {
+                foreach (WindowUI window in _windowInstances)
+                {
+                    if (!window.positionCached)
+                        return false;
+                }
+
+                return true;
+            }
+        }
 
         public WindowElement currentSelectable
         {

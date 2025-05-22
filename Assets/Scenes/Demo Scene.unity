@@ -162,6 +162,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -175,6 +176,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -261,6 +263,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -274,6 +277,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -360,6 +364,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -373,6 +378,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -461,6 +467,7 @@ MonoBehaviour:
       holdNavigationDelay: 0
       holdNavigationInterval: 0
       holdNavigationSpeedUpInterval: 0
+      functionStringLabelUpdateInterval: 0
     _menuStyling:
       windowSetup:
         _width: 0
@@ -474,6 +481,7 @@ MonoBehaviour:
         _transitionOut: 0
         _fontSize: 0
         _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+        _functionStringUpdateInterval: 0
       layoutSetup:
         _menuLayer: 0
         _windowAlignment: 0
@@ -594,6 +602,107 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1171311609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1171311611}
+  - component: {fileID: 1171311610}
+  m_Layer: 0
+  m_Name: Draggable Window (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1171311610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171311609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f60de24d614e8fa2ddc768bbb04561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _menuSetup:
+    allowCycleWithinWindow: 0
+    allowCycleBetweenWindows: 0
+    allowCloseMenuWithCancelAction: 1
+    allowCloseOnClick: 0
+    resetOnOpen: 2
+    allowDraggingWithMouse: 0
+    allowNavigationOnOpen: 1
+    menuOpenInputDelay: 0.2
+    singlePressOnly: 0
+    holdNavigationDelay: 0.5
+    holdNavigationInterval: 0.2
+    holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
+  _menuDefaultStyling:
+    windowSetup:
+      _width: 0
+      _height: 0
+      _titleStyle: 0
+      _outlineStyle: 4
+      _outlineDisplayStyle: 1
+      _thickenStyle: 0
+      _labelStyle: 0
+      _transitionIn: 8
+      _transitionOut: 8
+      _fontSize: 30
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
+    layoutSetup:
+      _menuLayer: 0
+      _windowAlignment: 4
+      _windowDirection: 1
+      _offsetSource: 0
+      _offsetType: 1
+      _offset: {x: 0, y: 0, z: 0, w: 0}
+      _spacing: -10
+  _windowInstances: []
+  _layoutAlignmentInstances: []
+  _initialized: 0
+  _displayActive: 0
+  _navigationActive: 0
+  _valueDirty: 0
+  _linkFrame: -1
+  _nextNavigationUpdate: Infinity
+  _currentSelection: {x: 0, y: 0}
+  _holdStart: Infinity
+  _holdNavigationNext: Infinity
+  _move: {x: 0, y: 0}
+  _mouseScroll: {x: 0, y: 0}
+  _lastMousePosition: {x: -Infinity, y: -Infinity}
+  _mouseSelectionTargetExists: 0
+  _hoverOnDecrease: 0
+  _hoverOnIncrease: 0
+  _inElementInputMode: 0
+  _selectionUpdated: 0
+  _lastMenu: {fileID: 0}
+  _movingWindow: 0
+--- !u!4 &1171311611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171311609}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 963.8062, y: 612.007, z: -266.22122}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -752,6 +861,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -765,6 +875,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -866,6 +977,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -879,6 +991,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -950,6 +1063,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -963,6 +1077,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -1137,6 +1252,7 @@ MonoBehaviour:
     holdNavigationDelay: 0.5
     holdNavigationInterval: 0.2
     holdNavigationSpeedUpInterval: 2
+    functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
     windowSetup:
       _width: 0
@@ -1150,6 +1266,7 @@ MonoBehaviour:
       _transitionOut: 8
       _fontSize: 30
       _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
     layoutSetup:
       _menuLayer: 0
       _windowAlignment: 4
@@ -1195,3 +1312,4 @@ SceneRoots:
   - {fileID: 1247323582}
   - {fileID: 632477214}
   - {fileID: 1856768664}
+  - {fileID: 1171311611}

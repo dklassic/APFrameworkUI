@@ -10,7 +10,7 @@ public class StyleUtility
 
     public static string StringColored(string text, Color color)
     {
-        return ZString.Format("<color=#{0}>{1}</color>", ColorUtility.ToHtmlStringRGBA(color), text);
+        return ZString.Concat("<color=#", ColorUtility.ToHtmlStringRGBA(color), ">", text, "</color>");
     }
 
     public static string StringColoredRange(string text, Color color, int min, int max)
@@ -30,17 +30,17 @@ public class StyleUtility
 
     public static string Sized(string tag, int size)
     {
-        return ZString.Format("<size={0}>{1}</size>", size, tag);
+        return ZString.Concat("<size=", size, ">", tag, "</size>");
     }
 
     public static string StringTransparent(string text, int alpha)
     {
-        return ZString.Format("<alpha=#{0}>", alpha.ToString("X2"));
+        return ZString.Concat("<alpha=#", alpha.ToString("X2"), ">");
     }
 
     public static string StringBold(string text)
     {
-        return ZString.Format("<b>{0}</b>", text);
+        return ZString.Concat("<b>", text, "</b>");
     }
 
     public static Color DarkenColor(Color color, float percentage)
