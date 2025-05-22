@@ -109,6 +109,7 @@ namespace ChosenConcept.APFramework.UI.Menu
         {
             Initialize();
         }
+
         public virtual void Initialize()
         {
             if (_initialized)
@@ -312,16 +313,16 @@ namespace ChosenConcept.APFramework.UI.Menu
         protected virtual void SyncAutoResizeAllWindows(int extraWidth = 0, bool sizeFixed = false)
         {
             int maxWidth = 0;
-            for (int i = 0; i < _windowInstances.Count; i++)
+            foreach (WindowUI window in _windowInstances)
             {
-                int autoResizeWidth = _windowInstances[i].GetAutoResizeWidth(0);
+                int autoResizeWidth = window.GetAutoResizeWidth(0);
                 if (autoResizeWidth > maxWidth)
                     maxWidth = autoResizeWidth;
             }
 
-            for (int i = 0; i < _windowInstances.Count; i++)
+            foreach (WindowUI window in _windowInstances)
             {
-                _windowInstances[i].Resize(maxWidth + extraWidth, sizeFixed);
+                window.Resize(maxWidth + extraWidth, sizeFixed);
             }
         }
 

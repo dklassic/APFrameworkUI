@@ -57,7 +57,7 @@ When using `SingleMenu`, it's best for on the fly instantiating of panels and st
 
 ## Window Element
 
-`WindowElement` is the basic element within a window, it is structured to allow a builder style of settting up it's content. For example:
+`WindowElement` is the basic element within a window, it is structured to allow a builder style of setup. For example:
 
 ```C#
 window.AddSlider<Quality>("This is a Slider that takes a Enum as value")
@@ -70,7 +70,7 @@ The color choice of `WindowElement` is defined in `StyleUtility`, while currentl
 
 ## Miscellaneous
 
-The overarching layering of windows is currently defined using the `WindowLayer` enum, please modify it as well as the canvas order determining function in `WindowManager` to suite your own need.
+The overarching layering of windows is currently defined using the `MenuLayer` enum, please modify it as well as the canvas order determining function in `WindowManager` to suite your own need.
 
 ## Performance
 
