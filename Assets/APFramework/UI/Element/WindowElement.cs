@@ -32,7 +32,10 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             base.SetLabel(label);
             return (T)this;
         }
-
+        public T SetLabel(Func<string> content)
+        {
+            return SetLabel(new FunctionStringLabel(content));
+        }
         public new T ShowLabel(bool show)
         {
             base.ShowLabel(show);
