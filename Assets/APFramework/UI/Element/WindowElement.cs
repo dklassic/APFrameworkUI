@@ -53,8 +53,7 @@ namespace ChosenConcept.APFramework.UI.Element
 
         public T SetContent(IStringLabel content)
         {
-            ClearCache();
-            _content = content;
+            base.SetContent(content);
             return (T)this;
         }
 

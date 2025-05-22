@@ -414,6 +414,7 @@ namespace ChosenConcept.APFramework.UI.Menu
                             _currentSelection[1] = i;
                             _mouseSelectionTargetExists = true;
                             currentSelectable?.SetFocus(true);
+                            break;
                         }
                     }
                 }
