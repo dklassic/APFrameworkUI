@@ -47,7 +47,7 @@ Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/nex
 - Unity 2021 LTS
 - Text Mesh Pro
 - Unity Input System
-- CySharp ZString
+- [CySharp ZString](https://github.com/Cysharp/ZString)
 
 # Features
 
