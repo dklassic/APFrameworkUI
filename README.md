@@ -40,7 +40,7 @@ In the meantime, you can also retrieve the menu via the `WindowManager.intance.G
 
 This is most useful to create quick utility menus everywhere.
 
-Study the scripts in script folder to see how it instantiates each menu should give you a quick start.
+Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/next/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
 
 # Requirement
 
@@ -101,7 +101,7 @@ Access through `WindowManager.instance.GetContextMenu`, which can show a context
 
 ## Document
 
-For more detailed explaination of how the framework is structured, please refer to the Document
+For more detailed explaination of how the framework is structured, please refer to the [Document](https://github.com/dklassic/APFrameworkUI/blob/next/Document.md).
 
 ## Futurework
 
