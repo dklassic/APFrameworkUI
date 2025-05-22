@@ -197,7 +197,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -395,7 +395,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -494,7 +494,7 @@ MonoBehaviour:
     _move: {x: 0, y: 0}
     _mouseScroll: {x: 0, y: 0}
     _lastMousePosition: {x: 0, y: 0}
-    _mouseActive: 0
+    _mouseSelectionTargetExists: 0
     _hoverOnDecrease: 0
     _hoverOnIncrease: 0
     _inElementInputMode: 0
@@ -787,7 +787,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -901,7 +901,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -985,7 +985,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -1172,7 +1172,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0

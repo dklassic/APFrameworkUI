@@ -8,6 +8,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
     {
         LayoutAlignment _layout;
         IMenuInputTarget _target;
+        int _currentChoice;
         public bool active => _displayActive;
 
         protected override void InitializeUI()
@@ -36,6 +37,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _target = target;
             OpenMenu(null);
             currentSelectable?.SetFocus(false);
+            _currentChoice = currentChoice;
             _currentSelection[0] = currentChoice;
             currentSelectable?.SetFocus(true);
         }
@@ -46,6 +48,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             CloseMenu(false);
             _target.SetSelection(_currentSelection[0]);
             _target = null;
+        }
+
+        protected override bool CancelOut()
+        {
+            _currentSelection[0] = _currentChoice;
+            CompleteInput();
+            return true;
         }
     }
 }

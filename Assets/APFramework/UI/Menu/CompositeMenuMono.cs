@@ -27,7 +27,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] protected Vector2 _move = Vector2.zero;
         [SerializeField] protected Vector2 _mouseScroll = Vector2.zero;
         [SerializeField] protected Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField] protected bool _mouseActive;
+        [SerializeField] protected bool _mouseSelectionTargetExists;
         [SerializeField] protected bool _hoverOnDecrease;
         [SerializeField] protected bool _hoverOnIncrease;
         [SerializeField] protected bool _inElementInputMode;
@@ -343,64 +343,67 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             _lastMousePosition = WindowManager.instance.inputProvider.mousePosition;
-            _mouseActive = false;
+            _mouseSelectionTargetExists = false;
             if (!_inElementInputMode)
             {
                 Vector2Int previousSelection = _currentSelection;
-                int windowCount = _windowInstances.Count;
                 currentSelectable?.SetFocus(false);
+                currentWindow?.SetFocus(false);
+                // First get windows in range
+                // Get the window with closest interactable
+                float minDistanceSqr = Mathf.Infinity;
+                int windowCount = _windowInstances.Count;
+                int windowIndex = -1;
                 for (int i = 0; i < windowCount; i++)
                 {
                     if (!_windowInstances[i].ContainsPosition(_lastMousePosition))
-                    {
-                        _windowInstances[i].SetFocus(false);
                         continue;
-                    }
-
-                    _currentSelection[0] = i;
-                    _windowInstances[i].SetFocus(true);
                     int interactableCount = _windowInstances[i].interactables.Count;
-                    if (interactableCount > 1)
+                    for (int j = 0; j < interactableCount; j++)
                     {
-                        for (int j = 0; j < interactableCount; j++)
+                        float distanceSqr = (_windowInstances[i].interactables[j].cachedCenter - _lastMousePosition)
+                            .sqrMagnitude;
+                        if (distanceSqr < minDistanceSqr)
                         {
-                            if (!_windowInstances[i].InteractableContainsPosition(j, _lastMousePosition))
-                                continue;
-                            _currentSelection[1] = j;
-                            _mouseActive = true;
-                            break;
+                            minDistanceSqr = distanceSqr;
+                            windowIndex = i;
                         }
-                    }
-
-                    if (interactableCount == 1)
-                    {
-                        _currentSelection[1] = 0;
-                        _mouseActive = true;
-                    }
-
-                    if (interactableCount == 0)
-                    {
-                        _currentSelection[1] = -1;
                     }
                 }
 
-                if (_mouseActive)
+                // Perform detailed check again specifically in the window
+                if (windowIndex != -1)
                 {
-                    currentSelectable?.SetFocus(true);
+                    _currentSelection[0] = windowIndex;
+                    currentWindow?.SetFocus(true);
+                    if (_windowInstances[windowIndex].isSingleButtonWindow)
+                    {
+                        _currentSelection[1] = 0;
+                        _mouseSelectionTargetExists = true;
+                        currentSelectable?.SetFocus(true);
+                    }
+                    else
+                    {
+                        int interactableCount = _windowInstances[windowIndex].interactables.Count;
+                        for (int i = 0; i < interactableCount; i++)
+                        {
+                            if (!_windowInstances[windowIndex].InteractableContainsPosition(i, _lastMousePosition))
+                                continue;
+                            _currentSelection[1] = i;
+                            _mouseSelectionTargetExists = true;
+                            currentSelectable?.SetFocus(true);
+                        }
+                    }
                 }
                 else
                 {
+                    _currentSelection[0] = -1;
                     _currentSelection[1] = -1;
                 }
 
                 if (previousSelection != _currentSelection)
                 {
                     _selectionUpdated = true;
-                }
-
-                if (_windowInstances.All(x => !x.isFocused))
-                {
-                    ClearSelection();
                 }
             }
             // if input mode is active
@@ -417,7 +420,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 }
 
                 if (_hoverOnDecrease || _hoverOnIncrease)
-                    _mouseActive = true;
+                    _mouseSelectionTargetExists = true;
             }
         }
 
@@ -1131,7 +1134,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         protected virtual bool MouseConfirmSelection()
         {
-            if (!_displayActive || !_mouseActive)
+            if (!_displayActive || !_mouseSelectionTargetExists)
             {
                 return false;
             }
@@ -1335,7 +1338,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     break;
             }
 
-            _mouseActive = false;
+            _mouseSelectionTargetExists = false;
             currentSelectable?.SetFocus(true);
             foreach (WindowUI window in _windowInstances)
             {

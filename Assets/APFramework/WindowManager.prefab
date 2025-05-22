@@ -960,7 +960,7 @@ MonoBehaviour:
   _menuSetup:
     allowCycleWithinWindow: 0
     allowCycleBetweenWindows: 0
-    allowCloseMenuWithCancelAction: 0
+    allowCloseMenuWithCancelAction: 1
     allowCloseOnClick: 0
     resetOnOpen: 0
     allowDraggingWithMouse: 0
@@ -1005,7 +1005,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0
@@ -1412,7 +1412,7 @@ MonoBehaviour:
     _move: {x: 0, y: 0}
     _mouseScroll: {x: 0, y: 0}
     _lastMousePosition: {x: 0, y: 0}
-    _mouseActive: 0
+    _mouseSelectionTargetExists: 0
     _hoverOnDecrease: 0
     _hoverOnIncrease: 0
     _inElementInputMode: 0
@@ -1513,7 +1513,7 @@ MonoBehaviour:
   _move: {x: 0, y: 0}
   _mouseScroll: {x: 0, y: 0}
   _lastMousePosition: {x: -Infinity, y: -Infinity}
-  _mouseActive: 0
+  _mouseSelectionTargetExists: 0
   _hoverOnDecrease: 0
   _hoverOnIncrease: 0
   _inElementInputMode: 0

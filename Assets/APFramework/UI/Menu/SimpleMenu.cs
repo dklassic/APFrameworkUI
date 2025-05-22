@@ -26,7 +26,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] Vector2 _move = Vector2.zero;
         [SerializeField] Vector2 _mouseScroll = Vector2.zero;
         [SerializeField] Vector2 _lastMousePosition = Vector2.negativeInfinity;
-        [SerializeField] bool _mouseActive;
+        [SerializeField] bool _mouseSelectionTargetExists;
         [SerializeField] bool _hoverOnDecrease;
         [SerializeField] bool _hoverOnIncrease;
         [SerializeField] bool _inElementInputMode;
@@ -57,7 +57,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public bool isNavigationActive => _navigationActive;
         public WindowUI windowInstance => _windowInstance;
         public bool focused => _focused;
-        public bool mouseActive => _mouseActive;
+        public bool MouseSelectionTargetExists => _mouseSelectionTargetExists;
         public bool inElementInputMode => _inElementInputMode;
 
         public SimpleMenu(string name)
@@ -256,9 +256,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
 
             _lastMousePosition = WindowManager.instance.inputProvider.mousePosition;
+            _mouseSelectionTargetExists = false;
             if (!_inElementInputMode)
             {
-                _mouseActive = false;
                 // if the window is a single button window, perform window check only
                 if (_windowInstance.isSingleButtonWindow)
                 {
@@ -271,7 +271,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     _currentSelection = 0;
                     SetFocused(true);
                     _selectionUpdated = true;
-                    _mouseActive = true;
+                    _mouseSelectionTargetExists = true;
                 }
                 else
                 {
@@ -294,11 +294,11 @@ namespace ChosenConcept.APFramework.Interface.Framework
                             currentSelectable?.SetFocus(true);
                         }
 
-                        _mouseActive = true;
+                        _mouseSelectionTargetExists = true;
                         break;
                     }
 
-                    if (!_mouseActive)
+                    if (!_mouseSelectionTargetExists)
                         ClearSelection();
                 }
             }
@@ -717,7 +717,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         bool MouseConfirmSelection()
         {
-            if (!_displayActive || !_mouseActive)
+            if (!_displayActive || !_mouseSelectionTargetExists)
             {
                 return false;
             }
@@ -901,7 +901,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     break;
             }
 
-            _mouseActive = false;
+            _mouseSelectionTargetExists = false;
             currentSelectable?.SetFocus(true);
             _windowInstance.SetActive(true);
 
