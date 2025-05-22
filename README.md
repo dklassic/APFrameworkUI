@@ -129,6 +129,7 @@ https://github.com/user-attachments/assets/bbd4c281-c09b-4928-9a5f-74bcceb06bac
 - Add the ability to reorder windows within the same layout with preview, and the ability to return window to the prespecified layout
 - Fix layout element size calculation as it is still rather loose to my liking
 - Add the ability to make SimpleMenu and CompositeMenu cross navigation possible.
+- Add screen percentage style window size definition.
 
 # Fonts Included
 

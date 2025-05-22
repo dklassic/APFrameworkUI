@@ -41,9 +41,9 @@ With `CompositeMenuMono`, the menu will be initialized automatically during `Sta
 
 ### SimpleMenu
 
-`SimpleMenu` is a cut down version of the `CompositeMenuMono` logic, with each instance only managing a single window and the navigation within. The cross menu navigation will be handled by `WindowManager` directly. Due to this characteristic, it is generally not idea to mix and match both menu at the same time which will definitely have some problems, but it is okay if one of them is not navigatable.
+`SimpleMenu` is a cut down version of the `CompositeMenuMono` logic, with each instance only managing a single window and the navigation within. The cross menu navigation will be handled by `WindowManager` directly. Due to this characteristic, it is generally not idea to mix and match both menu at the same time which will definitely have some problems, but it is okay if one of them is not navigatable. Most importantly, remember to register `SingleMenu` to `WindowManager` so that it can be updated properly.
 
-When using `SingleMenu`, it's best for on the fly instantiating of panels and stuffs.
+When using `SingleMenu`, it's best for on the fly instantiating of panels and stuffs. 
 
 ## WindowUI
 
