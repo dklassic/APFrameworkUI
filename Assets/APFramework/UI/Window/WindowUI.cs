@@ -34,7 +34,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] int _endFillCount = 5;
         [SerializeField] bool _maskReady;
         [SerializeField] bool _outlineReady;
-        [SerializeField] bool _noCut;
         [SerializeField] int _extraWidth;
         [SerializeField] bool _isDirty = true;
         [SerializeField] List<WindowElement> _elements = new();
@@ -48,6 +47,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _sizeFixed;
         [SerializeField] bool _awaitDeactivate;
         [SerializeField] bool _preciseSizeSync;
+        [SerializeField] float _nextFunctionStringUpdate = Mathf.NegativeInfinity;
         IStringLabel _windowLabel;
         IStringLabel _windowSubscript = new StringLabel("");
         List<WindowElement> _interactables = new();
@@ -93,7 +93,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         }
 
         public WindowSetup setup => _setup;
-        int contentWidth => _setup.width - 4;
+        int contentWidth => _setup.width - 2;
         public List<WindowElement> elements => _elements;
         public LayoutElement layout => _layout;
         public LayoutAlignment layoutAlignment => _layoutAlignment;
@@ -154,12 +154,30 @@ namespace ChosenConcept.APFramework.Interface.Framework
             SetFocus(false);
         }
 
-        private void ClearCachedValue()
+        void ClearCachedValue()
         {
             _windowLabelContent = null;
             _windowSubscriptContent = null;
-            _elements.ForEach(x => x.ClearCachedValue());
+            _elements.ForEach(x => x.ClearCache());
         }
+
+        void ClearFunctionStringLabel()
+        {
+            foreach (WindowElement element in _elements)
+            {
+                if (element.rawContent is FunctionStringLabel)
+                {
+                    element.ClearContentCache();
+                    InvokeUpdate();
+                }
+                if (element.rawLabel is FunctionStringLabel)
+                {
+                    element.ClearLabelCache();
+                    InvokeUpdate();
+                }
+            }
+        }
+
 
         public void SetLocalizedByTag()
         {
@@ -167,8 +185,13 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _elements.ForEach(x => x.SetLocalizedByTag());
         }
 
-        public void ContextUpdate()
+        public void UpdateWindow()
         {
+            if (_active && _nextFunctionStringUpdate < Time.unscaledTime)
+            {
+                _nextFunctionStringUpdate = Time.unscaledTime + _setup.functionStringUpdateInterval;
+                ClearFunctionStringLabel();
+            }
             if (!_active && !_awaitDeactivate)
                 return;
             _windowMask.ContextUpdate();
@@ -337,42 +360,25 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
                 for (int i = 0; i < count; i++)
                 {
-                    string[] texts = _elements[i] is ScrollableTextUI
-                        ? _elements[i].GetSplitDisplayText(contentWidth)
-                        : _elements[i].GetSplitDisplayText(_noCut ? 0 : contentWidth);
+                    string[] texts = _elements[i].GetSplitDisplayText(contentWidth);
                     for (int k = 0; k < texts.Length; k++)
                     {
                         string text = texts[k];
                         if (TextUtility.WidthSensitiveLength(text) > contentWidth)
                         {
-                            if (_noCut)
+                            List<string> splitString =
+                                TextUtility.StringCutter(text, contentWidth);
+                            for (int j = 0; j < splitString.Count; j++)
                             {
                                 windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
-                                if (k == 0)
+                                if (j == 0 && k == 0)
                                     _elements[i].SetFirstCharacterIndex(
                                         TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
-                                windowStringBuilder.Append(text);
-                                if (k == texts.Length - 1)
+                                windowStringBuilder.Append(splitString[j]);
+                                if (j == splitString.Count - 1 && k == texts.Length - 1)
                                     _elements[i].SetLastCharacterIndex(
                                         TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
                                 windowStringBuilder.Append(TextUtility.LINE_BREAK);
-                            }
-                            else
-                            {
-                                List<string> splitString =
-                                    TextUtility.StringCutter(text, contentWidth);
-                                for (int j = 0; j < splitString.Count; j++)
-                                {
-                                    windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
-                                    if (j == 0 && k == 0)
-                                        _elements[i].SetFirstCharacterIndex(
-                                            TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()));
-                                    windowStringBuilder.Append(splitString[j]);
-                                    if (j == splitString.Count - 1 && k == texts.Length - 1)
-                                        _elements[i].SetLastCharacterIndex(
-                                            TextUtility.RichTagsStrippedLength(windowStringBuilder.ToString()) - 1);
-                                    windowStringBuilder.Append(TextUtility.LINE_BREAK);
-                                }
                             }
                         }
                         else
@@ -554,8 +560,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
-
-            _noCut = true;
         }
 
         public int GetAutoResizeWidth(int extraWidth)
@@ -640,8 +644,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
-
-            _noCut = false;
         }
 
         /// <summary>
@@ -670,8 +672,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
-
-            _noCut = false;
         }
 
         void SetupOutline(int width, int height, WindowSetup windowSetup, int titleOverride, int subLength)
@@ -871,7 +871,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void RefreshSize()
         {
-            if (!_noCut)
+            if (_sizeFixed)
                 return;
             AutoResize(_extraWidth);
         }

@@ -134,7 +134,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             foreach (WindowUI window in _windows)
             {
-                window.ContextUpdate();
+                window.UpdateWindow();
             }
 
             if (providerActive)

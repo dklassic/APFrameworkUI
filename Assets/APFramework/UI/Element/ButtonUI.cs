@@ -77,7 +77,7 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public ButtonUI SetConfirmText(Func<string> confirmTextFunc)
         {
-            return SetConfirmText(new FuncStringLabel(confirmTextFunc));
+            return SetConfirmText(new FunctionStringLabel(confirmTextFunc));
         }
 
         public void CancelAwait()

@@ -46,9 +46,13 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public T SetContent(IStringLabel content)
         {
-            ClearCachedValue();
+            ClearCache();
             _content = content;
             return (T)this;
+        }
+        public T SetContent(Func<string> content)
+        {
+            return SetContent(new FunctionStringLabel(content));
         }
     }
 
@@ -182,14 +186,14 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
 
         public void SetLabel(IStringLabel label)
         {
-            ClearCachedValue();
+            ClearCache();
             _label = label;
             _parentWindow?.InvokeUpdate();
         }
 
         public void SetContent(IStringLabel content)
         {
-            ClearCachedValue();
+            ClearCache();
             _content = content;
             _parentWindow?.InvokeUpdate();
         }
@@ -240,9 +244,17 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
         public void TriggerGlitch() => _parentWindow?.TriggerGlitch();
         public void AutoResize() => _parentWindow?.AutoResize();
 
-        public virtual void ClearCachedValue()
+        public virtual void ClearCache()
         {
             _labelCache = null;
+            _contentCache = null;
+        }
+        public virtual void ClearLabelCache()
+        {
+            _labelCache = null;
+        }
+        public virtual void ClearContentCache()
+        {
             _contentCache = null;
         }
 

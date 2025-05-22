@@ -222,9 +222,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
                 StyleUtility.selected);
         }
 
-        public override void ClearCachedValue()
+        public override void ClearCache()
         {
-            base.ClearCachedValue();
+            base.ClearCache();
             _choiceListContentCache.Clear();
         }
 

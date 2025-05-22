@@ -17,6 +17,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         public float holdNavigationDelay;
         public float holdNavigationInterval;
         public float holdNavigationSpeedUpInterval;
+        public float functionStringLabelUpdateInterval;
 
 
         public static MenuSetup defaultSetup => new()
@@ -33,6 +34,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             holdNavigationDelay = 0.5f,
             holdNavigationInterval = 0.2f,
             holdNavigationSpeedUpInterval = 2f,
+            functionStringLabelUpdateInterval = .1f,
         };
     }
 }

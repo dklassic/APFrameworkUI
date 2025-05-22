@@ -17,6 +17,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] WindowTransition _transitionOut;
         [SerializeField] float _fontSize;
         [SerializeField] Color _backgroundColor;
+        [SerializeField] float _functionStringUpdateInterval;
+        public float functionStringUpdateInterval => _functionStringUpdateInterval; 
         public int width => _width;
         public int height => _height;
         public WindowTitleStyle titleStyle => _titleStyle;
@@ -42,6 +44,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _transitionOut = WindowTransition.Glitch,
             _fontSize = 30,
             _backgroundColor = Color.clear,
+            _functionStringUpdateInterval = 0,
         };
         
         public WindowSetup(WindowSetup setup)
@@ -57,6 +60,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _transitionOut = setup._transitionOut;
             _fontSize = setup._fontSize;
             _backgroundColor = setup._backgroundColor;
+            _functionStringUpdateInterval = setup.functionStringUpdateInterval;
         }
 
         public void SetSize(int w, int h = 0)

@@ -193,9 +193,9 @@ namespace ChosenConcept.APFramework.Interface.Framework.Element
             _choiceValueList.RemoveAt(index);
         }
 
-        public override void ClearCachedValue()
+        public override void ClearCache()
         {
-            base.ClearCachedValue();
+            base.ClearCache();
             _choiceListContentCache.Clear();
         }
 

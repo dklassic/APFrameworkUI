@@ -2,10 +2,10 @@ using System;
 
 namespace ChosenConcept.APFramework.Interface.Framework.Element
 {
-    public class FuncStringLabel : IStringLabel
+    public class FunctionStringLabel : IStringLabel
     {
         Func<string> _func;
-        public FuncStringLabel(Func<string> func)
+        public FunctionStringLabel(Func<string> func)
         {
             _func = func;
         }
