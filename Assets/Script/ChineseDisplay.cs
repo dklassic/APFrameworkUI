@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ChineseDisplay : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         WindowUI systemWindow = NewWindow("中文顯示", WindowSetup.defaultSetup);
         systemWindow.AddText(

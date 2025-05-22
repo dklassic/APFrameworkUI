@@ -103,16 +103,20 @@ namespace ChosenConcept.APFramework.Interface.Framework
                 ? _windowInstances[select.x].interactables[select.y]
                 : null;
 
+        void Start()
+        {
+            Initialize();
+        }
         public virtual void Initialize()
         {
             if (_initialized)
                 return;
-            InitializeUI();
+            InitializeMenu();
             WindowManager.instance.RegisterMenu(this);
             _initialized = true;
         }
 
-        protected virtual void InitializeUI() => _ = 0;
+        protected virtual void InitializeMenu() => _ = 0;
 
         public virtual void UpdateMenu()
         {
@@ -295,15 +299,15 @@ namespace ChosenConcept.APFramework.Interface.Framework
             }
         }
 
-        protected void AutoResizeAllWindows(int extraWidth = 0)
+        protected void AutoResizeAllWindows(int extraWidth = 0, bool sizeFixed = false)
         {
             foreach (WindowUI window in _windowInstances)
             {
-                window.AutoResize(extraWidth);
+                window.AutoResize(extraWidth, sizeFixed);
             }
         }
 
-        protected virtual void SyncAutoResizeAllWindows(int extraWidth = 0)
+        protected virtual void SyncAutoResizeAllWindows(int extraWidth = 0, bool sizeFixed = false)
         {
             int maxWidth = 0;
             List<int> autoResizeWidths = new List<int>();
@@ -317,7 +321,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
             for (int i = 0; i < _windowInstances.Count; i++)
             {
-                _windowInstances[i].AutoResize(maxWidth - autoResizeWidths[i] + extraWidth);
+                _windowInstances[i].AutoResize(maxWidth - autoResizeWidths[i] + extraWidth, sizeFixed);
             }
         }
 

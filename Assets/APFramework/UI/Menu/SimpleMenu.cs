@@ -229,9 +229,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             _windowInstance.SetLocalizedByTag();
         }
 
-        public void AutoResizeWindow(int extraWidth = 0)
+        public void AutoResizeWindow(int extraWidth = 0, bool sizeFixed = false)
         {
-            _windowInstance.AutoResize(extraWidth);
+            _windowInstance.AutoResize(extraWidth, sizeFixed);
         }
 
         public void Refresh()

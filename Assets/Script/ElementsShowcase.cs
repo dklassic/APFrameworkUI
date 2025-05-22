@@ -22,7 +22,7 @@ public class ElementsShowcase : CompositeMenuMono
     }
 
 
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         WindowUI systemWindow = NewWindow("Elements Showcase", WindowSetup.defaultSetup);
         systemWindow.AddToggle("This is a Toggle");

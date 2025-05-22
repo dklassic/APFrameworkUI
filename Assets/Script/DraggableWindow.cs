@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DraggableWindow : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         WindowUI window = NewWindow("Window");
         window.AddText("This Window can be dragged!");

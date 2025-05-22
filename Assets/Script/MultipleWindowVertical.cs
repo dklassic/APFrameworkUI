@@ -2,7 +2,7 @@ using ChosenConcept.APFramework.Interface.Framework;
 
 public class MultipleWindowVertical : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         LayoutAlignment layout = InitNewLayout();
 

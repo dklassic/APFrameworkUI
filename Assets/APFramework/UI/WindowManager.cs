@@ -186,6 +186,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
                     break;
                 }
             }
+
             if (_simpleMenus.Count == 0 ||
                 any)
                 return;

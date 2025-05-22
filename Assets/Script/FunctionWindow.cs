@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class FunctionWindow : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         WindowUI systemWindow = NewWindow("Function Window", WindowSetup.defaultSetup);
         systemWindow.AddText("Time.time")

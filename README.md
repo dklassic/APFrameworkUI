@@ -59,13 +59,11 @@ Out of box the UI system directly access the following input through Unity Input
 - Mouse scroll
 - Keyboard/Controller input
 
-But if you're aiming to use it more than just a utility menu, best implement the input provider yourself.
+But if you're aiming to use it more than just a utility menu, best implement the input provider yourself for granular control.
 
 ## Window Elements
 
 Every window element inherits from the `WindowElement` class, which features a `IStringLabel` label for display, as the element will cache the string value using `IStringLabel.GetValue()`, you can implement the interface in other ways such as returning a function value, or in my own use case, returning a localized value for localization. Each elements will also have a tag that directly represents the hierarchy path of the element, which should be useful as some localization string id.
-
-A `WindowElement` will always have a label, optionally a content
 
 Currently window elements implemented are all based on my own needs, which are:
 
@@ -87,6 +85,8 @@ Currently window elements implemented are all based on my own needs, which are:
 
 ## Pre-made Menu Utility
 
+The utilities below are all made by inheriting `CompositeMenuMono`.
+
 ### Confirmation Provider
 
 Access through `WindowManager.instance.GetConfirm`, which will show a menu with confirm button and optionally a cancel button, with callbacks available.
@@ -99,16 +99,20 @@ Access through `WindowManager.instance.GetContextMenu`, which can show a context
 - The context menu will be closed when mouse clicked out of window.
 - By default the context menu will close on execution of any button, this behavior can be changed.
 
+## Document
+
+For more detailed explaination of how the framework is structured, please refer to the Document
+
 ## Futurework
 
-- Add icon to pin window
-- Add icon to close window
-- Add ability to resize window with mouse
-- Add ordering to menus
+- Add option to show an icon to pin window when it is movable
+- Add option to show an icon to close window directly, without the need to made an button for that
+- Add option to allow the ability to resize window with mouse, maybe?
+- Add ordering to menus for priority in detecting input, for now just don't stack them together
 - Setup line break better when dealing with lengthy labeled elements
-- Enhance Compsite menu multi window focus order
-- Add the ability to reorder windows within the same layout
+- Add the ability to reorder windows within the same layout with preview, and the ability to return window to the prespecified layout
 - Fix layout element size calculation as it is still rather loose to my liking
+- Add the ability to make SimpleMenu and CompositeMenu cross navigation possible.
 
 # Fonts Included
 

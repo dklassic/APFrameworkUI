@@ -44,7 +44,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         [SerializeField] bool _isFocused;
         [SerializeField] bool _available = true;
         [SerializeField] bool _inInput;
-        [SerializeField] bool _sizeFixed;
+        [SerializeField] int _designatedWidth;
+        [SerializeField] int _designatedHeight;
         [SerializeField] bool _awaitDeactivate;
         [SerializeField] bool _preciseSizeSync;
         [SerializeField] float _nextFunctionStringUpdate = Mathf.NegativeInfinity;
@@ -342,13 +343,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         void UpdateContent()
         {
-            if (!_sizeFixed)
+            if (_designatedWidth == 0 || _designatedHeight == 0)
             {
-                int x = _setup.width;
-                int y = _setup.height;
                 AutoResize(_extraWidth);
-                if (x != 0 && y != 0 && (x != _setup.width || y != _setup.height))
-                    _positionCached = false;
             }
 
             int count = _elements.Count;
@@ -555,14 +552,19 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// To automatically fit UI according to content size
         /// </summary>
         /// <param name="extraWidth">Extra amount of width to preserve.</param>
-        public void AutoResize(int extraWidth = 0)
+        public void AutoResize(int extraWidth = 0, bool sizeFixed = false)
         {
-            _sizeFixed = false;
             _extraWidth = extraWidth;
             int targetHeight = GetAutoResizeHeight();
             int targetWidth = GetAutoResizeWidth(extraWidth);
             if (_setup.width == targetWidth && _setup.height == targetHeight)
                 return;
+            if (sizeFixed)
+            {
+                _designatedHeight = targetHeight;
+                _designatedWidth = targetWidth;
+            }
+
             _endFillCount = GetEndFillCount();
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
@@ -578,6 +580,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
+
+            _positionCached = false;
         }
 
         public int GetAutoResizeWidth(int extraWidth)
@@ -633,9 +637,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// <summary>
         /// To resize UI with specified width. Height will be automatically adjusted.
         /// </summary>
-        public void Resize(int width)
+        public void Resize(int width, bool sizeFixed = false)
         {
-            _sizeFixed = true;
             _extraWidth = 0;
             int minimumHeight = 0;
             int count = _elements.Count;
@@ -653,6 +656,9 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int targetHeight = minimumHeight + 2;
             if (_setup.width == targetWidth && _setup.height == targetHeight)
                 return;
+            _designatedWidth = targetWidth;
+            if (sizeFixed)
+                _designatedHeight = targetHeight;
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
@@ -667,6 +673,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
+
+            _positionCached = false;
         }
 
         /// <summary>
@@ -674,7 +682,6 @@ namespace ChosenConcept.APFramework.Interface.Framework
         /// </summary>
         public void Resize(int width, int height)
         {
-            _sizeFixed = true;
             _extraWidth = 0;
             _endFillCount = 2;
             if (hasEmbeddedTitle)
@@ -683,6 +690,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             int targetHeight = height + 2;
             if (_setup.width == targetWidth && _setup.height == targetHeight)
                 return;
+            _designatedWidth = targetWidth;
+            _designatedHeight = targetHeight;
             _setup.SetWidth(targetWidth);
             _setup.SetHeight(targetHeight);
             SetupMask(targetWidth, targetHeight + 2, _setup);
@@ -697,6 +706,8 @@ namespace ChosenConcept.APFramework.Interface.Framework
             {
                 SetLayout(targetWidth, targetHeight);
             }
+
+            _positionCached = false;
         }
 
         void SetupOutline(int width, int height, WindowSetup windowSetup, int titleOverride, int subLength)
@@ -898,9 +909,10 @@ namespace ChosenConcept.APFramework.Interface.Framework
 
         public void RefreshSize()
         {
-            if (_sizeFixed)
-                return;
-            AutoResize(_extraWidth);
+            if (_designatedWidth == 0)
+                AutoResize(_extraWidth);
+            else if (_designatedHeight == 0)
+                Resize(_designatedWidth);
         }
 
         public void InvokeUpdate()

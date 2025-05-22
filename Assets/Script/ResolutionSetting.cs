@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ResolutionSetting : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         WindowUI systemWindow = NewWindow("Resolution", WindowSetup.defaultSetup);
         systemWindow.AddText("When ever resolution changes, need to clear cache of window location.");

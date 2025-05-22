@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ExampleMenu : CompositeMenuMono
 {
-    protected override void InitializeUI()
+    protected override void InitializeMenu()
     {
         LayoutAlignment layout = InitNewLayout();
         AddButton("All window elements available", layout, () =>

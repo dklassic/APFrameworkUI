@@ -11,7 +11,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         bool _hasCancel;
         public bool active => _displayActive;
 
-        protected override void InitializeUI()
+        protected override void InitializeMenu()
         {
             _layout = InitNewLayout();
         }
