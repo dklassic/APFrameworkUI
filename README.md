@@ -2,7 +2,7 @@
 
 > A Text Mesh Pro based text only UI system for Unity
 
-APFramework is a framework created by [DK Liao](https://twitter.com/RandomDevDK) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
+APFramework is a framework created by [DK Liao](https://x.com/justdkliao) used in [Autopanic](https://store.steampowered.com/app/1274830) and [Autopanic Zero](https://store.steampowered.com/app/1423670).
 
 The UI System for APFramework is designed with two goals in mind:
 
