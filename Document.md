@@ -68,6 +68,10 @@ window.AddSlider<Quality>("This is a Slider that takes a Enum as value")
 
 The color choice of `WindowElement` is defined in `StyleUtility`, while currently the default text color has to be changed in the window template asset within `WindowManager` prefab.
 
+## Miscellaneous
+
+The overarching layering of windows is currently defined using the `WindowLayer` enum, please modify it as well as the canvas order determining function in `WindowManager` to suite your own need.
+
 ## Performance
 
 Even though the idea of the Framework is to be a lightweight UI system that can be accessed easily, there are some quirks to be noted. Namely how the text-based presentation can work against it somewhat.
