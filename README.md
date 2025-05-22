@@ -40,14 +40,14 @@ In the meantime, you can also retrieve the menu via the `WindowManager.intance.G
 
 This is most useful to create quick utility menus everywhere.
 
-Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/next/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
+Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/main/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
 
 # Requirement
 
 - Unity 2021 LTS
 - Text Mesh Pro
 - Unity Input System
-- CySharp ZString
+- [CySharp ZString](https://github.com/Cysharp/ZString)
 
 # Features
 
@@ -101,7 +101,23 @@ Access through `WindowManager.instance.GetContextMenu`, which can show a context
 
 ## Document
 
-For more detailed explaination of how the framework is structured, please refer to the [Document](https://github.com/dklassic/APFrameworkUI/blob/next/Document.md).
+For more detailed explaination of how the framework is structured, please refer to the [Document](https://github.com/dklassic/APFrameworkUI/blob/main/Document.md).
+
+## Showcase
+
+**Draggable Window and universal navigation logic**
+
+https://github.com/user-attachments/assets/da530585-0a67-43de-b3ff-10a6701fea0a
+
+[**Context Menu Provider**](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/ContextMenuExample.cs)
+
+https://github.com/user-attachments/assets/fc094f93-3376-4019-b5a7-025fa56c3b65
+
+[**Function Getter style content**](https://github.com/dklassic/APFrameworkUI/blob/main/Assets/Script/FunctionWindow.cs)
+
+https://github.com/user-attachments/assets/bbd4c281-c09b-4928-9a5f-74bcceb06bac
+
+
 
 ## Futurework
 
