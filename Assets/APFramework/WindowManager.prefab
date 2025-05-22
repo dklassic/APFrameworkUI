@@ -307,8 +307,8 @@ MonoBehaviour:
   _layout: {fileID: 8218788028618388918}
   _windowName: 
   _windowTag: 
-  _windowLabelContent: 
-  _windowSubscriptContent: 
+  _windowLabelCache: 
+  _windowSubscriptCache: 
   _setup:
     _width: 0
     _height: 0
@@ -321,11 +321,11 @@ MonoBehaviour:
     _transitionOut: 0
     _fontSize: 0
     _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    _functionStringUpdateInterval: 0
   _layoutAlignment: {fileID: 0}
   _endFillCount: 5
   _maskReady: 0
   _outlineReady: 0
-  _noCut: 0
   _extraWidth: 0
   _isDirty: 1
   _elements: []
@@ -336,9 +336,11 @@ MonoBehaviour:
   _isFocused: 0
   _available: 1
   _inInput: 0
-  _sizeFixed: 0
+  _designatedWidth: 0
+  _designatedHeight: 0
   _awaitDeactivate: 0
   _preciseSizeSync: 0
+  _nextFunctionStringUpdate: -Infinity
 --- !u!114 &8218788028618388918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,20 +960,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    allowCycleWithinWindow: 0
-    allowCycleBetweenWindows: 0
-    allowCloseMenuWithCancelAction: 1
-    allowCloseOnClick: 0
-    resetOnOpen: 0
-    allowDraggingWithMouse: 0
-    allowNavigationOnOpen: 1
-    menuOpenInputDelay: 0.2
-    singlePressOnly: 0
-    holdNavigationDelay: 0.5
-    holdNavigationInterval: 0.2
-    holdNavigationSpeedUpInterval: 2
+    _allowCycleWithinWindow: 0
+    _allowCycleBetweenWindows: 0
+    _allowCloseMenuWithCancelAction: 1
+    _allowCloseOnClick: 0
+    _resetOnOpen: 0
+    _allowDraggingWithMouse: 0
+    _allowNavigationOnOpen: 1
+    _menuOpenInputDelay: 0.2
+    _singlePressOnly: 0
+    _holdNavigationDelay: 0.5
+    _holdNavigationInterval: 0.2
+    _holdNavigationSpeedUpInterval: 2
+    _functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
-    windowSetup:
+    _windowSetup:
       _width: 0
       _height: 0
       _titleStyle: 0
@@ -982,15 +985,16 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
-    layoutSetup:
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
+    _layoutSetup:
       _menuLayer: 2
       _windowAlignment: 4
       _windowDirection: 0
       _offsetSource: 0
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}
-      _spacing: 10
+      _spacing: -10
   _windowInstances: []
   _layoutAlignmentInstances: []
   _initialized: 0
@@ -1330,34 +1334,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    allowCycleWithinWindow: 0
-    allowCycleBetweenWindows: 0
-    allowCloseMenuWithCancelAction: 1
-    allowCloseOnClick: 1
-    resetOnOpen: 1
-    allowDraggingWithMouse: 1
-    allowNavigationOnOpen: 1
-    menuOpenInputDelay: 0.2
-    singlePressOnly: 0
-    holdNavigationDelay: 0.5
-    holdNavigationInterval: 0.2
-    holdNavigationSpeedUpInterval: 2
+    _allowCycleWithinWindow: 0
+    _allowCycleBetweenWindows: 0
+    _allowCloseMenuWithCancelAction: 0
+    _allowCloseOnClick: 1
+    _resetOnOpen: 2
+    _allowDraggingWithMouse: 1
+    _allowNavigationOnOpen: 0
+    _menuOpenInputDelay: 0
+    _singlePressOnly: 0
+    _holdNavigationDelay: 0
+    _holdNavigationInterval: 0
+    _holdNavigationSpeedUpInterval: 0
+    _functionStringLabelUpdateInterval: 0
   _menuStyling:
-    windowSetup:
+    _windowSetup:
       _width: 0
       _height: 0
       _titleStyle: 0
-      _outlineStyle: 4
+      _outlineStyle: 0
       _outlineDisplayStyle: 0
       _thickenStyle: 0
       _labelStyle: 0
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
-    layoutSetup:
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
+    _layoutSetup:
       _menuLayer: 2
-      _windowAlignment: 4
+      _windowAlignment: 0
       _windowDirection: 0
       _offsetSource: 0
       _offsetType: 0
@@ -1367,20 +1373,21 @@ MonoBehaviour:
   _contextMenu:
     _menuName: 
     _menuSetup:
-      allowCycleWithinWindow: 0
-      allowCycleBetweenWindows: 0
-      allowCloseMenuWithCancelAction: 0
-      allowCloseOnClick: 0
-      resetOnOpen: 0
-      allowDraggingWithMouse: 0
-      allowNavigationOnOpen: 0
-      menuOpenInputDelay: 0
-      singlePressOnly: 0
-      holdNavigationDelay: 0
-      holdNavigationInterval: 0
-      holdNavigationSpeedUpInterval: 0
+      _allowCycleWithinWindow: 0
+      _allowCycleBetweenWindows: 0
+      _allowCloseMenuWithCancelAction: 0
+      _allowCloseOnClick: 0
+      _resetOnOpen: 0
+      _allowDraggingWithMouse: 0
+      _allowNavigationOnOpen: 0
+      _menuOpenInputDelay: 0
+      _singlePressOnly: 0
+      _holdNavigationDelay: 0
+      _holdNavigationInterval: 0
+      _holdNavigationSpeedUpInterval: 0
+      _functionStringLabelUpdateInterval: 0
     _menuStyling:
-      windowSetup:
+      _windowSetup:
         _width: 0
         _height: 0
         _titleStyle: 0
@@ -1392,7 +1399,8 @@ MonoBehaviour:
         _transitionOut: 0
         _fontSize: 0
         _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-      layoutSetup:
+        _functionStringUpdateInterval: 0
+      _layoutSetup:
         _menuLayer: 0
         _windowAlignment: 0
         _windowDirection: 0
@@ -1466,20 +1474,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuSetup:
-    allowCycleWithinWindow: 0
-    allowCycleBetweenWindows: 0
-    allowCloseMenuWithCancelAction: 1
-    allowCloseOnClick: 0
-    resetOnOpen: 0
-    allowDraggingWithMouse: 0
-    allowNavigationOnOpen: 1
-    menuOpenInputDelay: 0.2
-    singlePressOnly: 0
-    holdNavigationDelay: 0.5
-    holdNavigationInterval: 0.2
-    holdNavigationSpeedUpInterval: 2
+    _allowCycleWithinWindow: 0
+    _allowCycleBetweenWindows: 0
+    _allowCloseMenuWithCancelAction: 1
+    _allowCloseOnClick: 0
+    _resetOnOpen: 0
+    _allowDraggingWithMouse: 0
+    _allowNavigationOnOpen: 1
+    _menuOpenInputDelay: 0.2
+    _singlePressOnly: 0
+    _holdNavigationDelay: 0.5
+    _holdNavigationInterval: 0.2
+    _holdNavigationSpeedUpInterval: 2
+    _functionStringLabelUpdateInterval: 0.1
   _menuDefaultStyling:
-    windowSetup:
+    _windowSetup:
       _width: 0
       _height: 0
       _titleStyle: 0
@@ -1490,11 +1499,12 @@ MonoBehaviour:
       _transitionIn: 8
       _transitionOut: 8
       _fontSize: 30
-      _backgroundColor: {r: 0, g: 0, b: 0, a: 0.078431375}
-    layoutSetup:
-      _menuLayer: 2
+      _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+      _functionStringUpdateInterval: 0
+    _layoutSetup:
+      _menuLayer: 0
       _windowAlignment: 4
-      _windowDirection: 0
+      _windowDirection: 1
       _offsetSource: 0
       _offsetType: 1
       _offset: {x: 0, y: 0, z: 0, w: 0}

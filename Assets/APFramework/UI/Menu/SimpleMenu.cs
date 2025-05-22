@@ -221,7 +221,7 @@ namespace ChosenConcept.APFramework.UI.Menu
             _windowInstance.ClearElements();
             if (removeWindow)
             {
-                WindowManager.instance.CloseWindow(_windowInstance);
+                _windowInstance.Close();
                 _windowInstance = null;
             }
         }

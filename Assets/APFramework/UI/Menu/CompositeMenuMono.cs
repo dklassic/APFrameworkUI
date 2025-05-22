@@ -274,23 +274,14 @@ namespace ChosenConcept.APFramework.UI.Menu
             ClearWindowLocation();
             _currentSelection = Vector2Int.zero;
             _initialized = false;
-            foreach (WindowUI window in _windowInstances)
+            for (int i = _windowInstances.Count - 1; i >= 0; i--)
             {
-                ClearWindow(window, false);
+                _windowInstances[i].ClearElements();
                 if (removeWindow)
-                    WindowManager.instance.CloseWindow(window);
-            }
-
-            _windowInstances.Clear();
-        }
-
-        protected void ClearWindow(WindowUI window, bool removeWindow)
-        {
-            window.ClearElements();
-            if (removeWindow)
-            {
-                _windowInstances.Remove(window);
-                WindowManager.instance.CloseWindow(window);
+                {
+                    _windowInstances[i].Close();
+                    _windowInstances.RemoveAt(i);
+                }
             }
         }
 

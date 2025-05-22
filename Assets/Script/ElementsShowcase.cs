@@ -17,7 +17,7 @@ public class ElementsShowcase : CompositeMenuMono
     public enum Choices
     {
         HereAreSomeChoices,
-        ThatYouCanPasThrough,
+        ThatYouCanPassThrough,
         WithAGenericType
     }
 

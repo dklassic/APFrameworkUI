@@ -50,6 +50,7 @@ namespace ChosenConcept.APFramework.UI.Provider
                         _contextMenu.CloseMenu();
                 });
             }
+            _window.AutoResize(0,true);
 
             _contextMenu.SetMenuCloseAction(() =>
             {

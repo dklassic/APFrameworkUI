@@ -34,10 +34,12 @@ namespace ChosenConcept.APFramework.UI.Element
             base.SetLabel(label);
             return (T)this;
         }
+
         public T SetLabel(Func<string> content)
         {
             return SetLabel(new FunctionStringLabel(content));
         }
+
         public new T ShowLabel(bool show)
         {
             base.ShowLabel(show);
@@ -92,7 +94,7 @@ namespace ChosenConcept.APFramework.UI.Element
         {
             get
             {
-                if (_labelCache == null && _label != null)
+                if (string.IsNullOrEmpty(_labelCache) && _label != null)
                     _labelCache = _label.GetValue();
                 return _labelCache;
             }
@@ -102,7 +104,7 @@ namespace ChosenConcept.APFramework.UI.Element
         {
             get
             {
-                if (_contentCache == null && _content != null)
+                if (string.IsNullOrEmpty(_contentCache) && _content != null)
                 {
                     _contentCache = _content.GetValue();
                 }
@@ -117,9 +119,7 @@ namespace ChosenConcept.APFramework.UI.Element
             {
                 if (!_showLabel)
                     return string.Empty;
-                if (_labelCache == null)
-                    _labelCache = _label.GetValue();
-                return ZString.Concat(_labelCache, TextUtility.COLUMN);
+                return ZString.Concat(label, TextUtility.COLUMN);
             }
         }
 
@@ -202,6 +202,7 @@ namespace ChosenConcept.APFramework.UI.Element
             _label = label;
             _parentWindow?.InvokeUpdate();
         }
+
         public void SetLabelCache(string label)
         {
             _labelCache = label;

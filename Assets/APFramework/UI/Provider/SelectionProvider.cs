@@ -25,7 +25,6 @@ namespace ChosenConcept.APFramework.UI.Provider
                 ButtonUI button = AddButton(choice, _layout);
                 button.SetLabel(choice);
                 button.SetAction(CompleteInput);
-                button.parentWindow.AutoResize();
             }
 
             ClearWindowLocation();
@@ -37,10 +36,13 @@ namespace ChosenConcept.APFramework.UI.Provider
             // take away the input from the sourceUI
             _target = target;
             OpenMenu(null);
+            currentWindow?.SetFocus(false);
             currentSelectable?.SetFocus(false);
             _currentChoice = currentChoice;
-            _currentSelection[0] = currentChoice;
+            _currentSelection[0] = _currentChoice;
+            _currentSelection[1] = 0;
             currentSelectable?.SetFocus(true);
+            currentWindow?.SetFocus(true);
         }
 
         void CompleteInput()
@@ -53,7 +55,12 @@ namespace ChosenConcept.APFramework.UI.Provider
 
         protected override bool CancelOut()
         {
+            currentWindow?.SetFocus(false);
+            currentSelectable?.SetFocus(false);
             _currentSelection[0] = _currentChoice;
+            _currentSelection[1] = 0;
+            currentSelectable?.SetFocus(true);
+            currentWindow?.SetFocus(true);
             CompleteInput();
             return true;
         }

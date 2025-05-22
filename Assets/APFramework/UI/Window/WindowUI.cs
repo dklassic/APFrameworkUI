@@ -29,8 +29,8 @@ namespace ChosenConcept.APFramework.UI.Window
         string _windowName = string.Empty;
 
         [SerializeField] string _windowTag;
-        [SerializeField] string _windowLabelContent;
-        [SerializeField] string _windowSubscriptContent;
+        [SerializeField] string _windowLabelCache;
+        [SerializeField] string _windowSubscriptCache;
         [SerializeField] WindowSetup _setup;
         [SerializeField] LayoutAlignment _layoutAlignment;
         [SerializeField] int _endFillCount = 5;
@@ -66,32 +66,31 @@ namespace ChosenConcept.APFramework.UI.Window
         public string windowTag => _windowTag;
         public bool isSingleButtonWindow => _elements.Count == 1 && _elements[0] is not TextUI;
 
-        public string windowLabelContent
+        public string windowLabel
         {
             get
             {
-                if (_windowLabelContent == null)
+                if (string.IsNullOrEmpty(_windowLabelCache))
                 {
-                    _windowLabelContent = _windowLabel.GetValue();
+                    _windowLabelCache = _windowLabel.GetValue();
                 }
 
-                return _windowLabelContent;
+                return _windowLabelCache;
             }
         }
 
-        public string windowLabel => _windowLabel.GetValue();
-        int titlePreserveLength => Mathf.FloorToInt(TextUtility.WidthSensitiveLength(windowLabelContent));
+        int titlePreserveLength => Mathf.FloorToInt(TextUtility.WidthSensitiveLength(windowLabel));
 
-        public string windowSubscriptContent
+        public string windowSubscript
         {
             get
             {
-                if (_windowSubscriptContent == null)
+                if (string.IsNullOrEmpty(_windowSubscriptCache))
                 {
-                    _windowSubscriptContent = _windowSubscript.GetValue();
+                    _windowSubscriptCache = _windowSubscript.GetValue();
                 }
 
-                return _windowSubscriptContent;
+                return _windowSubscriptCache;
             }
         }
 
@@ -159,8 +158,8 @@ namespace ChosenConcept.APFramework.UI.Window
 
         void ClearCachedValue()
         {
-            _windowLabelContent = null;
-            _windowSubscriptContent = null;
+            _windowLabelCache = null;
+            _windowSubscriptCache = null;
             _elements.ForEach(x => x.ClearCache());
         }
 
@@ -347,7 +346,7 @@ namespace ChosenConcept.APFramework.UI.Window
         {
             if (_designatedWidth == 0 || _designatedHeight == 0)
             {
-                AutoResize(_extraWidth);
+                RefreshSize();
             }
 
             int count = _elements.Count;
@@ -368,13 +367,13 @@ namespace ChosenConcept.APFramework.UI.Window
                         true => _isFocused switch
                         {
                             false => _available
-                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
+                                ? StyleUtility.StringBold(windowLabel.ToUpper())
                                 : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
                                     StyleUtility.disabled),
                             true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
                                 _available ? StyleUtility.selected : StyleUtility.disableSelected),
                         },
-                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
+                        false => StyleUtility.StringBold(windowLabel.ToUpper()),
                     });
                     windowStringBuilder.Append(TextUtility.LineBreaker);
                     windowStringBuilder.Append(TextUtility.LineBreaker);
@@ -387,13 +386,13 @@ namespace ChosenConcept.APFramework.UI.Window
                         true => _isFocused switch
                         {
                             false => _available
-                                ? StyleUtility.StringBold(windowLabelContent.ToUpper())
+                                ? StyleUtility.StringBold(windowLabel.ToUpper())
                                 : StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
                                     StyleUtility.disabled),
                             true => StyleUtility.StringColored(StyleUtility.StringBold(windowLabel.ToUpper()),
                                 _available ? StyleUtility.selected : StyleUtility.disableSelected),
                         },
-                        false => StyleUtility.StringBold(windowLabelContent.ToUpper()),
+                        false => StyleUtility.StringBold(windowLabel.ToUpper()),
                     });
                     windowStringBuilder.Append(TextUtility.LineBreaker);
                 }
@@ -452,37 +451,37 @@ namespace ChosenConcept.APFramework.UI.Window
                     compensate = -1;
                 for (int i = 0; i < _endFillCount; i++)
                 {
-                    if (windowSubscriptContent != string.Empty && i == _endFillCount - 1 + compensate && !isFullFrame)
+                    if (windowSubscript != string.Empty && i == _endFillCount - 1 + compensate && !isFullFrame)
                     {
                         windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                         windowStringBuilder.Append(TextUtility.PlaceHolder(contentWidth +
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(
-                                                                               windowSubscriptContent)));
+                                                                               windowSubscript)));
                         if (_isFocused)
-                            windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
+                            windowStringBuilder.Append(StyleUtility.StringColored(windowSubscript,
                                 _available ? StyleUtility.selected : StyleUtility.disableSelected));
                         else
                             windowStringBuilder.Append(_available
-                                ? windowSubscriptContent
-                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.disabled));
+                                ? windowSubscript
+                                : StyleUtility.StringColored(windowSubscript, StyleUtility.disabled));
                         windowStringBuilder.Append(TextUtility.LineBreaker);
                     }
-                    else if (windowSubscriptContent != string.Empty && i == _endFillCount - 1 + compensate &&
+                    else if (windowSubscript != string.Empty && i == _endFillCount - 1 + compensate &&
                              isFullFrame)
                     {
                         windowStringBuilder.Append(TextUtility.FULL_WIDTH_SPACE);
                         windowStringBuilder.Append(TextUtility.PlaceHolder(contentWidth +
                                                                            2 -
                                                                            TextUtility.WidthSensitiveLength(
-                                                                               windowSubscriptContent)));
+                                                                               windowSubscript)));
                         if (_isFocused)
-                            windowStringBuilder.Append(StyleUtility.StringColored(windowSubscriptContent,
+                            windowStringBuilder.Append(StyleUtility.StringColored(windowSubscript,
                                 _available ? StyleUtility.selected : StyleUtility.disableSelected));
                         else
                             windowStringBuilder.Append(_available
-                                ? windowSubscriptContent
-                                : StyleUtility.StringColored(windowSubscriptContent, StyleUtility.disabled));
+                                ? windowSubscript
+                                : StyleUtility.StringColored(windowSubscript, StyleUtility.disabled));
                         windowStringBuilder.Append(TextUtility.LineBreaker);
                     }
                     else if (i == _endFillCount - 2 + compensate && !isFullFrame)
@@ -573,7 +572,7 @@ namespace ChosenConcept.APFramework.UI.Window
             SetupMask(targetWidth, targetHeight + 2, _setup);
             if (hasOutline)
             {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscript);
                 SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
                     subscriptLength);
                 SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
@@ -594,8 +593,8 @@ namespace ChosenConcept.APFramework.UI.Window
                 minimumWidth = titlePreserveLength + 2;
             if (hasEmbeddedTitle)
                 minimumWidth = titlePreserveLength;
-            if (windowSubscriptContent != string.Empty)
-                minimumWidth = Mathf.Max(minimumWidth, TextUtility.WidthSensitiveLength(windowSubscriptContent) + 1);
+            if (windowSubscript != string.Empty)
+                minimumWidth = Mathf.Max(minimumWidth, TextUtility.WidthSensitiveLength(windowSubscript) + 1);
             for (int i = 0; i < count; i++)
             {
                 if (!_elements[i].flexible || count == 1)
@@ -658,7 +657,7 @@ namespace ChosenConcept.APFramework.UI.Window
             int targetHeight = minimumHeight + 2;
             if (_setup.width == targetWidth && _setup.height == targetHeight)
                 return;
-            _designatedWidth = targetWidth;
+            _designatedWidth = width;
             if (sizeFixed)
                 _designatedHeight = targetHeight;
             _setup.SetWidth(targetWidth);
@@ -666,7 +665,7 @@ namespace ChosenConcept.APFramework.UI.Window
             SetupMask(targetWidth, targetHeight + 2, _setup);
             if (hasOutline)
             {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscript);
                 SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
                     subscriptLength);
                 SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
@@ -699,7 +698,7 @@ namespace ChosenConcept.APFramework.UI.Window
             SetupMask(targetWidth, targetHeight + 2, _setup);
             if (hasOutline)
             {
-                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscriptContent);
+                int subscriptLength = TextUtility.WidthSensitiveLength(windowSubscript);
                 SetupOutline(targetWidth + OUTLINE_PADDING, targetHeight, _setup, titlePreserveLength + 2,
                     subscriptLength);
                 SetLayout(targetWidth + OUTLINE_PADDING, targetHeight);
@@ -831,20 +830,14 @@ namespace ChosenConcept.APFramework.UI.Window
 
         public void SetActive(bool v, bool showMaskAnimation = true, bool syncGameObject = true)
         {
-            if (v && (_setup.width == 0 || _setup.height == 0))
-            {
-                AutoResize();
-            }
-
-            if (hasOutline && !_outlineReady || !_maskReady)
-                return;
             if (_active == v)
                 return;
             _active = v;
-            if (syncGameObject && v)
-                SetGameObjectActive(true);
             if (_active)
             {
+                RefreshSize();
+                if (syncGameObject)
+                    SetGameObjectActive(true);
                 _awaitDeactivate = false;
                 ResetAllWindowElement();
                 _outlineBuilder.SetActive(true);
@@ -883,28 +876,28 @@ namespace ChosenConcept.APFramework.UI.Window
 
         public void SetLabel(string label)
         {
-            _windowLabelContent = null;
+            _windowLabelCache = null;
             _windowLabel = new StringLabel(label);
             _isDirty = true;
         }
 
         public void SetLabel(IStringLabel label)
         {
-            _windowLabelContent = null;
+            _windowLabelCache = null;
             _windowLabel = label;
             _isDirty = true;
         }
 
         public void SetSubscript(string subscript)
         {
-            _windowSubscriptContent = null;
+            _windowSubscriptCache = null;
             _windowSubscript = new StringLabel(subscript);
             _isDirty = true;
         }
 
         public void SetSubscript(IStringLabel label)
         {
-            _windowSubscriptContent = null;
+            _windowSubscriptCache = null;
             _windowSubscript = label;
             _isDirty = true;
         }

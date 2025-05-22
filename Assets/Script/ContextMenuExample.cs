@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 public class ContextMenuExample : MonoBehaviour
 {
-    [SerializeField] SimpleMenu _returnButton;
+    [SerializeField] SimpleMenu _return;
     bool _contextMenuOpen;
     bool _exampleOpen;
     bool _exampleMenuInstantiated;
@@ -18,18 +18,18 @@ public class ContextMenuExample : MonoBehaviour
         if (!_exampleMenuInstantiated)
         {
             _exampleMenuInstantiated = true;
-            _returnButton = new SimpleMenu("Return");
-            _returnButton.AddText("Mouse right click to open a context menu");
-            _returnButton.AddButton("Return", () =>
+            _return = new SimpleMenu("Return");
+            _return.AddText("Mouse right click to open a context menu");
+            _return.AddButton("Return", () =>
             {
                 _exampleOpen = false;
-                _returnButton.CloseMenu();
+                _return.CloseMenu();
                 WindowManager.instance.GetMenu<ExampleMenu>().OpenMenu(true);
             });
-            WindowManager.instance.RegisterMenu(_returnButton);
+            WindowManager.instance.RegisterMenu(_return);
         }
 
-        _returnButton.OpenMenu(true);
+        _return.OpenMenu(true);
     }
 
     void Update()

@@ -317,11 +317,6 @@ namespace ChosenConcept.APFramework.UI
             return layoutAlignment;
         }
 
-        internal void CloseWindow(WindowUI window)
-        {
-            window.Close();
-        }
-
         public void DelistWindow(WindowUI window)
         {
             _windows.Remove(window);
