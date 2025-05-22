@@ -1,4 +1,6 @@
-using ChosenConcept.APFramework.Interface.Framework;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Window;
 
 public class MultipleWindowHorizontal : CompositeMenuMono
 {

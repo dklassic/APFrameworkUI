@@ -1,6 +1,6 @@
 using System;
 
-namespace ChosenConcept.APFramework.Interface.Framework.Element
+namespace ChosenConcept.APFramework.UI.Element
 {
     [Serializable]
     public struct StringLabel : IStringLabel

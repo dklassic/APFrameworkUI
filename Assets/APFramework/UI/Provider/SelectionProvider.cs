@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using ChosenConcept.APFramework.Interface.Framework.Element;
-using UnityEngine;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Menu;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Provider
 {
     public class SelectionProvider : CompositeMenuMono
     {

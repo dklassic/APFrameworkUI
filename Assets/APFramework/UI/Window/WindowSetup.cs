@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Window
 {
     [Serializable]
     public struct WindowSetup

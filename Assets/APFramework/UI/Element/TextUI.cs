@@ -1,4 +1,7 @@
-namespace ChosenConcept.APFramework.Interface.Framework.Element
+using ChosenConcept.APFramework.UI.Utility;
+using ChosenConcept.APFramework.UI.Window;
+
+namespace ChosenConcept.APFramework.UI.Element
 {
     public class TextUI : WindowElement<TextUI>
     {

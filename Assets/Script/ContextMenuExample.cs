@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ChosenConcept.APFramework.Interface.Framework;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using ChosenConcept.APFramework.UI;
+using ChosenConcept.APFramework.UI.Menu;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

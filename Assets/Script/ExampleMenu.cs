@@ -1,4 +1,6 @@
-using ChosenConcept.APFramework.Interface.Framework;
+using ChosenConcept.APFramework.UI;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Menu;
 using UnityEngine;
 
 public class ExampleMenu : CompositeMenuMono

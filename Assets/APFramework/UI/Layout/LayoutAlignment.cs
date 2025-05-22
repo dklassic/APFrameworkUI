@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using ChosenConcept.APFramework.Interface;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 using UnityEngine.UI;
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Layout
 {
     public class LayoutAlignment : MonoBehaviour
     {

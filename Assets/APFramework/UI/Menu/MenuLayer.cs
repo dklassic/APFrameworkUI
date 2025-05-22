@@ -1,5 +1,5 @@
 
-namespace ChosenConcept.APFramework.Interface
+namespace ChosenConcept.APFramework.UI.Menu
 {
     public enum MenuLayer
     {

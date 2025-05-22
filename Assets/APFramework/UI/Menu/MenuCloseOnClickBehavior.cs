@@ -1,4 +1,4 @@
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Menu
 {
     public enum MenuCloseOnClickBehavior
     {

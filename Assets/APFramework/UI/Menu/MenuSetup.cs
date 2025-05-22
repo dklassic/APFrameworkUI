@@ -1,6 +1,6 @@
 using System;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Menu
 {
     [Serializable]
     public struct MenuSetup

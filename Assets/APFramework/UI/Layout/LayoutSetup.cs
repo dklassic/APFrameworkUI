@@ -1,7 +1,9 @@
-using ChosenConcept.APFramework.Interface.Framework;
+
+using ChosenConcept.APFramework.Interface;
+using ChosenConcept.APFramework.UI.Menu;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface
+namespace ChosenConcept.APFramework.UI.Layout
 {
     [System.Serializable]
     public struct LayoutSetup

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChosenConcept.APFramework.UI.Utility;
+using ChosenConcept.APFramework.UI.Window;
 using Cysharp.Text;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework.Element
+namespace ChosenConcept.APFramework.UI.Element
 {
     public class QuickSelectionUI<T> : WindowElement<QuickSelectionUI<T>>, IQuickSelect
     {

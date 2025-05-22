@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Menu
 {
     public interface IMenuInputTarget
     {

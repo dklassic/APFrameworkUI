@@ -1,7 +1,8 @@
+using ChosenConcept.APFramework.UI.Menu;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Input
 {
     public class UnityInputProvider : IInputProvider
     {

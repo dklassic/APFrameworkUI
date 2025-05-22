@@ -1,7 +1,9 @@
-using ChosenConcept.APFramework.Interface.Framework;
+
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface
+namespace ChosenConcept.APFramework.UI.Menu
 {
     [System.Serializable]
     public struct MenuStyling

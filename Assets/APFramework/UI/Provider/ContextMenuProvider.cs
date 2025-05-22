@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Provider
 {
     public class ContextMenuProvider : MonoBehaviour
     {

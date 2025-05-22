@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChosenConcept.APFramework.Interface.Framework;
-using UnityEngine;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Window;
 
 public class ElementsShowcase : CompositeMenuMono
 {

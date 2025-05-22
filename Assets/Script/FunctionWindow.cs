@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ChosenConcept.APFramework.Interface.Framework;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 
 public class FunctionWindow : CompositeMenuMono

@@ -1,9 +1,10 @@
 using System;
+using ChosenConcept.APFramework.UI.Utility;
 using Cysharp.Text;
 using TMPro;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Window
 {
     public class WindowOutline : MonoBehaviour
     {

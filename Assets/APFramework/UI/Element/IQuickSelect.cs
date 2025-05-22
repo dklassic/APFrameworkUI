@@ -1,4 +1,4 @@
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Element
 {
     public interface IQuickSelect
     {

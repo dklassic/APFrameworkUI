@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
-using ChosenConcept.APFramework.Interface.Framework.Element;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Menu
 {
     public class CompositeMenuMono : MonoBehaviour, IMenuInputTarget
     {

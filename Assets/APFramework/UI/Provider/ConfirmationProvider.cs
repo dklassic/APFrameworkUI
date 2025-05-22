@@ -1,8 +1,11 @@
 using System;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Provider
 {
     public class ConfirmationProvider : CompositeMenuMono
     {

@@ -1,7 +1,7 @@
 using System;
 using Cysharp.Text;
 
-namespace ChosenConcept.APFramework.Interface.Framework.Element
+namespace ChosenConcept.APFramework.UI.Element
 {
     [Serializable]
     // This is an example setup for using the structure of the menu to localize 

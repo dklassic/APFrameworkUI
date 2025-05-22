@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChosenConcept.APFramework.Interface.Framework.Element;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Utility;
 using Cysharp.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Window
 {
     public class WindowUI : MonoBehaviour
     {

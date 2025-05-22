@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ChosenConcept.APFramework.Interface.Framework.Element
+namespace ChosenConcept.APFramework.UI.Element
 {
     public interface ISlider
     {

@@ -1,12 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChosenConcept.APFramework.Interface;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Input;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Menu;
+using ChosenConcept.APFramework.UI.Provider;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
 using UnityEngine.UI;
-using ChosenConcept.APFramework.Interface.Framework.Element;
 using Cysharp.Text;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI
 {
     public class WindowManager : MonoBehaviour, IMenuInputTarget
     {
@@ -117,6 +123,7 @@ namespace ChosenConcept.APFramework.Interface.Framework
         {
             _instance ??= this;
             _inputProvider = new UnityInputProvider();
+            DontDestroyOnLoad(gameObject);
             _inputProvider.SetTarget(this);
             _inputProvider.EnableInput(true);
             _contextMenuProvider.Initialize();

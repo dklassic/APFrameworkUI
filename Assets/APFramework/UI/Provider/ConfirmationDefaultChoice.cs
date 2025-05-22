@@ -1,4 +1,4 @@
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Provider
 {
     public enum ConfirmationDefaultChoice
     {

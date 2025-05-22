@@ -1,9 +1,10 @@
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Menu;
 using UnityEngine;
-using ChosenConcept.APFramework.Interface.Framework.Element;
 using TMPro;
 using UnityEngine.InputSystem;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Provider
 {
     public class TextInputProvider : MonoBehaviour, IMenuInputTarget
     {

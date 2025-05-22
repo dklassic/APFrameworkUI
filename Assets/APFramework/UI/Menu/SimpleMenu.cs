@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using ChosenConcept.APFramework.UI.Element;
+using ChosenConcept.APFramework.UI.Layout;
+using ChosenConcept.APFramework.UI.Window;
 using UnityEngine;
-using ChosenConcept.APFramework.Interface.Framework.Element;
 using Object = UnityEngine.Object;
 
-namespace ChosenConcept.APFramework.Interface.Framework
+namespace ChosenConcept.APFramework.UI.Menu
 {
     [Serializable]
     public class SimpleMenu : IMenuInputTarget
