@@ -40,6 +40,8 @@ In the meantime, you can also retrieve the menu via the `WindowManager.intance.G
 
 This is most useful to create quick utility menus everywhere.
 
+Study the scripts in script folder to see how it instantiates each menu should give you a quick start.
+
 # Requirement
 
 - Unity 2021 LTS
@@ -63,12 +65,14 @@ But if you're aiming to use it more than just a utility menu, best implement the
 
 Every window element inherits from the `WindowElement` class, which features a `IStringLabel` label for display, as the element will cache the string value using `IStringLabel.GetValue()`, you can implement the interface in other ways such as returning a function value, or in my own use case, returning a localized value for localization. Each elements will also have a tag that directly represents the hierarchy path of the element, which should be useful as some localization string id.
 
+A `WindowElement` will always have a label, optionally a content
+
 Currently window elements implemented are all based on my own needs, which are:
 
 - Text (Non-selectable text display)
 - Button (Selectable and can trigger action when pressed)
 - QuickSelection (Cycles between chioces upon confrim and optionally cancel inputs)
-- SingleSelection (Shows up a dedicated option screen for choosing)
+- Selection (Shows up a dedicated option screen for choosing)
 - Slider (Capable of taking artibtrary types and triggering callbacks)
 - Toggle
 - TextInput (Also with predition and autocomplete available)
