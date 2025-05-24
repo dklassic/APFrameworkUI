@@ -196,6 +196,10 @@ namespace ChosenConcept.APFramework.UI.Window
             {
                 _nextFunctionStringUpdate = Time.unscaledTime + _setup.functionStringUpdateInterval;
                 CheckFunctionStringLabelDirty();
+                if (_setup.syncActiveValueAutomatically)
+                {
+                    SyncActiveValue();
+                }
             }
 
             if (!_active && !_awaitDeactivate)
@@ -845,6 +849,7 @@ namespace ChosenConcept.APFramework.UI.Window
                     _windowMask.FadeIn();
                 _background.SetActive(true);
                 _drawText.gameObject.SetActive(true);
+                SyncActiveValue();
                 InvokeUpdate();
             }
             else
@@ -994,6 +999,17 @@ namespace ChosenConcept.APFramework.UI.Window
             }
 
             return tags;
+        }
+
+        public void SyncActiveValue()
+        {
+            foreach (WindowElement element in _elements)
+            {
+                if (element is IValueSyncTarget valurTarget && valurTarget.needSync)
+                    valurTarget.SyncValue();
+                if (element is IAvailabilitySyncTarget availabilityTarget && availabilityTarget.needSync)
+                    availabilityTarget.SyncAvailability();
+            }
         }
     }
 }

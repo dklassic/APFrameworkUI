@@ -18,6 +18,8 @@ namespace ChosenConcept.APFramework.UI.Window
         [SerializeField] float _fontSize;
         [SerializeField] Color _backgroundColor;
         [SerializeField] float _functionStringUpdateInterval;
+        [SerializeField]  bool _syncActiveValueAutomatically;
+        public bool syncActiveValueAutomatically => _syncActiveValueAutomatically;
         public float functionStringUpdateInterval => _functionStringUpdateInterval; 
         public int width => _width;
         public int height => _height;
@@ -45,6 +47,7 @@ namespace ChosenConcept.APFramework.UI.Window
             _fontSize = 30,
             _backgroundColor = Color.clear,
             _functionStringUpdateInterval = 0,
+            _syncActiveValueAutomatically = true
         };
         
         public WindowSetup(WindowSetup setup)
@@ -61,37 +64,80 @@ namespace ChosenConcept.APFramework.UI.Window
             _fontSize = setup._fontSize;
             _backgroundColor = setup._backgroundColor;
             _functionStringUpdateInterval = setup.functionStringUpdateInterval;
+            _syncActiveValueAutomatically = setup.syncActiveValueAutomatically;
         }
 
-        public void SetSize(int w, int h = 0)
+        public WindowSetup SetSize(int w, int h = 0)
         {
             _width = w;
             _height = h;
+            return this;
         }
 
-        public void SetWidth(int targetWidth)
+        public WindowSetup SetWidth(int targetWidth)
         {
             _width = targetWidth;
+            return this;
         }
 
-        public void SetHeight(int targetHeight)
+        public WindowSetup SetHeight(int targetHeight)
         {
             _height = targetHeight;
+            return this;
         }
 
-        public void SetTitleStyle(WindowTitleStyle style)
+        public WindowSetup SetTitleStyle(WindowTitleStyle style)
         {
             _titleStyle = style;
+            return this;
         }
 
-        public void SetFontSize(float font)
+        public WindowSetup SetFontSize(float font)
         {
             _fontSize = font;
+            return this;
         }
 
-        public void SetOutlineDisplayStyle(WindowOutlineDisplayStyle style)
+        public WindowSetup SetOutlineDisplayStyle(WindowOutlineDisplayStyle style)
         {
             _outlineDisplayStyle = style;
+            return this;
+        }
+
+        public WindowSetup SetThickenStyle(WindowThickenStyle style)
+        {
+            _thickenStyle = style;
+            return this;
+        }
+
+        public WindowSetup SetLabelStyle(WindowLabelStyle style)
+        {
+            _labelStyle = style;
+            return this;
+        }
+
+        public WindowSetup SetTransitionIn(WindowTransition transition)
+        {
+            _transitionIn = transition;
+            return this;
+        }
+
+        public WindowSetup SetTransitionOut(WindowTransition transition)
+        {
+            _transitionOut = transition;
+            return this;
+        }
+
+        public WindowSetup SetStringUpdateInterval(float updateInterval)
+        {
+            _functionStringUpdateInterval = updateInterval;
+            return this;
+        }
+
+        public WindowSetup SetUpdateActiveValue(bool value)
+        {
+            _syncActiveValueAutomatically = value;
+            return this;
         }
     }
 }

@@ -8,13 +8,14 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.UI.Element
 {
-    public class SliderUI<T> : WindowElement<SliderUI<T>>, ISlider
+    public class SliderUI<T> : WindowElement<SliderUI<T>>, ISlider, IValueSyncTarget
     {
         bool _inInput;
         List<string> _choiceListContentCache = new();
         List<IStringLabel> _choiceList = new();
         List<T> _choiceValueList = new();
         Action<T> _action;
+        Func<T> _activeValueGetter;
 
         (Vector2, Vector2) _cachedArrowPosition = (Vector2.zero, Vector2.zero);
         int ISlider.firstSliderArrowIndex => firstCharacterIndex + labelPrefix.Length;
@@ -124,6 +125,22 @@ namespace ChosenConcept.APFramework.UI.Element
             return this;
         }
 
+        public SliderUI<T> SetActiveValue(Func<T> valueGetter)
+        {
+            _activeValueGetter = valueGetter;
+            int index = _choiceValueList.IndexOf(valueGetter());
+            if (index < 0)
+            {
+                return this;
+            }
+
+            if (_count == index)
+                return this;
+            _count = index;
+            _parentWindow?.InvokeUpdate();
+            return this;
+        }
+
         public void TriggerAction()
         {
             if (_action == null)
@@ -179,10 +196,32 @@ namespace ChosenConcept.APFramework.UI.Element
             return this;
         }
 
+        public SliderUI<T> SetLocalizedChoiceByValue(IEnumerable<T> value)
+        {
+            ClearChoice();
+            foreach (T item in value)
+            {
+                AddChoice(new LocalizedStringLabel(_tag, item.ToString()), item);
+            }
+
+            return this;
+        }
+
+
+        public SliderUI<T> AddLocalizedChoice(string tag, T value)
+        {
+            return AddChoice(new LocalizedStringLabel(_tag, tag), value);
+        }
+
         public SliderUI<T> AddChoice(string choice, T value)
         {
+            return AddChoice(new StringLabel(choice), value);
+        }
+
+        public SliderUI<T> AddChoice(IStringLabel choice, T value)
+        {
             _choiceListContentCache.Clear();
-            _choiceList.Add(new StringLabel(choice));
+            _choiceList.Add(choice);
             _choiceValueList.Add(value);
             return this;
         }
@@ -271,6 +310,32 @@ namespace ChosenConcept.APFramework.UI.Element
             }
 
             return (hoverOnDecrease, hoverOnIncrease);
+        }
+
+        public override void ContextLanguageChange()
+        {
+            base.ContextLanguageChange();
+            _choiceListContentCache.Clear();
+        }
+
+        public override IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new();
+            tags.AddRange(base.ExportLocalizationTag());
+            foreach (IStringLabel item in _choiceList)
+            {
+                if (item is LocalizedStringLabel label)
+                    tags.Add(label.tag);
+            }
+
+            return tags;
+        }
+
+        bool IValueSyncTarget.needSync => _activeValueGetter != null;
+
+        void IValueSyncTarget.SyncValue()
+        {
+            SetActiveValue(_activeValueGetter());
         }
     }
 }

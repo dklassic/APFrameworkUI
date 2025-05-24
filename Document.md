@@ -40,6 +40,8 @@ Currently the need for aligment is done through additional `LayoutAlignment` com
 
 With `CompositeMenuMono`, the menu will be initialized automatically during `Start` event function, but it might sometimes be better to get rid of that and initialize them by yourself.
 
+While using `CompositeMenuMono`, you can easily access menus using `WindowManager.instance.GetMenu<T>` as well as opening a submenu using `OpenSubMenu<T>` directly within a `CompositeMenuMono`.
+
 ### SimpleMenu
 
 `SimpleMenu` is a cut down version of the `CompositeMenuMono` logic, with each instance only managing a single window and the navigation within. The cross menu navigation will be handled by `WindowManager` directly. Due to this characteristic, it is generally not idea to mix and match both menu at the same time which will definitely have some problems, but it is okay if one of them is not navigatable. Most importantly, remember to register `SingleMenu` to `WindowManager` so that it can be updated properly.

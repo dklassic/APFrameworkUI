@@ -1442,5 +1442,19 @@ namespace ChosenConcept.APFramework.UI.Menu
 
             return tags;
         }
+
+        public void SyncActiveValue()
+        {
+            foreach (WindowUI window in _windowInstances)
+            {
+                window.SyncActiveValue();
+            }
+        }
+
+        public void OpenSubMenu<T>() where T : CompositeMenuMono
+        {
+            CloseMenu(false);
+            WindowManager.instance.GetMenu<T>().OpenMenu(this);
+        }
     }
 }

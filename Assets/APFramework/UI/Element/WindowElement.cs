@@ -13,14 +13,14 @@ namespace ChosenConcept.APFramework.UI.Element
         {
         }
 
-        public T SetAvailable(bool availability)
+        public new T SetAvailable(bool availability)
         {
-            if (availability != _available)
-            {
-                _available = availability;
-                _parentWindow.InvokeUpdate();
-            }
-
+            base.SetAvailable(availability);
+            return (T)this;
+        }
+        public new T SetAvailable(Func<bool> availability)
+        {
+            base.SetAvailable(availability);
             return (T)this;
         }
 
@@ -51,7 +51,7 @@ namespace ChosenConcept.APFramework.UI.Element
             return SetContent(new StringLabel(content));
         }
 
-        public T SetContent(IStringLabel content)
+        public new T SetContent(IStringLabel content)
         {
             base.SetContent(content);
             return (T)this;
@@ -64,12 +64,12 @@ namespace ChosenConcept.APFramework.UI.Element
     }
 
     [Serializable]
-    public class WindowElement
+    public class WindowElement : IAvailabilitySyncTarget
     {
         protected IStringLabel _label;
         [SerializeField] bool _showLabel = true;
         [SerializeField] protected string _name;
-        [SerializeField] string _tag;
+        [SerializeField] protected string _tag;
         [SerializeField] protected string _labelCache;
         [SerializeField] string _contentCache;
         protected IStringLabel _content;
@@ -81,7 +81,9 @@ namespace ChosenConcept.APFramework.UI.Element
         [SerializeField] Vector2Int _characterIndex = new(-1, -1);
         [SerializeField] protected WindowUI _parentWindow;
         Action _focusAction = null;
+        Func<bool> _availabilityGetter = null;
         protected bool _inFocus;
+        public bool showLabel => _showLabel;
         public bool inFocus => _inFocus;
 
         public string name => _name;
@@ -275,11 +277,13 @@ namespace ChosenConcept.APFramework.UI.Element
         public virtual void ClearLabelCache()
         {
             _labelCache = null;
+            _parentWindow.InvokeUpdate();
         }
 
         public virtual void ClearContentCache()
         {
             _contentCache = null;
+            _parentWindow.InvokeUpdate();
         }
 
         public void SetLocalizedByTag()
@@ -345,5 +349,41 @@ namespace ChosenConcept.APFramework.UI.Element
         }
 
         public virtual void Reset() => _ = 0;
+
+        public virtual IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new();
+            if (_label is LocalizedStringLabel localizedLabel)
+                tags.Add(localizedLabel.tag);
+            if (_content is LocalizedStringLabel localizedContent)
+                tags.Add(localizedContent.tag);
+            return tags;
+        }
+
+        public virtual void ContextLanguageChange()
+        {
+            if (_label is LocalizedStringLabel)
+                ClearLabelCache();
+            if (_content is LocalizedStringLabel)
+                ClearContentCache();
+        }
+
+        public void SetAvailable(bool availability)
+        {
+            if (_available == availability)
+                return;
+            _available = availability;
+            _parentWindow?.InvokeUpdate();
+        }
+
+        public void SetAvailable(Func<bool> condition)
+        {
+            _availabilityGetter = condition;
+            bool available = condition();
+            SetAvailable(available);
+        }
+
+        bool IAvailabilitySyncTarget.needSync => _availabilityGetter != null;
+        void IAvailabilitySyncTarget.SyncAvailability() => SetAvailable(_availabilityGetter());
     }
 }

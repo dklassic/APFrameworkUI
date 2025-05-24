@@ -8,36 +8,12 @@ public class ExampleMenu : CompositeMenuMono
     protected override void InitializeMenu()
     {
         LayoutAlignment layout = InitNewLayout();
-        AddButton("All window elements available", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<ElementsShowcase>().OpenMenu(this, true);
-        });
-        AddButton("Update value via function", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<FunctionWindow>().OpenMenu(this, true);
-        });
-        AddButton("Multiple window example (Horizontal)", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<MultipleWindowHorizontal>().OpenMenu(this, true);
-        });
-        AddButton("Multiple window example (Vertical)", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<MultipleWindowVertical>().OpenMenu(this, true);
-        });
-        AddButton("中文顯示", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<ChineseDisplay>().OpenMenu(this, true);
-        });
-        AddButton("Setting", layout, () =>
-        {
-            CloseMenu(false);
-            WindowManager.instance.GetMenu<ResolutionSetting>().OpenMenu(this, true);
-        });
+        AddButton("All window elements available", layout, OpenSubMenu<ElementsShowcase>);
+        AddButton("Update value via function", layout, OpenSubMenu<FunctionWindow>);
+        AddButton("Multiple window example (Horizontal)", layout, OpenSubMenu<MultipleWindowHorizontal>);
+        AddButton("Multiple window example (Vertical)", layout, OpenSubMenu<MultipleWindowVertical>);
+        AddButton("Chinese 中文顯示", layout, OpenSubMenu<ChineseDisplay>);
+        AddButton("Setting", layout, OpenSubMenu<ResolutionSetting>);
         AddButton("Code Initialized SimpleMenus", layout, () =>
         {
             CloseMenu(false);
@@ -48,11 +24,7 @@ public class ExampleMenu : CompositeMenuMono
             CloseMenu(false);
             FindAnyObjectByType<ContextMenuExample>().Open();
         });
-        AddButton("Draggable Window Example", layout, () =>
-        {
-            CloseMenu(false);
-            FindAnyObjectByType<DraggableWindow>().OpenMenu(this);
-        });
+        AddButton("Draggable Window Example", layout, OpenSubMenu<DraggableWindow>);
         AddButton("Quit", layout, Quit);
     }
 

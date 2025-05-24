@@ -8,13 +8,14 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.UI.Element
 {
-    public class QuickSelectionUI<T> : WindowElement<QuickSelectionUI<T>>, IQuickSelect
+    public class QuickSelectionUI<T> : WindowElement<QuickSelectionUI<T>>, IQuickSelect, IValueSyncTarget
     {
         bool _canCycleBackward;
         Action<T> _action;
         List<string> _choiceListContentCache = new();
         List<IStringLabel> _choiceList = new();
         List<T> _choiceValueList = new();
+        Func<T> _activeValueGetter;
 
         public List<string> choiceListContent
         {
@@ -90,6 +91,22 @@ namespace ChosenConcept.APFramework.UI.Element
             return this;
         }
 
+        public QuickSelectionUI<T> SetActiveValue(Func<T> valueGetter)
+        {
+            _activeValueGetter = valueGetter;
+            int index = _choiceValueList.IndexOf(_activeValueGetter());
+            if (index < 0)
+            {
+                return this;
+            }
+
+            if (index == count)
+                return this;
+            count = index;
+            _parentWindow?.InvokeUpdate();
+            return this;
+        }
+
         public void SetCount(int count)
         {
             this.count = count;
@@ -151,12 +168,23 @@ namespace ChosenConcept.APFramework.UI.Element
             return this;
         }
 
-        public QuickSelectionUI<T> SetChoiceByValue(List<T> value)
+        public QuickSelectionUI<T> SetChoiceByValue(IEnumerable<T> value)
         {
             ClearChoice();
             foreach (T item in value)
             {
                 AddChoice(item.ToString(), item);
+            }
+
+            return this;
+        }
+
+        public QuickSelectionUI<T> SetLocalizedChoiceByValue(IEnumerable<T> value)
+        {
+            ClearChoice();
+            foreach (T item in value)
+            {
+                AddChoice(new LocalizedStringLabel(_tag, item.ToString()), item);
             }
 
             return this;
@@ -212,5 +240,31 @@ namespace ChosenConcept.APFramework.UI.Element
         }
 
         bool IQuickSelect.canCycleBackward => _canCycleBackward;
+
+        public override void ContextLanguageChange()
+        {
+            base.ContextLanguageChange();
+            _choiceListContentCache.Clear();
+        }
+
+        public override IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new();
+            tags.AddRange(base.ExportLocalizationTag());
+            foreach (IStringLabel item in _choiceList)
+            {
+                if (item is LocalizedStringLabel label)
+                    tags.Add(label.tag);
+            }
+
+            return tags;
+        }
+
+        bool IValueSyncTarget.needSync => _activeValueGetter != null;
+
+        void IValueSyncTarget.SyncValue()
+        {
+            SetActiveValue(_activeValueGetter());
+        }
     }
 }

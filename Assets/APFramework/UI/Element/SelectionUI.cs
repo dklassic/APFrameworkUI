@@ -8,9 +8,10 @@ using UnityEngine;
 
 namespace ChosenConcept.APFramework.UI.Element
 {
-    public class SelectionUI<T> : WindowElement<SelectionUI<T>>, ISelectable
+    public class SelectionUI<T> : WindowElement<SelectionUI<T>>, ISelectable, IValueSyncTarget
     {
         Action<T> _action;
+        Func<T> _activeValueGeter;
         protected List<string> _choiceListContentCache = new();
         protected List<IStringLabel> _choiceList = new();
         protected List<T> _choiceValueList = new();
@@ -65,6 +66,22 @@ namespace ChosenConcept.APFramework.UI.Element
         public SelectionUI<T> SetActiveValue(T value)
         {
             int index = _choiceValueList.IndexOf(value);
+            if (index < 0)
+            {
+                return this;
+            }
+
+            if (index == count)
+                return this;
+            count = index;
+            _parentWindow?.InvokeUpdate();
+            return this;
+        }
+
+        public SelectionUI<T> SetActiveValue(Func<T> valueGetter)
+        {
+            _activeValueGeter = valueGetter;
+            int index = _choiceValueList.IndexOf(_activeValueGeter());
             if (index < 0)
             {
                 return this;
@@ -144,11 +161,26 @@ namespace ChosenConcept.APFramework.UI.Element
             return this;
         }
 
+        public SelectionUI<T> SetLocalizedChoiceByValue(IEnumerable<T> value)
+        {
+            ClearChoice();
+            foreach (T item in value)
+            {
+                AddChoice(new LocalizedStringLabel(_tag, item.ToString()), item);
+            }
+
+            return this;
+        }
+
         public SelectionUI<T> AddChoice(string choice, T value)
         {
-            _choiceListContentCache.Clear();
-            _choiceList.Add(new StringLabel(choice));
-            _choiceValueList.Add(value);
+            AddChoice(new StringLabel(choice), value);
+            return this;
+        }
+
+        public SelectionUI<T> AddLocalizedChoice(string tag, T value)
+        {
+            AddChoice(new LocalizedStringLabel(_tag, tag), value);
             return this;
         }
 
@@ -181,6 +213,32 @@ namespace ChosenConcept.APFramework.UI.Element
         {
             base.ClearCache();
             _choiceListContentCache.Clear();
+        }
+
+        public override void ContextLanguageChange()
+        {
+            base.ContextLanguageChange();
+            _choiceListContentCache.Clear();
+        }
+
+        public override IEnumerable<string> ExportLocalizationTag()
+        {
+            List<string> tags = new();
+            tags.AddRange(base.ExportLocalizationTag());
+            foreach (IStringLabel item in _choiceList)
+            {
+                if (item is LocalizedStringLabel label)
+                    tags.Add(label.tag);
+            }
+
+            return tags;
+        }
+
+        bool IValueSyncTarget.needSync => _activeValueGeter != null;
+
+        void IValueSyncTarget.SyncValue()
+        {
+            SetActiveValue(_activeValueGeter());
         }
     }
 }

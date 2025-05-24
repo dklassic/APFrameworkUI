@@ -32,7 +32,7 @@ Beware that since each relies on different navigation logic, best not to mix the
 
 `CompositeMenuMono` is a self-contained class that inherits `MonoBehaviour`, which manages multiple instances of windows and the logic to navigate between them. When utilizing `CompositeMenuMono`, it is expected that all windows will be activated and deactivated together. When working with `CompositeMenuMono`, you should inherit the class and override several parts of it to initialize the menu, meanwhile this is much easier to work with if you want some custom navigation between windows.
 
-In the meantime, you can also retrieve the menu via the `WindowManager.intance.GetMenu<T>` and access other menus easily, which is really useful for quickly referencing between menus without hassle.
+In the meantime, you can also retrieve the menu via the `WindowManager.intance.GetMenu<T>` and access other menus easily, which is really useful for quickly referencing between menus without hassle. Additionally, `OpenSubMenu<T>` is available to quickly open another `CompositeMenuMono` as submenu and return to previous menu when closed.
 
 ## SimpleMenu
 

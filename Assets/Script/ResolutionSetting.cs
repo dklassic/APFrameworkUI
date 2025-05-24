@@ -14,13 +14,13 @@ public class ResolutionSetting : CompositeMenuMono
         List<(int, int)> activeResolutionList = ResolutionUtility.AvailableResolutions();
         systemWindow.AddSingleSelection<(int, int)>("Resolution", UpdateResolution)
             .SetChoice(activeResolutionList.Select(x => x.Item1 + "x" + x.Item2).ToList(), activeResolutionList)
-            .SetActiveValue((Screen.width, Screen.height));
+            .SetActiveValue(() => (Screen.width, Screen.height));
         systemWindow.AddGap();
         systemWindow.AddText("Both camera and overlay mode of canvas are supported.");
         systemWindow.AddSlider<RenderMode>("CanvasMode", ChangeCanvasMode)
             .AddChoiceByValue(RenderMode.ScreenSpaceOverlay)
             .AddChoiceByValue(RenderMode.ScreenSpaceCamera)
-            .SetActiveValue(WindowManager.instance.overlayMode);
+            .SetActiveValue(() => WindowManager.instance.overlayMode);
         systemWindow.Resize(50);
     }
 

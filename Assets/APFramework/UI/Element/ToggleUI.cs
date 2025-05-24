@@ -5,10 +5,11 @@ using Cysharp.Text;
 
 namespace ChosenConcept.APFramework.UI.Element
 {
-    public class ToggleUI : WindowElement<ToggleUI>
+    public class ToggleUI : WindowElement<ToggleUI>, IValueSyncTarget
     {
         protected bool _toggledOn;
         Action<bool> _action;
+        Func<bool> _activeValueGetter;
 
         public override string displayText
         {
@@ -36,12 +37,24 @@ namespace ChosenConcept.APFramework.UI.Element
         }
 
 
-        public virtual void SetToggle(bool on)
+        public virtual ToggleUI SetActiveToggle(bool on)
         {
             if (_toggledOn == on)
-                return;
+                return this;
             _toggledOn = on;
             _parentWindow.InvokeUpdate();
+            return this;
+        }
+
+        public virtual ToggleUI SetActiveToggle(Func<bool> valueGetter)
+        {
+            _activeValueGetter = valueGetter;
+            bool value = _activeValueGetter();
+            if (_toggledOn == value)
+                return this;
+            _toggledOn = value;
+            _parentWindow.InvokeUpdate();
+            return this;
         }
 
         public virtual void Toggle()
@@ -56,6 +69,13 @@ namespace ChosenConcept.APFramework.UI.Element
             if (_action == null)
                 return;
             _action.Invoke(_toggledOn);
+        }
+
+        bool IValueSyncTarget.needSync => _activeValueGetter != null;
+
+        void IValueSyncTarget.SyncValue()
+        {
+            SetActiveToggle(_activeValueGetter());
         }
     }
 }
