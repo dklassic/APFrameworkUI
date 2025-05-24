@@ -12,6 +12,7 @@ Also APFramework UI System is kind of mouthful, so I'll be refering it as just t
 graph TD;
     WindowManager-->SimpleMenu;
     WindowManager-->CompositeMenuMono;
+    WindowManager-->WindowUI;
     SimpleMenu-->WindowUI;
     CompositeMenuMono-->WindowUI;
     WindowUI-->WindowElement;
@@ -21,13 +22,13 @@ A quick overview of how the Framework is structured.
 
 ## WindowManager
 
-`WindowManager` serves a the central hub of everything, it is mostly responsible to creating and updating all the resources. It also relays inputs to the menu currently in focus. Out of box `WindowManager` uses singleton pattern, to make it easier to access from anywhere. But in my personal project, I also initialize and update it with the overarching framework for granualar control.
+`WindowManager` serves a the central hub of everything, it is mostly responsible to creating and updating all the resources. It also relays inputs to the menu currently in focus. Out of box `WindowManager` uses singleton pattern, to make it easier to access from anywhere. But in my personal project, I also initialize and update it with the overarching framework for granualar control. `WindowManager` is also responsible for updating the presentation of `WindowUI`.
 
 The `WindowManager` needs to be initialized first before any subsequent call can be made, which is done using the `Awake` event function at the moment.
 
 ## Premade Menuing Systems
 
-There are two premade menuing system for the Framework. Each of them serves as a self-constained environment to handle how navigation works within. But you can bypass them entiring and manage the underlying `WindowUI` directly if you want to.
+There are two premade menuing systems for the Framework. Each of them serves as a self-constained environment to handle how navigation works within. But you can bypass them entiring and manage the underlying `WindowUI` directly if you want to.
 
 Both menuing system share the `MenuSetup` struct to define their behavior. Additionally, default styling and layout of Windows can also be made by providing `MenuStyling` struct.
 
