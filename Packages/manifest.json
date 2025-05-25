@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.cysharp.zstring": "2.6.0",
     "com.unity.ai.navigation": "2.0.7",
     "com.unity.cinemachine": "2.10.3",
     "com.unity.ide.rider": "3.0.36",
@@ -45,5 +46,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp.zstring"
+      ]
+    }
+  ]
 }
