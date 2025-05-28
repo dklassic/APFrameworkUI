@@ -101,7 +101,7 @@ Access through `WindowManager.instance.GetContextMenu`, which can show a context
 
 ## Document
 
-For more detailed explaination of how the framework is structured, please refer to the [Document](https://github.com/dklassic/APFrameworkUI/blob/main/Document.md).
+For more detailed explaination of how the framework is structured, please refer to the [Document](Document.md).
 
 ## Showcase
 
