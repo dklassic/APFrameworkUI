@@ -17,6 +17,31 @@ The UI system is heavily coupled with Text Mesh Pro at the moment but should be 
 
 The creation of this UI system is heavily inspired by [PhiOS](https://github.com/pblca/PhiOS) (mirror repo) made by [phi6](https://twitter.com/phi6).
 
+# Requirement
+
+- Unity 2021 LTS
+- Text Mesh Pro
+- Unity Input System
+- [Cysharp ZString](https://github.com/Cysharp/ZString)
+
+# Installation
+
+You can download this project from [releases page](https://github.com/dklassic/APFrameworkUI/releases) and import it to your project. Alternatively, you can install it via Unity Package Manager (UPM).
+
+## Unity Package Manager
+
+This project can be installed via UPM. Before installing it, you need to set up the following dependencies.
+
+1.  **Set Scoped Registry for ZString**: This project depends on [Cysharp/ZString](https://github.com/Cysharp/ZString). To allow Unity's Package Manager to find it, add a scoped registry in `Project Settings > Package Manager`:
+    *   **Name**: `package.openupm.com`
+    *   **URL**: `https://packages.openupm.com`
+    *   **Scope(s)**: `com.cysharp.zstring`
+2.  **Add Unsafe.dll**: The ZString package requires `System.Runtime.CompilerServices.Unsafe`, but the DLL is not included when installing via UPM. You must manually import it to your Unity project. You can download the DLL from its [NuGet page](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/6.0.0). See [ZString's README](https://github.com/Cysharp/ZString?tab=readme-ov-file#unity) for more information.
+3.  **Import TextMesh Pro Essentials**: Ensure the TextMesh Pro package is installed, then import its essential resources via `Window > TextMesh Pro > Import TMP Essential Resources`.
+
+After setting up the prerequisites, you can install this package with UPM now.  
+Add the APFramework UI package via `+ > Add package from git URL...` with URL `https://github.com/dklassic/APFrameworkUI.git?path=Assets/APFramework`.
+
 # Getting Started
 
 APFramework's UI system is a very code based system, it is best used when you want to have a quick debug menu instantiated everywhere without the need to commit to making UIs for every random usage. That being said, you can also try to make use of APFramework's UI logic and rework the presentation yourself.
@@ -41,13 +66,6 @@ In the meantime, you can also retrieve the menu via the `WindowManager.intance.G
 This is most useful to create quick utility menus everywhere.
 
 Study the scripts in [Script](https://github.com/dklassic/APFrameworkUI/tree/main/Assets/Script) folder to see how it instantiates each menu should give you a quick start.
-
-# Requirement
-
-- Unity 2021 LTS
-- Text Mesh Pro
-- Unity Input System
-- [CySharp ZString](https://github.com/Cysharp/ZString)
 
 # Features
 
