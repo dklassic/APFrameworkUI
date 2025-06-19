@@ -1,0 +1,12 @@
+{
+    "name": "com.chosenconcept.apframeworkui",
+    "displayName": "APFramework UI",
+    "version": "1.0.1",
+    "unity": "2021.3",
+    "description": "A Text Mesh Pro based text only UI system for Unity",
+    "license": "MIT",
+    "documentationUrl": "https://github.com/dklassic/APFrameworkUI/blob/main/Document.md",
+    "dependencies": {
+        "com.cysharp.zstring": "2.6.0"
+    }
+}
