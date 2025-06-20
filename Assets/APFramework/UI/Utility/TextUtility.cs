@@ -22,7 +22,6 @@ namespace ChosenConcept.APFramework.UI.Utility
         public const string FADE_OUT_IN = "█▓▒░  ░▒▓█";
         public const char UNDERSCORE = '_';
 
-        [BurstCompile]
         public static bool IsFullWidth(char c)
         {
             return c >= 0x1100 &&
@@ -49,7 +48,6 @@ namespace ChosenConcept.APFramework.UI.Utility
             };
         }
 
-        [BurstCompile]
         public static bool AllHalfWidth(string text)
         {
             foreach (char c in text)
@@ -61,7 +59,6 @@ namespace ChosenConcept.APFramework.UI.Utility
             return true;
         }
 
-        [BurstCompile]
         public static bool IsSingleControlCode(string text)
         {
             int upper = 0;
@@ -86,7 +83,6 @@ namespace ChosenConcept.APFramework.UI.Utility
                    lower == 1;
         }
 
-        [BurstCompile]
         public static string Repeat(char c, int count)
         {
             if (count <= 0)
@@ -102,11 +98,9 @@ namespace ChosenConcept.APFramework.UI.Utility
             }
         }
 
-        [BurstCompile]
         public static string PlaceHolder(int count) => Repeat(' ', count);
 
         // pasted from https://forum.unity.com/threads/getting-the-text-without-tags.851455/
-        [BurstCompile]
         public static string StripRichTagsFromStr(string richStr)
         {
             try
@@ -150,7 +144,6 @@ namespace ChosenConcept.APFramework.UI.Utility
             }
         }
 
-        [BurstCompile]
         public static int RichTagsStrippedLength(string richStr)
         {
             try
@@ -232,7 +225,6 @@ namespace ChosenConcept.APFramework.UI.Utility
             }
         }
 
-        [BurstCompile]
         // This count with control code stripped
         public static int WidthSensitiveLength(string text)
         {
@@ -278,7 +270,6 @@ namespace ChosenConcept.APFramework.UI.Utility
             }
         }
 
-        [BurstCompile]
         public static List<string> SplitStringByControlCode(string input)
         {
             // Define a regex pattern to match the control codes and text outside of them
@@ -309,7 +300,6 @@ namespace ChosenConcept.APFramework.UI.Utility
         /// <param name="text">The text to be sliced</param>
         /// <param name="limit">The limit of the text</param>
         /// </summary>
-        [BurstCompile]
         public static List<string> StringCutter(string text, int limit)
         {
             if (string.IsNullOrEmpty(text))
@@ -392,7 +382,6 @@ namespace ChosenConcept.APFramework.UI.Utility
         /// <param name="text">The text to be sliced</param>
         /// <param name="limit">The limit of the text</param>
         /// </summary>
-        [BurstCompile]
         public static int StringCutterLineCount(string text, int limit)
         {
             if (string.IsNullOrEmpty(text))
